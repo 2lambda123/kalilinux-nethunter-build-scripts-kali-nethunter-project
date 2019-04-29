@@ -8,7 +8,7 @@ if [ ! -f /usr/share/debootstrap/scripts/kali-rolling ]; then
 	#
 	echo "Missing kali from debootstrap, downloading it"
 
-	curl "http://git.kali.org/gitweb/?p=packages/debootstrap.git;a=blob_plain;f=scripts/kali;hb=refs/heads/kali/master" > /usr/share/debootstrap/scripts/kali
+	curl "https://gitlab.com/kalilinux/packages/debootstrap/raw/kali/master/scripts/kali" > /usr/share/debootstrap/scripts/kali
 	ln -s /usr/share/debootstrap/scripts/kali /usr/share/debootstrap/scripts/kali-rolling
 fi
 
