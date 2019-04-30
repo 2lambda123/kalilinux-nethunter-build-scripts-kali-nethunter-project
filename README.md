@@ -1,5 +1,5 @@
 # NetHunter - Mobile Penetration Testing Platform
-![Kali NetHunter](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/blob/master/images/nethunter-git-logo.png)
+![Kali NetHunter](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/raw/master/images/nethunter-git-logo.png)
 ## A project by Offensive Security
 **The Kali NetHunter** is an Android penetration testing platform targeted towards Nexus and OnePlus devices built on top of Kali Linux, which includes some special and unique features. 
 Of course, you have all the usual Kali tools in NetHunter as well as the ability to get a full VNC session from your phone to a graphical Kali chroot, however the strength of NetHunter does not end there. 
