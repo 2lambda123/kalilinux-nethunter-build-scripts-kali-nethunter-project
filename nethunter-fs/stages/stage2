@@ -50,7 +50,7 @@ mkdir -p "$cap/evilap" "$cap/ettercap" "$cap/kismet/db" "$cap/nmap" \
 	"$cap/urlsnarf" "$cap/dsniff" "$cap/honeyproxy" "$cap/mana/sslsplit"
 
 # Link /lib/modules to /system/lib/modules for modprobe
-echo "I: Linking /lib/modules to /system/lib/modules"
-ln -s /system/lib/modules "$rootfs/lib/modules"
+echo "I: Creating mountpoint /lib/modules"
+mkdir -p "$rootfs/lib/modules"
 
 echo "[+] Completed stage 2!"
