@@ -47,7 +47,8 @@ EOF
 # Let's do a little bit of magic from outside the chroot
 if [ "$build_size" = full ]; then
 	# We should run git clone outside chroot because it has issues with machine-code translation
-	git clone https://github.com/Proxmark/proxmark3.git "$rootfs/opt/proxmark3"
+	##git clone https://github.com/Proxmark/proxmark3.git "$rootfs/opt/proxmark3"
+	git clone https://github.com/RfidResearchGroup/proxmark3.git "$rootfs/opt/proxmark3"
 	git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
 
 	# powershell for arm64 is not yet available in Microsofts repos so let's install it manually
@@ -95,8 +96,9 @@ a2ensite 000-default.conf
 
 if cd /opt/proxmark3; then
         ## Install some dependencies first
-        apt install -y libpcsclite-dev pcscd pkg-config
-	make
+        ##apt install -y libpcsclite-dev pcscd pkg-config
+        sudo apt-get install p7zip git ca-certificates build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libstdc++-arm-none-eabi-newlib libqt4-dev
+	make all
 fi
 
 if cd /opt/Empire/setup; then
