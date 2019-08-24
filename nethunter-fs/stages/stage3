@@ -49,7 +49,7 @@ if [ "$build_size" = full ]; then
 	# We should run git clone outside chroot because it has issues with machine-code translation
 	##git clone https://github.com/Proxmark/proxmark3.git "$rootfs/opt/proxmark3"
 	git clone https://github.com/RfidResearchGroup/proxmark3.git "$rootfs/opt/proxmark3"
-	git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
+##	git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
 
 	# powershell for arm64 is not yet available in Microsofts repos so let's install it manually
 	if [ $build_arch == "arm64" ]; then
@@ -61,7 +61,7 @@ if [ "$build_size" = full ]; then
 	if [ $build_arch == "armhf" ]; then
 		mkdir -p $rootfs/opt/microsoft/powershell
 		wget -P $rootfs/opt/microsoft/powershell https://github.com/PowerShell/PowerShell/releases/download/v6.2.0-preview.4/powershell-6.2.0-preview.4-linux-arm32.tar.gz
-                tar -xzf $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz -C $rootfs/opt/microsoft/powershell
+               tar -xzf $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz -C $rootfs/opt/microsoft/powershell
 		rm $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz
 	fi
 	# Microsoft no longer supports deletion of the file DELETE_ME_TO_DISABLE_CONSOLEHOST_TELEMETRY to disable telemetry
@@ -94,23 +94,26 @@ a2enmod php7.3
 a2dissite 000-mana-toolkit.conf
 a2ensite 000-default.conf
 
-if cd /opt/proxmark3; then
+ if cd /opt/proxmark3; then
         ## Install some dependencies first
         ##apt install -y libpcsclite-dev pcscd pkg-config
-        sudo apt-get install p7zip git ca-certificates build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libstdc++-arm-none-eabi-newlib libqt4-dev
+        sudo apt-get install -y p7zip git ca-certificates build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libstdc++-arm-none-eabi-newlib libqt4-dev
+        ## Let's build for the new RDV4 platform with the bluetooth addon
+        echo "PLATFORM=PM3RDV4" > Makefile.platform
+        echo "PLATFORM_EXTRAS=BTADDON" >> Makefile.platform
 	make all
 fi
 
-if cd /opt/Empire/setup; then
-        # Lets patch install.sh to build xar for our target architecture
-        if [ $build_arch == "arm64" ]; then
-            sed "install.sh" -i -e "s/(cd xar-1.5.2 \&\& \.\/configure)/(cd xar-1.5.2 \&\& \.\/configure --build=armv8l-unkown-linux-gnu)/"
-        elif [ $build_arch == "armhf" ]; then
-            sed "install.sh" -i -e "s/(cd xar-1.5.2 \&\& \.\/configure)/(cd xar-1.5.2 \&\& \.\/configure --build=armv7l-unkown-linux-gnu)/"
-        fi
-	chmod +x install.sh
-	printf "\n" | ./install.sh
-fi
+##if cd /opt/Empire/setup; then
+##        # Lets patch install.sh to build xar for our target architecture
+##        if [ $build_arch == "arm64" ]; then
+##            sed "install.sh" -i -e "s/(cd xar-1.5.2 \&\& \.\/configure)/(cd xar-1.5.2 \&\& \.\/configure --build=armv8l-unkown-linux-gnu)/"
+##        elif [ $build_arch == "armhf" ]; then
+##            sed "install.sh" -i -e "s/(cd xar-1.5.2 \&\& \.\/configure)/(cd xar-1.5.2 \&\& \.\/configure --build=armv7l-unkown-linux-gnu)/"
+##        fi
+##	chmod +x install.sh
+##	printf "\n" | ./install.sh
+##fi
 EOF
 	# End of third-stage script append
 fi
