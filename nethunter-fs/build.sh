@@ -144,44 +144,57 @@ fi
 
 # MINIMAL PACKAGES
 # usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
-pkg_minimal="openssh-server kali-defaults kali-archive-keyring apt-transport-https ntpdate usbutils pciutils"
+pkg_minimal="openssh-server kali-defaults kali-archive-keyring
+	apt-transport-https ntpdate usbutils pciutils"
 
 # DEFAULT PACKAGES FULL INSTALL
-pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc exe2hexbat bettercap libapache2-mod-php7.0 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi binutils-arm-none-eabi "
+pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc
+	exe2hexbat bettercap libapache2-mod-php7.0 libreadline6-dev
+	libncurses5-dev libnewlib-arm-none-eabi binutils-arm-none-eabi
+	gcc-arm-none-eabi autoconf libtool make gcc-6 g++-6
+	libxml2-dev zlib1g-dev libncurses5-dev"
 
 # ARCH SPECIFIC PACKAGES
-pkg_arm="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
-pkg_arm64="$pkg_arm"
-pkg_i386="$pkg_arm"
-pkg_amd64="$pkg_arm"
+pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
+pkg_minimal_arm64="$pkg_minimal_armhf"
+pkg_minimal_i386="$pkg_minimal_armhf"
+pkg_minimal_amd64="$pkg_minimal_armhf"
 
-# Start off with minimal install packages
-packages="$pkg_minimal"
+pkg_full_armhf=""
+pkg_full_arm64=""
+pkg_full_i386=""
+pkg_full_amd64=""
 
-# Add full packages if build size is full
-if [ "$build_size" = full ]; then
-	packages="$packages $pkg_full"
-fi
-
-# Add arch specific packages
+# Set packages to install by arch and size
 case $build_arch in
 	armhf)
-		packages="$packages $pkg_arm"
 		qemu_arch=arm
+		packages="$pkg_minimal $pkg_minimal_armhf"
+		[ "$build_size" = full ] &&
+			packages="$packages $pkg_full $pkg_full_armhf"
 		;;
 	arm64)
-		packages="$packages $pkg_arm64"
 		qemu_arch=aarch64
+		packages="$pkg_minimal $pkg_minimal_arm64"
+		[ "$build_size" = full ] &&
+			packages="$packages $pkg_full $pkg_full_arm64"
 		;;
 	i386)
-		packages="$packages $pkg_i386"
 		qemu_arch=i386
+		packages="$pkg_minimal $pkg_minimal_i386"
+		[ "$build_size" = full ] &&
+			packages="$packages $pkg_full $pkg_full_i386"
 		;;
 	amd64)
-		packages="$packages $pkg_amd64"
 		qemu_arch=x86_64
+		packages="$pkg_minimal $pkg_minimal_amd64"
+		[ "$build_size" = full ] &&
+			packages="$packages $pkg_full $pkg_full_amd64"
 		;;
 esac
+
+# Fix packages to be a single space delimited line using unquoted magic
+packages=$(echo $packages)
 
 cleanup_host() {
 	umount -l "$rootfs/dev/pts" &>/dev/null
@@ -232,7 +245,7 @@ cleanup_host
 echo "[+] Tarring and compressing kalifs.  This can take a while...."
 XZ_OPTS=-9 tar cJvf "${build_output}.tar.xz" "$rootfs/"
 echo "[+] Generating sha512sum of kalifs."
-sha512sum "${build_output}.tar.xz" > "${build_output}.sha512sum"
+sha512sum "${build_output}.tar.xz" | sed "s|output/||" > "${build_output}.sha512sum"
 
 echo "[+] Finished!  Check output folder for chroot."
 

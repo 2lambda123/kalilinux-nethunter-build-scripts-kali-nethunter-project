@@ -1,7 +1,7 @@
 {
-	"version_code": 20,
+	"version_code": 21,
 	"chroot_version": 3,
-	"chroot_sha512_full": "1277198464b67de946ed3dd906d880542e57566cff1d28917b487904eedc504dc0d7177d44b1f84f5000f2bb4517e765432fce71ba3d13ecdfe5758a90e9c37d",
-	"chroot_sha512_min": "fae5deaad07e45f712101457bad8fa196110d842aa420fd49c6a591871afeb8cddb1353675707eef8cdfae2e80b55e454ef54fa21965e22bffb6d30e03b8ff17",
-	"content": "Version 3.15 <p>Please uninstall previous version before installing this one</P><p>Fixes</P><li>Wardriving tab removed until TCP server is added</li><li>Fix custom command not working sometimes</li><li>Karma fixes to match configuration file</li><li>Fruitywifi PHP start use correct version</li>"
+	"chroot_sha512_full": "68a3c557e14ec301fd37831793485c2280b9f706975cff3f9f9cf4000c9703b27dd21b5e076bded0ceff6e5652efc225b0dc76aa391ac5a7e90d683e3b43b647",
+	"chroot_sha512_min": "86752fba98b54daf5f66d04b1306ebebb25ea434bd5f17aa53b53c75aef6e9309084e0e6c01b94461dcb5615e4dd9eb97ac1d8973ebadcd1f6962b99312ae7e5",
+	"content": "Version 3.15.4 <p>Wardriving fix added by @ilakattack (needs nethunter-utils update)</p>"
 }
