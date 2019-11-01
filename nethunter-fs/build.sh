@@ -145,7 +145,7 @@ fi
 # MINIMAL PACKAGES
 # usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 pkg_minimal="openssh-server kali-defaults kali-archive-keyring
-	apt-transport-https ntpdate usbutils pciutils"
+	apt-transport-https ntpdate usbutils pciutils sudo vim"
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter mana-toolkit exploitdb msfpc
