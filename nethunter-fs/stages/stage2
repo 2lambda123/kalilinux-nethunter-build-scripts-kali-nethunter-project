@@ -40,6 +40,12 @@ EOF
 echo "I: Creating /root/.ssh directory"
 mkdir -p "$rootfs/root/.ssh"
 
+echo "I: Creating /root/.vnc directory"
+mkdir -p "$rootfs/root/.vnc"
+
+echo "I: Creating /etc/skel/.vnc directory"
+mkdir -p "$rootfs/etc/skel/.vnc"
+
 echo "I: Creating /sdcard, /external_sd, /system mountpoints"
 mkdir -p "$rootfs/sdcard" "$rootfs/external_sd" "$rootfs/system"
 

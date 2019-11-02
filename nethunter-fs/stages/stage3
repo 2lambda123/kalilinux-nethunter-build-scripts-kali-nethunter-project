@@ -182,6 +182,42 @@ inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql
 nobody:x:3004:nobody
 EOF
 
+# Add default xstartup file for tigervnc-standalone-server
+cat << EOF >> "$rootfs/etc/skel/.vnc/xstartup"
+#!/bin/sh
+
+#############################
+##          All            ##
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+export SHELL=/bin/bash
+
+#############################
+##          Gnome          ##
+#[ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup
+#[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+#vncconfig -iconic &
+#dbus-launch --exit-with-session gnome-session &
+
+
+############################
+##           LXQT         ##
+####exec openbox-session
+#exec startlxqt
+
+
+############################
+##          KDE           ##
+#exec /usr/bin/startkde
+
+
+############################
+##          XFCE          ##
+startxfce4 &
+EOF
+
+cp -f "$rootfs/etc/skel/.vnc/xstartup" "$rootfs/root/.vnc/xstartup"
+
 # Apt now adds a new user to "nobody" but the _apt user can't access updates
 # because of inet.  Modify passwd to put them in inet group for android
 sed -i -e 's/^\(_apt:\)\([^:]\)\(:[0-9]*\)\(:[0-9]*\):/\1\2\3:3004:/' "$rootfs/etc/passwd"
@@ -197,7 +233,5 @@ chroot_do cp /etc/skel/.bashrc /root/.bashrc
 chroot_do chmod 755 /usr/bin/* 2> /dev/null
 chroot_do chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
 
-# Minor fix for mana-toolkit which made changes in update.  We need to mirror fixes.
-sed -i 's|dhcpd -cf /etc/mana-toolkit/dhcpd\.conf.*|dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo|' "$rootfs/usr/share/mana-toolkit/run-mana/"*
 
 echo "[+] Completed stage 3!"
