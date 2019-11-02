@@ -150,6 +150,7 @@ echo "[+] Modifying SSH to allow root user"
 
 sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
 sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
+sed -i 's/\#PermitRootLogin yes/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
 
 # Install dictionary
 mkdir -p "$rootfs/opt/dic"
