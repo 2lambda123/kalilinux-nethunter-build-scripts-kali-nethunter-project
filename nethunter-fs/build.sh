@@ -150,7 +150,7 @@ pkg_minimal="openssh-server kali-defaults kali-archive-keyring
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter
           kali-desktop-core xfce4-terminal xserver-xorg-input-synaptics gnome-theme-kali mousepad
-          mana-toolkit msfpc exe2hexbat bettercap
+          msfpc exe2hexbat bettercap
           libapache2-mod-php7.3 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi
           binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-7 g++-7
           libxml2-dev zlib1g-dev"
