@@ -7,11 +7,11 @@ export DEBIAN_FRONTEND=noninteractive
 ## Sometimes we might need to install packages that are not in the kali repository
 ## Copy packages from local repository to chroot for installation
 mkdir -p $rootfs/tmp/deb/
-if [ -f $rootfs/../repo/$build_arch/*.deb ]; then
+if ls $rootfs/../repo/$build_arch/*.deb &>/dev/null; then
     echo "[+] Copying $build_arch packages to chroot from local repository"
     cp $rootfs/../repo/$build_arch/*.deb $rootfs/tmp/deb/
 fi
-if [ -f $rootfs/../repo/all/*.deb ]; then
+if ls $rootfs/../repo/all/*.deb &>/dev/null; then
     echo "[+] Copying generic packages to chroot from local repository"
     cp $rootfs/../repo/all/*.deb $rootfs/tmp/deb/
 fi
@@ -55,8 +55,8 @@ rm -f /usr/sbin/invoke-rc.d
 dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
 
 ## Install custom packages from local repo
-if [ -f /tmp/deb/*.deb ]; then
-   apt install /tmp/deb/*.deb
+if ls /tmp/deb/*.deb &>/dev/null; then
+   apt install -y /tmp/deb/*.deb
 fi
 if [ -d /tmp/deb ]; then
    rm -rf /tmp/deb
@@ -110,7 +110,8 @@ EOF
 # Enable PHP in Apache
 a2enmod php7.3
 
-# Enable /var/www/html as default, disable unless we need it
+# Enable /var/www/html as default, disable mana unless we need it
+a2dissite 000-mana-toolkit.conf
 a2ensite 000-default.conf
 
  if cd /opt/proxmark3; then
@@ -179,6 +180,7 @@ cp dictionary/pinlist.txt "$rootfs/opt/dic/pinlist.txt"
 
 # Sets the default for hostapd.conf to the mana karma version
 sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
+sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-mana-"*
 
 # DNSMASQ Configuration options for optional access point
 cat << EOF > "$rootfs/etc/dnsmasq.conf"
@@ -249,6 +251,10 @@ chroot_do cp /etc/skel/.bashrc /root/.bashrc
 
 # Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
 chroot_do chmod 755 /usr/bin/* 2> /dev/null
+chroot_do chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
+
+# Minor fix for mana-toolkit which made changes in update.  We need to mirror fixes.
+sed -i 's|dhcpd -cf /etc/mana-toolkit/dhcpd\.conf.*|dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo|' "$rootfs/usr/share/mana-toolkit/run-mana/"*
 
 
 echo "[+] Completed stage 3!"
