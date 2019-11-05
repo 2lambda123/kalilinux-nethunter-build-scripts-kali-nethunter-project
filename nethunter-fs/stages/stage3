@@ -141,12 +141,12 @@ fi
 chmod +x "$rootfs/third-stage"
 chroot_do /third-stage
 
-# Add /system/xbin to PATH
-echo "[+] Adding /system/xbin to path"
+# Add /system/xbin and /system/bin to PATH
+echo "[+] Adding /system/xbin and /system/bin to path"
 cat << EOF >> "$rootfs/root/.profile"
 
-# Add /system/xbin to PATH
-PATH="$PATH:/system/xbin"
+# Add /system/xbin and /system/bin to PATH
+PATH="$PATH:/system/xbin:/system/bin"
 EOF
 
 # Source .bashrc and .profile at login
