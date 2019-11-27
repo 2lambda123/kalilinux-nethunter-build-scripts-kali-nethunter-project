@@ -2,11 +2,20 @@
 
 # Add our sources
 echo "Creating /etc/apt/sources.list file"
-cat << EOF > "$rootfs/etc/apt/sources.list"
+if [ -n "$build_repo" ]; then
+    cat << EOF > "$rootfs/etc/apt/sources.list"
+deb http://http.kali.org/kali kali-rolling main contrib non-free
+deb http://http.kali.org/kali $build_repo main contrib non-free
+# For source package access, uncomment the following line
+# deb-src http://http.kali.org/kali kali-rolling main contrib non-free
+EOF
+else
+    cat << EOF > "$rootfs/etc/apt/sources.list"
 deb http://http.kali.org/kali kali-rolling main contrib non-free
 # For source package access, uncomment the following line
 # deb-src http://http.kali.org/kali kali-rolling main contrib non-free
 EOF
+fi
 
 # fix for TUN symbolic link to enable programs like openvpn
 # set terminal length to 80 because root destroy terminal length
@@ -39,6 +48,12 @@ EOF
 # Create default capture folders along with /sdcard, /external_sd, /system, /root/.ssh
 echo "I: Creating /root/.ssh directory"
 mkdir -p "$rootfs/root/.ssh"
+
+echo "I: Creating /root/.vnc directory"
+mkdir -p "$rootfs/root/.vnc"
+
+echo "I: Creating /etc/skel/.vnc directory"
+mkdir -p "$rootfs/etc/skel/.vnc"
 
 echo "I: Creating /sdcard, /external_sd, /system mountpoints"
 mkdir -p "$rootfs/sdcard" "$rootfs/external_sd" "$rootfs/system"

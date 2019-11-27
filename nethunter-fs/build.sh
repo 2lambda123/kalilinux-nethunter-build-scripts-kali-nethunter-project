@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# If we want to install packages from kali-experimental, set this
+##build_repo=kali-experimental
+
 # Check for root
 if [[ $EUID -ne 0 ]]; then
 	echo "Please run this as root"
@@ -75,6 +78,9 @@ exec &> >(tee -a "${build_output}.log")
 
 echo "[+] Selected build size: $build_size"
 echo "[+] Selected architecture: $build_arch"
+if [ -n "$build_repo" ]; then
+    echo "[+] Additional apt repo: $build_repo"
+fi
 sleep 1
 
 # Dependency checks
@@ -148,11 +154,12 @@ pkg_minimal="openssh-server kali-defaults kali-archive-keyring
 	apt-transport-https ntpdate usbutils pciutils sudo vim"
 
 # DEFAULT PACKAGES FULL INSTALL
-pkg_full="kali-linux-nethunter mana-toolkit exploitdb msfpc
-	exe2hexbat bettercap libapache2-mod-php7.3 libreadline6-dev
-	libncurses5-dev libnewlib-arm-none-eabi binutils-arm-none-eabi
-	gcc-arm-none-eabi autoconf libtool make gcc-7 g++-7
-	libxml2-dev zlib1g-dev libncurses5-dev"
+pkg_full="kali-linux-nethunter
+          kali-desktop-core xfce4-goodies xserver-xorg-input-synaptics gnome-theme-kali kali-undercover 
+          msfpc exe2hexbat bettercap
+          libapache2-mod-php7.3 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi
+          binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-7 g++-7
+          libxml2-dev zlib1g-dev"
 
 # ARCH SPECIFIC PACKAGES
 pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
