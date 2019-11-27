@@ -46,9 +46,15 @@ echo "root:toor" | chpasswd
 
 # This looks weird, but we do it twice because every so often, there's a failure to download from the mirror
 # So to workaround it, we attempt to install them twice.
-echo "I: Installing packages with apt-get: $packages"
-apt-get --yes install $packages || apt-get --yes --fix-broken install
-apt-get --yes install $packages || apt-get --yes --fix-broken install
+if [ -n "$build_repo" ]; then
+    echo "I: Installing packages from $build_repo with apt-get: $packages"
+    apt-get -t $build_repo --yes install $packages || apt-get -t $build_repo --yes --fix-broken install
+    apt-get -t $build_repo --yes install $packages || apt-get -t $build_repo --yes --fix-broken install
+else
+    echo "I: Installing packages with apt-get: $packages"
+    apt-get --yes install $packages || apt-get --yes --fix-broken install
+    apt-get --yes install $packages || apt-get --yes --fix-broken install
+fi
 
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
@@ -141,6 +147,17 @@ fi
 chmod +x "$rootfs/third-stage"
 chroot_do /third-stage
 
+# Sometimes we want to use kali-experimental
+# Let's remove it after we are done with stage 3
+if [ -n "$build_repo" ]; then
+    echo "[+] Resetting /etc/apt/sources.list file"
+    cat << EOF > "$rootfs/etc/apt/sources.list"
+deb http://http.kali.org/kali kali-rolling main contrib non-free
+# For source package access, uncomment the following line
+# deb-src http://http.kali.org/kali kali-rolling main contrib non-free
+EOF
+fi
+
 # Add /system/xbin and /system/bin to PATH
 echo "[+] Adding /system/xbin and /system/bin to path"
 cat << EOF >> "$rootfs/root/.profile"
@@ -158,7 +175,14 @@ cat << EOF >> "$rootfs/root/.bash_profile"
 cd ~
 EOF
 
+# Removing Xfce4 panel plugins that are not needed in KeX
+echo "[+] Removing unneeded Xfce4 panel plugins"
+sed -i '/\n/!N;/\n.*\n/!N;/\n.*\n.*kazam/{$d;N;N;d};P;D' "$rootfs/etc/xdg/xfce4/panel/default.xml"
+sed -i '/pulseaudio/d' "$rootfs/etc/xdg/xfce4/panel/default.xml"
+sed -i '/power-manager-plugin/d' "$rootfs/etc/xdg/xfce4/panel/default.xml"
+
 # Modify Kismet log saving folder
+echo "[+] Modifying Kismet log folder"
 sed -i 's|.*\blogprefix=.*|logprefix=/captures/kismet/|g' "$rootfs/etc/kismet/kismet.conf"
 sed -i 's|.*\bncsource=wlan0|ncsource=wlan1|g' "$rootfs/etc/kismet/kismet.conf"
 sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g' "$rootfs/etc/kismet/kismet.conf"
