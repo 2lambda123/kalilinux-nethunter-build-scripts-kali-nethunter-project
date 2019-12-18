@@ -14,9 +14,9 @@
 Prerequisite:  
 --------------  
 Android Device  
-Stock  
-Unrooted  
-Stock recovery  
+(Stock unmodified device, no root or custom recovery required)  
+
+  
 
 Installation:  
 --------------  
