@@ -5,7 +5,7 @@
 
 ### NetHunter Termux Edition  
 
-<img src="../images/010-NH-Rootless-Installation_Start_s.jpg" style="zoom:50%;" />
+![](../images/010-NH-Rootless-Installation_Start_s.jpg)
 
 
 
