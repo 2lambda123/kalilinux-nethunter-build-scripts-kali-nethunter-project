@@ -27,7 +27,7 @@ Install nethunter-store app from https://store.nethunter.com
 From nethunter store, install termux and NetHunter-KeX client  
 Open termux  
 `termux-setup-storage`  
-`wget https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/raw/2020.1/nethunter-rootless/install-nethunter-termux`  
+`wget https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/raw/master/nethunter-rootless/install-nethunter-termux`  
 `chmod +x install-nethunter-termux`  
 `./install-nethunter-termux`  
 
