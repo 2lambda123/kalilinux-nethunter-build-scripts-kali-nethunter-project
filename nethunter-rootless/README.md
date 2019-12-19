@@ -1,8 +1,9 @@
 # NetHunter - Mobile Penetration Testing Platform   
-# _Rootless Editions_         
-![Kali NetHunter](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/raw/master/images/nethunter-git-logo.png)
-## A project by Offensive Security  
+# _Rootless Editions_   
 
+###### For use on unmodified stock Android phones without voiding warranty
+
+![Kali NetHunter](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/raw/master/images/nethunter-git-logo.png)
 ### NetHunter Termux Edition  
 
 [![](../images/010-NH-Rootless-Installation_Start_s.jpg)](../images/010-NH-Rootless-Installation_Start.jpg)
