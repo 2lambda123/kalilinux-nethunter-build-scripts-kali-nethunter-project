@@ -78,8 +78,12 @@ function prepare_fs() {
 function cleanup() {
     if [ -f ${IMAGE_NAME} ]; then
         if ask "Delete downloaded rootfs file?" "N"; then
-            rm -rf ${IMAGE_NAME}
-            rm -rf ${SHA_NAME}
+	    if [ -f ${IMAGE_NAME} ]; then
+                rm -rf ${IMAGE_NAME}
+	    fi
+	    if [ -f ${SHA_NAME} ]; then
+                rm -rf ${SHA_NAME}
+	    fi
         fi
     fi
 } 

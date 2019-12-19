@@ -1,7 +1,7 @@
 # NetHunter - Mobile Penetration Testing Platform   
 # _Rootless Editions_   
 
-###### For use on unmodified stock Android phones without voiding warranty
+###### For use on unmodified stock Android phones without voiding the warranty
 
 ![Kali NetHunter](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/raw/master/images/nethunter-git-logo.png)
 ### NetHunter Termux Edition  
@@ -24,9 +24,10 @@ Android Device
 Installation:  
 --------------  
 Install nethunter-store app from https://store.nethunter.com  
-From nethunter store, install termux and NetHunter-KeX client  
+From nethunter store, install termux, NetHunter-KeX client, and Hacker's keyboard  
 Open termux  
 `termux-setup-storage`  
+`pkg install wget`   
 `wget https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/raw/2020.1/nethunter-rootless/install-nethunter-termux`  
 `chmod +x install-nethunter-termux`  
 `./install-nethunter-termux`  
