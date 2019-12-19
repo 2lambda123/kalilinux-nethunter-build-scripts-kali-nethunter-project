@@ -5,11 +5,13 @@
 
 ### NetHunter Termux Edition  
 
-![](../images/010-NH-Rootless-Installation_Start_s.jpg)
+[![](../images/010-NH-Rootless-Installation_Start_s.jpg)](../images/010-NH-Rootless-Installation_Start.jpg)
 
 
 
-![](../images/020-NH-Rootless-KeX_s.jpg)
+[![](../images/020-NH-Rootless-KeX_s.jpg)](../images/020-NH-Rootless-KeX_s.jpg)
+
+
 
 Prerequisite:  
 --------------  
