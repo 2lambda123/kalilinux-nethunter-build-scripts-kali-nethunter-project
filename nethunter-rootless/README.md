@@ -41,7 +41,7 @@ Open termux and type one of the following:
 | `nethunter`             | start Kali NetHunter command line interface |
 | `nethunter kex passwd`  | Configure the KeX password before 1st use   |
 | `nethunter kex &`       | start Kali NetHunter Desktop Experience     |
-| `nethunter kex stop`    | stopKali NetHunter Desktop Experience       |
+| `nethunter kex stop`    | stop Kali NetHunter Desktop Experience      |
 
 Note: The command `nethunter` can be abbreviated to `nh`.
 
