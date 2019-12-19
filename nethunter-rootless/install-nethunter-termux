@@ -132,7 +132,9 @@ function get_sha() {
     if [ -z $KEEP_IMAGE ]; then
         printf "\n${blue}[*] Getting SHA ... ${reset}\n\n"
         get_url
-        rm -r ${SHA_NAME}
+        if [ -f ${SHA_NAME}]; then
+            rm -r ${SHA_NAME}
+        fi
         axel ${EXTRA_ARGS} --alternate "${SHA_URL}"
     fi
 }
