@@ -79,10 +79,10 @@ function cleanup() {
     if [ -f ${IMAGE_NAME} ]; then
         if ask "Delete downloaded rootfs file?" "N"; then
 	    if [ -f ${IMAGE_NAME} ]; then
-                rm -rf ${IMAGE_NAME}
+                rm -f ${IMAGE_NAME}
 	    fi
 	    if [ -f ${SHA_NAME} ]; then
-                rm -rf ${SHA_NAME}
+                rm -f ${SHA_NAME}
 	    fi
         fi
     fi
@@ -116,7 +116,7 @@ function get_rootfs() {
     unset KEEP_IMAGE
     if [ -f ${IMAGE_NAME} ]; then
         if ask "Existing image file found. Delete and download a new one?" "N"; then
-            rm -r ${IMAGE_NAME}
+            rm -f ${IMAGE_NAME}
         else
             printf "${yellow}[!] Using existing rootfs archive${reset}\n"
             KEEP_IMAGE=1
@@ -133,7 +133,7 @@ function get_sha() {
         printf "\n${blue}[*] Getting SHA ... ${reset}\n\n"
         get_url
         if [ -f ${SHA_NAME} ]; then
-            rm -r ${SHA_NAME}
+            rm -f ${SHA_NAME}
         fi
         axel ${EXTRA_ARGS} --alternate "${SHA_URL}"
     fi
@@ -219,6 +219,11 @@ function stop-kex() {
     return 0
 }
 
+function passwd-kex() {
+    vncpasswd
+    return 0
+}
+
 function status-kex() {
     sessions=\$(vncserver -list | sed s/"TigerVNC"/"NetHunter KeX"/)
     if [[ \$sessions == *"590"* ]]; then
@@ -241,6 +246,9 @@ case \$1 in
         ;;
     status)
         status-kex
+        ;;
+    passwd)
+        passwd-kex
         ;;
     *)
         stop-kex
