@@ -36,11 +36,12 @@ Usage:
 -------  
 Open termux and type one of the following:  
 
-| Command              | To                                          |
-| -------------------- | ------------------------------------------- |
-| `nethunter`          | start Kali NetHunter command line interface |
-| `nethunter kex &`    | start Kali NetHunter Desktop Experience     |
-| `nethunter kex stop` | stopKali NetHunter Desktop Experience       |
+| Command                 | To                                          |
+| ----------------------- | ------------------------------------------- |
+| `nethunter`             | start Kali NetHunter command line interface |
+| `nethunter kex passwd`  | Configure the KeX password before 1st use   |
+| `nethunter kex &`       | start Kali NetHunter Desktop Experience     |
+| `nethunter kex stop`    | stopKali NetHunter Desktop Experience       |
 
 Note: The command `nethunter` can be abbreviated to `nh`.
 
