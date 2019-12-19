@@ -128,9 +128,7 @@ function get_sha() {
     if [ -z $KEEP_IMAGE ]; then
         printf "\n${blue}[*] Getting SHA ... ${reset}\n\n"
         get_url
-        if [ -f ${SHA_NAME} ]; then
-            rm -r ${SHA_NAME}
-        fi
+        rm -r ${SHA_NAME}
         axel ${EXTRA_ARGS} --alternate "${SHA_URL}"
     fi
 }
@@ -206,16 +204,25 @@ function start-kex() {
         vncpasswd
     fi
     export HOME=/root;USER=root;LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup vncserver :1 >/dev/null 2>&1 </dev/null
+    starting_kex=1
     return 0
 }
 
 function stop-kex() {
-    vncserver -kill :1
+    vncserver -kill :1 | sed s/"Xtigervnc"/"NetHunter KeX"/
     return 0
 }
 
 function status-kex() {
-    vncserver -list
+    sessions=\$(vncserver -list | sed s/"TigerVNC"/"NetHunter KeX"/)
+    if [[ \$sessions == *"590"* ]]; then
+        printf "\n\${sessions}\n"
+        printf "\nYou can use the KeX client to connect to any of these displays.\n\n"
+    else
+        if [ ! -z \$starting_kex ]; then
+            printf "\nError starting the KeX server.\nPlease restart your termux session and try again.\n\n"
+        fi
+    fi
     return 0
 }
 
