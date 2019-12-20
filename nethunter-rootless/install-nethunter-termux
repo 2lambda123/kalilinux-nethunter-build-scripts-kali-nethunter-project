@@ -207,7 +207,7 @@ function create_kex_launcher() {
 
 function start-kex() {
     if [ ! -f /root/.vnc/passwd ]; then
-        vncpasswd
+        passwd-kex
     fi
     export HOME=/root;USER=root;LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup vncserver :1 >/dev/null 2>&1 </dev/null
     starting_kex=1
@@ -216,12 +216,12 @@ function start-kex() {
 
 function stop-kex() {
     vncserver -kill :1 | sed s/"Xtigervnc"/"NetHunter KeX"/
-    return 0
+    return $?
 }
 
 function passwd-kex() {
     vncpasswd
-    return 0
+    return $?
 }
 
 function status-kex() {
