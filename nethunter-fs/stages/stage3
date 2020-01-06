@@ -67,6 +67,15 @@ fi
 if [ -d /tmp/deb ]; then
    rm -rf /tmp/deb
 fi
+
+# Create group to permit vnc users to access sockets to avoid the following error:
+# "vncserver: socket failed: Permission denied"
+addgroup --gid 3003 sockets
+
+## Create non-privileged user
+groupadd -g 100000 kali
+useradd -m -u 100000 -g 100000 -G sudo,sockets -s /bin/bash kali
+echo "kali:kali" | chpasswd
 EOF
 # End of third-stage script
 
