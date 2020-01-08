@@ -1,5 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash -e
 
+VERSION=2019122601
 BASE_URL=https://images.kali.org/nethunter
 
 function unsupported_arch() {
@@ -167,19 +168,24 @@ function create_launcher() {
 cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
-cmdline="proot \
-        --link2symlink \
-        -0 \
-        -r $CHROOT \
-        -b /dev \
-        -b /proc \
-        -b $CHROOT/root:/dev/shm \
-        -w /root \
-           /usr/bin/env -i \
-           HOME=/root \
-           PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \
-           TERM=\$TERM \
-           LANG=C.UTF-8 \
+## Workaround for Libreoffice, also needs to bind a fake /proc/version
+if [ ! -f $CHROOT/root/.version ]; then
+    touch $CHROOT/root/.version
+fi
+cmdline="proot \\
+        --link2symlink \\
+        -0 \\
+        -r $CHROOT \\
+        -b /dev \\
+        -b /proc \\
+        -b $CHROOT/root:/dev/shm \\
+        -b $CHROOT/root/.version:/proc/version \\
+        -w /root \\
+           /usr/bin/env -i \\
+           HOME=/root \\
+           PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
+           TERM=\$TERM \\
+           LANG=C.UTF-8 \\
            /bin/bash --login"
 
 cmd="\$@"
