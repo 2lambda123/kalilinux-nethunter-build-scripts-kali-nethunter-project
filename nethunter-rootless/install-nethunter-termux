@@ -1,7 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash -e
 
-VERSION=2019122601
+VERSION=2020011501
 BASE_URL=https://images.kali.org/nethunter
+USERNAME=kali
 
 function unsupported_arch() {
     printf "${red}"
@@ -172,24 +173,45 @@ unset LD_PRELOAD
 if [ ! -f $CHROOT/root/.version ]; then
     touch $CHROOT/root/.version
 fi
+
+## Default user is "kali"
+user="$USERNAME"
+home="/home/\$user"
+start="sudo -u kali /bin/bash"
+
+## NH can be launched as root with the "-r" cmd attribute
+## Also check if user kali exists, if not start as root
+if grep -q "kali" ${CHROOT}/etc/passwd; then
+    KALIUSR="1";
+else
+    KALIUSR="0";
+fi
+if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];then
+    user="root"
+    home="/\$user"
+    start="/bin/bash --login"
+    if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]];then
+        shift
+    fi
+fi
+
 cmdline="proot \\
         --link2symlink \\
         -0 \\
         -r $CHROOT \\
         -b /dev \\
         -b /proc \\
-        -b $CHROOT/root:/dev/shm \\
-        -b $CHROOT/root/.version:/proc/version \\
-        -w /root \\
+        -b $CHROOT\$home:/dev/shm \\
+        -w \$home \\
            /usr/bin/env -i \\
-           HOME=/root \\
+           HOME=\$home \\
            PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
-           /bin/bash --login"
+           \$start"
 
 cmd="\$@"
-if [ -z "\$1" ];then
+if [ "\$#" == "0" ];then
     exec \$cmdline
 else
     \$cmdline -c "\$cmd"
@@ -212,16 +234,23 @@ function create_kex_launcher() {
 #!/bin/bash
 
 function start-kex() {
-    if [ ! -f /root/.vnc/passwd ]; then
+    if [ ! -f ~/.vnc/passwd ]; then
         passwd-kex
     fi
-    export HOME=/root;USER=root;LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup vncserver :1 >/dev/null 2>&1 </dev/null
+    USR=\$(whoami)
+    if [ \$USR == "root" ]; then
+        SCREEN=":2"
+    else
+        SCREEN=":1"
+    fi 
+    export HOME=\${HOME}; export USER=\${USR}; LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup vncserver \$SCREEN >/dev/null 2>&1 </dev/null
     starting_kex=1
     return 0
 }
 
 function stop-kex() {
     vncserver -kill :1 | sed s/"Xtigervnc"/"NetHunter KeX"/
+    vncserver -kill :2 | sed s/"Xtigervnc"/"NetHunter KeX"/
     return $?
 }
 
@@ -237,10 +266,15 @@ function status-kex() {
         printf "\nYou can use the KeX client to connect to any of these displays.\n\n"
     else
         if [ ! -z \$starting_kex ]; then
-            printf "\nError starting the KeX server.\nPlease restart your termux session and try again.\n\n"
+            printf '\nError starting the KeX server.\nPlease try "nethunter kex kill" or restart your termux session and try again.\n\n'
         fi
     fi
     return 0
+}
+
+function kill-kex() {
+    pkill Xtigervnc
+    return \$?
 }
 
 case \$1 in
@@ -255,6 +289,9 @@ case \$1 in
         ;;
     passwd)
         passwd-kex
+        ;;
+    kill)
+        kill-kex
         ;;
     *)
         stop-kex
@@ -272,6 +309,24 @@ function fix_profile_bash() {
     if [ -f ${CHROOT}/root/.bash_profile ]; then
         sed -i '/if/,/fi/d' "${CHROOT}/root/.bash_profile"
     fi
+}
+
+function fix_sudo() {
+    ## fix sudo & su on start
+    chmod +s $CHROOT/usr/bin/sudo
+    chmod +s $CHROOT/usr/bin/su
+	echo "kali    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers.d/kali
+
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
+    echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
+}
+
+function fix_uid() {
+    ## Change kali uid and gid to match that of the termux user
+    USRID=$(id -u)
+    GRPID=$(id -g)
+    nh -r usermod -u $USRID kali 2>/dev/null
+    nh -r groupmod -g $GRPID kali 2>/dev/null
 }
 
 function print_banner() {
@@ -325,11 +380,16 @@ cleanup
 
 printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
 fix_profile_bash
+fix_sudo
 create_kex_launcher
+fix_uid
 
 print_banner
 printf "${green}[=] NetHunter for Termux installed successfully${reset}\n\n"
 printf "${green}[+] To start NetHunter, type:${reset}\n"
-printf "${green}[+] nethunter            # To start NetHunter cli${reset}\n"
-printf "${green}[+] nethunter kex &      # To start NetHunter gui${reset}\n"
-printf "${green}[+] nethunter kex stop   # To stop NetHunter gui${reset}\n\n"
+printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
+printf "${green}[+] nethunter kex passwd  # To set the KeX password${reset}\n"
+printf "${green}[+] nethunter kex &       # To start NetHunter gui${reset}\n"
+printf "${green}[+] nethunter kex stop    # To stop NetHunter gui${reset}\n"
+printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
+printf "${green}[+] nh                    # Shurtcut for nethunter${reset}\n\n"
