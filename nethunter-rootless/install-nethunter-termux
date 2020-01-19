@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash -e
 
-VERSION=2020011501
+VERSION=2020011601
 BASE_URL=https://images.kali.org/nethunter
 USERNAME=kali
 
@@ -392,4 +392,4 @@ printf "${green}[+] nethunter kex passwd  # To set the KeX password${reset}\n"
 printf "${green}[+] nethunter kex &       # To start NetHunter gui${reset}\n"
 printf "${green}[+] nethunter kex stop    # To stop NetHunter gui${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
-printf "${green}[+] nh                    # Shurtcut for nethunter${reset}\n\n"
+printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
