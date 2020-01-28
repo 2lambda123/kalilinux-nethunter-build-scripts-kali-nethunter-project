@@ -56,7 +56,7 @@ Open Termux and type one of the following:
 | `nethunter -r kex &`      | start Kali NetHunter Desktop Experience as root         |
 | `nethunter -r kex stop`   | stop Kali NetHunter Desktop Experience root sessions    |
 | `nethunter -r kex kill`   | Kill all KeX sessions                                   |
-| `nethunter -r <command>`  | run <command> in NetHunter environment as root          |
+| `nethunter -r <command>`  | run `<command>` in NetHunter environment as root          |
 
 Note: The command `nethunter` can be abbreviated to `nh`.
 _Tip: If you run kex in the background (`&`) without having set a password, bring it back to the foreground first when prompted to enter the password, i.e. via `fg <job id>` - you can later send it to the background  again via `Ctrl + z` and `bg <job id>`_
