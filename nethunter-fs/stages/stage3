@@ -67,11 +67,54 @@ fi
 if [ -d /tmp/deb ]; then
    rm -rf /tmp/deb
 fi
+
+# Create group to permit vnc users to access sockets to avoid the following error:
+# "vncserver: socket failed: Permission denied"
+addgroup --gid 3003 sockets
+
+## Create non-privileged user
+groupadd -g 100000 kali
+useradd -m -u 100000 -g 100000 -G sudo,sockets -s /bin/bash kali
+echo "kali:kali" | chpasswd
 EOF
 # End of third-stage script
 
 # Let's do a little bit of magic from outside the chroot
 if [ "$build_size" = full ]; then
+    # Add default xstartup file for tigervnc-standalone-server
+    cat << EOF >> "$rootfs/etc/skel/.vnc/xstartup"
+#!/bin/sh
+
+#############################
+##          All            ##
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+export SHELL=/bin/bash
+
+#############################
+##          Gnome          ##
+#[ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup
+#[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+#vncconfig -iconic &
+#dbus-launch --exit-with-session gnome-session &
+
+
+############################
+##           LXQT         ##
+####exec openbox-session
+#exec startlxqt
+
+
+############################
+##          KDE           ##
+#exec /usr/bin/startkde
+
+
+############################
+##          XFCE          ##
+startxfce4 &
+EOF
+
 	# We should run git clone outside chroot because it has issues with machine-code translation
 	##git clone https://github.com/Proxmark/proxmark3.git "$rootfs/opt/proxmark3"
 	git clone https://github.com/RfidResearchGroup/proxmark3.git "$rootfs/opt/proxmark3"
@@ -123,7 +166,8 @@ a2ensite 000-default.conf
  if cd /opt/proxmark3; then
         ## Install some dependencies first
         ##apt install -y libpcsclite-dev pcscd pkg-config
-        sudo apt-get install -y p7zip git ca-certificates build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libstdc++-arm-none-eabi-newlib libqt4-dev
+        ## sudo apt-get install -y p7zip git ca-certificates build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libstdc++-arm-none-eabi-newlib libqt4-dev
+        sudo apt-get install -y --no-install-recommends git ca-certificates build-essential pkg-config libreadline-dev gcc-arm-none-eabi libnewlib-dev qtbase5-dev libsndfile1-dev
         ## Let's build for the new RDV4 platform with the bluetooth addon
         echo "PLATFORM=PM3RDV4" > Makefile.platform
         echo "PLATFORM_EXTRAS=BTADDON" >> Makefile.platform
@@ -224,40 +268,6 @@ EOF
 cat << EOF >> "$rootfs/etc/group"
 inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql
 nobody:x:3004:nobody
-EOF
-
-# Add default xstartup file for tigervnc-standalone-server
-cat << EOF >> "$rootfs/etc/skel/.vnc/xstartup"
-#!/bin/sh
-
-#############################
-##          All            ##
-unset SESSION_MANAGER
-unset DBUS_SESSION_BUS_ADDRESS
-export SHELL=/bin/bash
-
-#############################
-##          Gnome          ##
-#[ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup
-#[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
-#vncconfig -iconic &
-#dbus-launch --exit-with-session gnome-session &
-
-
-############################
-##           LXQT         ##
-####exec openbox-session
-#exec startlxqt
-
-
-############################
-##          KDE           ##
-#exec /usr/bin/startkde
-
-
-############################
-##          XFCE          ##
-startxfce4 &
 EOF
 
 cp -f "$rootfs/etc/skel/.vnc/xstartup" "$rootfs/root/.vnc/xstartup"
