@@ -44,12 +44,19 @@ Usage:
 
 Open Termux and type one of the following:  
 
-| Command                | To                                                      |
-| ---------------------- | ------------------------------------------------------- |
-| `nethunter`            | start Kali NetHunter command line interface             |
-| `nethunter kex passwd` | Configure the KeX password (only needed before 1st use) |
-| `nethunter kex &`      | start Kali NetHunter Desktop Experience                 |
-| `nethunter kex stop`   | stop Kali NetHunter Desktop Experience                  |
+| Command                   | To                                                      |
+| ------------------------- | ------------------------------------------------------- |
+| `nethunter`               | start Kali NetHunter command line interface             |
+| `nethunter kex passwd`    | configure the KeX password (only needed before 1st use) |
+| `nethunter kex &`         | start Kali NetHunter Desktop Experience user sessions   |
+| `nethunter kex stop`      | stop Kali NetHunter Desktop Experience                  |
+| `nethunter <command>`     | run <command> in NetHunter environment                  |
+| `nethunter -r`            | start Kali NetHunter cli as root                        |
+| `nethunter -r kex passwd` | configure the KeX password for root                     |
+| `nethunter -r kex &`      | start Kali NetHunter Desktop Experience as root         |
+| `nethunter -r kex stop`   | stop Kali NetHunter Desktop Experience root sessions    |
+| `nethunter -r kex kill`   | Kill all KeX sessions                                   |
+| `nethunter -r <command>`  | run <command> in NetHunter environment as root          |
 
 Note: The command `nethunter` can be abbreviated to `nh`.
 _Tip: If you run kex in the background (`&`) without having set a password, bring it back to the foreground first when prompted to enter the password, i.e. via `fg <job id>` - you can later send it to the background  again via `Ctrl + z` and `bg <job id>`_
