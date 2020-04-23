@@ -99,7 +99,7 @@ dep_check() {
 		vboot-utils bc lzma lzop xz-utils automake autoconf m4 dosfstools rsync u-boot-tools
 		schedtool e2fsprogs device-tree-compiler ccache dos2unix debootstrap"
 	suse_deps="gpg2 flex bison gperf zip curl libncurses6 glibc-devel-32bit
-                parted kpartx pixz qemu-arm abootimg vboot bc xz lzop automake autoconf m4 dosfstools rsync u-boot-tools
+                parted kpartx pixz qemu-linux-user abootimg vboot bc xz lzop automake autoconf m4 dosfstools rsync u-boot-tools
                 schedtool e2fsprogs dtc ccache dos2unix debootstrap dpkg"
 
 	if [ "$suse" = true ]; then
@@ -177,10 +177,10 @@ pkg_minimal="openssh-server kali-defaults kali-archive-keyring
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter
-          kali-desktop-core xfce4-goodies xserver-xorg-input-synaptics gnome-theme-kali kali-undercover 
+          kali-desktop-xfce 
           msfpc exe2hexbat bettercap
           libapache2-mod-php7.3 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi
-          binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-7 g++-7
+          binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-9 g++-9
           libxml2-dev zlib1g-dev"
 
 # ARCH SPECIFIC PACKAGES
