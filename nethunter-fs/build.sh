@@ -92,7 +92,6 @@ os_check() {
 
 # Dependency checks
 dep_check() {
-	os_check
 	debian_deps="git-core gnupg flex bison gperf build-essential binfmt-support
 		zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib
 		parted kpartx pixz qemu-user qemu-user-static abootimg cgpt vboot-kernel-utils
@@ -126,6 +125,7 @@ dep_check() {
 	touch .dep_check
 }
 
+os_check
 # Run dependency check once (see above for dep check)
 if [ ! -f ".dep_check" ]; then
 	dep_check
@@ -177,7 +177,7 @@ pkg_minimal="openssh-server kali-defaults kali-archive-keyring
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter
-          kali-desktop-xfce 
+          kali-desktop-core atril catfish engrampa kali-undercover mate-calc policykit-1-gnome thunar-archive-plugin qterminal xfce4-whiskermenu-plugin xdg-user-dirs-gtk 
           msfpc exe2hexbat bettercap
           libapache2-mod-php7.3 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi
           binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-9 g++-9
