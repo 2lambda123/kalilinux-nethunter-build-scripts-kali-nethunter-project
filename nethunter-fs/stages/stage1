@@ -20,7 +20,13 @@ if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
 	echo "[+] binfmt_misc not mounted, setting up binfmts"
 	mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 fi
-update-binfmts --enable "qemu-$qemu_arch"
+
+if [ "$suse" = true ]; then
+        echo "[+] Setting up qemu environment on SUSE"
+        qemu-binfmt-conf.sh
+else
+	update-binfmts --enable "qemu-$qemu_arch"
+fi
 
 echo "[+] Starting debootstrap (download)..."
 tries=0
@@ -39,7 +45,12 @@ echo "[+] Starting debootstrap (install)..."
 debootstrap --foreign --verbose --arch $build_arch kali-rolling "$rootfs" http://http.kali.org/kali
 
 echo "[+] Installing qemu-$qemu_arch-static interpreter to rootfs"
-cp "/usr/bin/qemu-$qemu_arch-static" "$rootfs/usr/bin/"
+if [ "$suse" = true ]; then
+	cp "/usr/bin/qemu-$qemu_arch-binfmt" "$rootfs/usr/bin/"
+	cp "/usr/bin/qemu-$qemu_arch" "$rootfs/usr/bin/"
+else
+	cp "/usr/bin/qemu-$qemu_arch-static" "$rootfs/usr/bin/"
+fi
 
 echo "[+] Starting debootstrap in chroot (second stage)..."
 chroot_do /debootstrap/debootstrap --second-stage

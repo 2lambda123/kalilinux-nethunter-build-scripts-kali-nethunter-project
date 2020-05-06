@@ -48,12 +48,20 @@ echo "root:toor" | chpasswd
 # So to workaround it, we attempt to install them twice.
 if [ -n "$build_repo" ]; then
     echo "I: Installing packages from $build_repo with apt-get: $packages"
-    apt-get -t $build_repo --yes install $packages || apt-get -t $build_repo --yes --fix-broken install
-    apt-get -t $build_repo --yes install $packages || apt-get -t $build_repo --yes --fix-broken install
+    for i in $packages;
+    do
+        echo "I: Installing package \$i"
+        apt-get -t $build_repo --yes install \$i || apt-get -t $build_repo --yes --fix-broken install 
+        apt-get -t $build_repo --yes install \$i || apt-get -t $build_repo --yes --fix-broken install 
+    done
 else
     echo "I: Installing packages with apt-get: $packages"
-    apt-get --yes install $packages || apt-get --yes --fix-broken install
-    apt-get --yes install $packages || apt-get --yes --fix-broken install
+    for i in $packages;
+    do
+        echo "I: Installing package \$i"
+        apt-get --yes install \$i || apt-get --yes --fix-broken install
+        apt-get --yes install \$i || apt-get --yes --fix-broken install
+    done
 fi
 
 rm -f /usr/sbin/policy-rc.d
@@ -114,11 +122,9 @@ export SHELL=/bin/bash
 ##          XFCE          ##
 startxfce4 &
 EOF
-
 	# We should run git clone outside chroot because it has issues with machine-code translation
-	##git clone https://github.com/Proxmark/proxmark3.git "$rootfs/opt/proxmark3"
 	git clone https://github.com/RfidResearchGroup/proxmark3.git "$rootfs/opt/proxmark3"
-##	git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
+        ## git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
 
 	# powershell for arm64 is not yet available in Microsofts repos so let's install it manually
 	if [ $build_arch == "arm64" ]; then
@@ -153,7 +159,6 @@ EOF
 	# to worry about anymore as we have taken care of it ourselves now
 
 # End of doing a little magic from outside the chroot
-
 	cat << EOF >> "$rootfs/third-stage"
 
 # Enable PHP in Apache

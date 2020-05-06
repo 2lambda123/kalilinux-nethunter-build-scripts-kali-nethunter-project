@@ -83,27 +83,49 @@ if [ -n "$build_repo" ]; then
 fi
 sleep 1
 
+# OS check
+os_check() {
+	if [ -f /etc/SUSE-brand ]; then
+		suse=true
+	fi
+}
+
 # Dependency checks
 dep_check() {
-	build_deps="git-core gnupg flex bison gperf libesd0-dev build-essential binfmt-support
+	debian_deps="git-core gnupg flex bison gperf build-essential binfmt-support
 		zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib
 		parted kpartx pixz qemu-user qemu-user-static abootimg cgpt vboot-kernel-utils
 		vboot-utils bc lzma lzop xz-utils automake autoconf m4 dosfstools rsync u-boot-tools
 		schedtool e2fsprogs device-tree-compiler ccache dos2unix debootstrap"
+	suse_deps="gpg2 flex bison gperf zip curl libncurses6 glibc-devel-32bit
+                parted kpartx pixz qemu-linux-user abootimg vboot bc xz lzop automake autoconf m4 dosfstools rsync u-boot-tools
+                schedtool e2fsprogs dtc ccache dos2unix debootstrap dpkg"
 
-	for dep in $build_deps; do
-		echo "[+] Checking for installed dependency: $dep"
-		if ! dpkg-query -W --showformat='${Status}\n' "$dep" | grep -q "install ok installed"; then
-			echo "[-] Missing dependency: $dep"
-			echo "[+] Attempting to install...."
-			apt-get -y install "$dep"
-		fi
-	done
+	if [ "$suse" = true ]; then
+		for dep in $suse_deps; do
+			echo "[+] Checking for installed dependency: $dep"
+			if ! rpm -q $dep; then
+				echo "[-] Missing dependency: $dep"
+				echo "[+] Attempting to install...."
+				zypper in -y "$dep"
+			fi
+		done
+	else
+		for dep in $debian_deps; do
+			echo "[+] Checking for installed dependency: $dep"
+			if ! dpkg-query -W --showformat='${Status}\n' "$dep" | grep -q "install ok installed"; then
+				echo "[-] Missing dependency: $dep"
+				echo "[+] Attempting to install...."
+				apt-get -y install "$dep"
+			fi
+		done
+	fi
 
 	echo "[+] All done! Creating hidden file .dep_check so we don't have preform check again."
 	touch .dep_check
 }
 
+os_check
 # Run dependency check once (see above for dep check)
 if [ ! -f ".dep_check" ]; then
 	dep_check
@@ -155,10 +177,10 @@ pkg_minimal="openssh-server kali-defaults kali-archive-keyring
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter
-          kali-desktop-core xfce4-goodies xserver-xorg-input-synaptics gnome-theme-kali kali-undercover 
+          kali-desktop-core atril catfish engrampa kali-undercover mate-calc policykit-1-gnome thunar-archive-plugin qterminal xfce4-whiskermenu-plugin xdg-user-dirs-gtk 
           msfpc exe2hexbat bettercap
           libapache2-mod-php7.3 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi
-          binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-7 g++-7
+          binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-9 g++-9
           libxml2-dev zlib1g-dev"
 
 # ARCH SPECIFIC PACKAGES
@@ -210,7 +232,7 @@ cleanup_host() {
 	umount -l "$rootfs/sys" &>/dev/null
 
 	# Remove read only from nano
-	chattr -i /bin/nano
+	chattr -i $(which nano)
 }
 
 chroot_do() {
@@ -224,7 +246,7 @@ trap cleanup_host EXIT
 
 # Need to find where this error occurs, but we make nano read
 # only during build and reset after installation is completed
-chattr +i /bin/nano
+chattr +i $(which nano)
 
 export build_arch build_size qemu_arch rootfs packages
 export -f chroot_do
