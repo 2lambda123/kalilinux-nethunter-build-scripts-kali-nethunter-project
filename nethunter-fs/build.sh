@@ -181,7 +181,8 @@ pkg_full="kali-linux-nethunter
           msfpc exe2hexbat bettercap
           libapache2-mod-php7.3 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi
           binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-9 g++-9
-          libbz2-dev libxml2-dev zlib1g-dev"
+          libbz2-dev libxml2-dev zlib1g-dev
+          dbus-x11 kali-legacy-wallpapers"
 
 # ARCH SPECIFIC PACKAGES
 pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
