@@ -177,7 +177,7 @@ pkg_minimal="openssh-server kali-defaults kali-archive-keyring
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter
-          kali-desktop-core atril catfish engrampa kali-undercover mate-calc policykit-1-gnome thunar-archive-plugin qterminal xfce4-whiskermenu-plugin xdg-user-dirs-gtk 
+          kali-linux-core kali-desktop-core atril catfish engrampa kali-undercover mate-calc policykit-1-gnome thunar-archive-plugin qterminal xfce4-whiskermenu-plugin xdg-user-dirs-gtk 
           msfpc exe2hexbat bettercap
           libapache2-mod-php7.3 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi
           binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-9 g++-9
