@@ -15,6 +15,8 @@ else
 	[ "$console" ] || console=/proc/$$/fd/1
 fi
 
+test "$ANDROID_ROOT" || ANDROID_ROOT=/system
+
 tmp=/tmp/nethunter
 patchtmp=$tmp/boot-patcher
 export home=$patchtmp
@@ -35,19 +37,17 @@ abort() {
 		print "Error: $1"
 		print "Aborting..."
 	}
-	cleanup
+	restore_env
 	print "Failed to install Kali NetHunter!"
 	exit 1
 }
 
 cleanup() {
-        print "Cleaning up..."
-        rm ${SYSTEM}/.rw
-        rm /data/.rw
-        /sbin/umount -f /system 2>/dev/null
-        /sbin/umount -f /system_root 2>/dev/null
-
-	[ "$zip" ] && rm /tmp/console
+    [ "$ZIPFILE" ] && {
+       rm /tmp/console 
+    }
+    cd $(dirname $tmp)
+    rm -rf $tmp
 }
 
 install() {
@@ -100,7 +100,7 @@ setperm() {
 
 symlink() {
 	rm "$2"
-	ln -s "$1" "$2"
+	$BB ln -sf "$1" "$2"
 }
 
 setup_mountpoint() {
@@ -207,7 +207,7 @@ print "##  88P   Y8b      d8''''''''8b   88        88  ##"
 print "##  88     '88.   d8'        '8b  88        88  ##"
 print "##  88       Y8b d8'          '8b 888888888 88  ##"
 print "##                                              ##"
-print "####  ############# NetHunter ####################"
+print "################### NetHunter ####################"
 
 # Unpack the installer
 [ "$ZIPFILE" ] && {
@@ -217,7 +217,7 @@ print "####  ############# NetHunter ####################"
 cd "$tmp"
 
 . ./env.sh
-chmod 755 $BB #busybox executability 
+chmod 755 $BB #Ensure busybox executability 
 
 progress 0.0
 print "Starting the install process"
@@ -407,10 +407,14 @@ progress 0.8
 [ -d "$patchtmp" ] && {
 	print "Running kernel installer..."
 	sh "$patchtmp/META-INF/com/google/android/update-binary"
-	mount /data
 }
 
 progress 0.9
+
+if ! is_mounted /data; then
+#ensure data is mounted for chroot installation
+$BB mount /data
+fi
 
 print "Running Kali chroot installer..."
 sh tools/installchroot.sh "$ZIPFILE"
