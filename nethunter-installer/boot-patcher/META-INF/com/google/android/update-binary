@@ -169,7 +169,18 @@ chmod +x env
 
 print "Mounting partitions..."
 mount_all
+if [ $? != 0]; then
+     abort "Cannot mount system partition read/write. Please mount '/system' manually and try again"
+else 
+     print "partitions mounted."
+fi
+
 setperm 0755 0755 tools
+
+# Install additional busybox applets to /sbin in case something is missing during installation
+print "Installing busybox applets to /sbin"
+cp tools/busybox /sbin/busybox_nh
+/sbin/busybox_nh --install /sbin
 
 [ -f tools/freespace.sh ] && {
 	# This actually runs twice when part of the NetHunter updater zip

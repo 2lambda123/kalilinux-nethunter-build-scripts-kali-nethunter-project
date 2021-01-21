@@ -217,7 +217,7 @@ print "################### NetHunter ####################"
 cd "$tmp"
 
 . ./env.sh
-chmod 755 $BB #Ensure busybox executability 
+chmod 755 $BB #Ensure busybox executability
 
 progress 0.0
 print "Starting the install process"
