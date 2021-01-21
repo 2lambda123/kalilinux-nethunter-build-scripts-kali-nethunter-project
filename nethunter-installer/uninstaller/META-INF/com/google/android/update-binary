@@ -1,7 +1,7 @@
 #!/sbin/sh
 #Nethunter Nuker
 #shell script by OsmOsis @ xda
-
+#created by CaliBerrr
 
 OUTFD=/proc/self/fd/$2;
 ZIPFILE="$3";
@@ -100,6 +100,7 @@ unzip -o "$ZIPFILE";
 
 BB=$tmp/tools/busybox;
 chmod 755 $BB;
+SYSTEM="/system"
 
 if [ -f banner ]; then
   ui_printfile banner;
@@ -112,20 +113,20 @@ mount_all;
 
 set_progress 0.1;
 ui_print "- Removing Kali Nethunter";
-delete_recursive "$ANDROID_ROOT/app/NetHunter";
+delete_recursive "${SYSTEM}/app/NetHunter";
 
 ui_print "- Removing Nethunter-Terminal";
-delete_recursive "$ANDROID_ROOT/app/NetHunter-Terminal";
+delete_recursive "${SYSTEM}/app/NetHunter-Terminal";
 
 ui_print "- Removing Nethunter-KeX";
-delete_recursive "$ANDROID_ROOT/app/NetHunter-KeX";
+delete_recursive "${SYSTEM}/app/NetHunter-KeX";
 
 ui_print "- Removing Nethunter-Store";
-delete_recursive "$ANDROID_ROOT/app/NetHunter-Store";
+delete_recursive "${SYSTEM}/app/NetHunter-Store";
 
 ui_print "- Removing NetHunterStorePrivilegedExtension";
-delete_recursive "$ANDROID_ROOT/priv-app/NetHunterStorePrivilegedExtension";
-delete_recursive "$ANDROID_ROOT/etc/permissions/com.offsec.nethunter.store.privileged.xml";
+delete_recursive "${SYSTEM}/priv-app/NetHunterStorePrivilegedExtension";
+delete_recursive "${SYSTEM}/etc/permissions/com.offsec.nethunter.store.privileged.xml";
 
 
 ui_print "- Deleting Nethunter Apps from /data if present";
@@ -145,34 +146,34 @@ delete_recursive "/data/local/nhsystem";
 
 set_progress 0.3;
 ui_print "- Removing Bootkali Scripts";
-delete_recursive "$ANDROID_ROOT/bin/bootkali";
-delete_recursive "$ANDROID_ROOT/bin/bootkali_init";
-delete_recursive "$ANDROID_ROOT/bin/bootkali_bash";
-delete_recursive "$ANDROID_ROOT/bin/bootkali_login";
-delete_recursive "$ANDROID_ROOT/bin/killall";
+delete_recursive "${SYSTEM}/bin/bootkali";
+delete_recursive "${SYSTEM}/bin/bootkali_init";
+delete_recursive "${SYSTEM}/bin/bootkali_bash";
+delete_recursive "${SYSTEM}/bin/bootkali_login";
+delete_recursive "${SYSTEM}/bin/killall";
 
 set_progress 0.4;
 ui_print "- Removing xbin and sbin Binaries";
-delete_recursive "$ANDROID_ROOT/xbin/hid-keyboard";
-delete_recursive "$ANDROID_ROOT/xbin/busybox_nh";
+delete_recursive "${SYSTEM}/xbin/hid-keyboard";
+delete_recursive "${SYSTEM}/xbin/busybox_nh";
 
 
 set_progress 0.5;
 ui_print "- Removing /etc binaries";
-delete_recursive "$ANDROID_ROOT/etc/firmware";
-delete_recursive "$ANDROID_ROOT/etc/nano";
-delete_recursive "$ANDROID_ROOT/etc/terminfo";
-delete_recursive "$ANDROID_ROOT/etc/init.d";
+delete_recursive "${SYSTEM}/etc/firmware";
+delete_recursive "${SYSTEM}/etc/nano";
+delete_recursive "${SYSTEM}/etc/terminfo";
+delete_recursive "${SYSTEM}/etc/init.d";
 
 
 set_progress 0.6;
 ui_print "- Removing bin binaries";
-delete_recursive "$ANDROID_ROOT/bin/lualibs";
-delete_recursive "$ANDROID_ROOT/bin/scripts";
+delete_recursive "${SYSTEM}/bin/lualibs";
+delete_recursive "${SYSTEM}/bin/scripts";
 
 set_progress 0.7;
 ui_print "- Removing all leftovers";
-delete_recursive "$ANDROID_ROOT/80-nethunter.sh";
+delete_recursive "${SYSTEM}/80-nethunter.sh";
 delete_recursive "/data/local/userinit.sh";
 delete_recursive "/data/local/userinit.d";
 
