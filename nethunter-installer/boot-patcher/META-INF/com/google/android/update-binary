@@ -169,7 +169,7 @@ chmod +x env
 
 print "Mounting partitions..."
 mount_all
-if [ $? != 0]; then
+if [ $? != 0 ]; then
      abort "Cannot mount system partition read/write. Please mount '/system' manually and try again"
 else 
      print "partitions mounted."
