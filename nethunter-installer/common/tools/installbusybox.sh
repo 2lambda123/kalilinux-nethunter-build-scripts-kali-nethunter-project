@@ -13,15 +13,17 @@ print() {
 	echo
 }
 
+BB=$tmp/tools/busybox
 xbin=/system/xbin
+chmod 755 $BB
 
 print "Installing busybox..."
 rm -f $xbin/busybox_nh
 cp "$tmp/tools/busybox_nh" $xbin/busybox_nh
 chmod 0755 $xbin/busybox_nh
-$xbin/busybox_nh --install -s $xbin
+$xbin/busybox_nh --install -s $xbin 2>/dev/null
 
 [ -e $xbin/busybox ] || {
 	print "$xbin/busybox not found! Symlinking..."
-	ln -s $xbin/busybox_nh $xbin/busybox
+	$BB ln -sf $xbin/busybox_nh $xbin/busybox 2>/dev/null
 }

@@ -6,7 +6,7 @@ generic="arm64"
 ## end build generated variables
 
 if [ "$3" ]; then
-	zip=$3
+	ZIPFILE=$3
 	console=/proc/$$/fd/$2
 	# write the location of the console buffer to /tmp/console for other scripts to use
 	echo "$console" > /tmp/console
@@ -29,7 +29,7 @@ abort() {
 		print "Error: $1"
 		print "Aborting..."
 	}
-	cleanup
+	restore_env
 	print "Failed to patch boot image!"
 	exit 1
 }
@@ -48,7 +48,6 @@ is_mounted() { $BB mount | $BB grep -q " $1 "; }
 mount_all() {
   if ! is_mounted /data; then
     $BB mount /data;
-    UMOUNT_DATA=1;
   fi;
   setup_mountpoint $ANDROID_ROOT;
   if ! is_mounted $ANDROID_ROOT; then
@@ -82,7 +81,8 @@ mount_all() {
 }
 
 cleanup() {
-       if [ "$zip" ]; then
+       if [ "$ZIPFILE" ]; then
+       print "Cleaning up..."
        rm /tmp/console
        cd $(dirname $tmp)
        rm -rf $tmp
@@ -110,7 +110,27 @@ setperm() {
 	find "$3" -type f -exec chmod "$2" {} \;
 }
 
-if [ "$zip" ]; then
+restore_env() { 
+   if [ ! -d /tmp/nethunter/boot-patcher ]; then
+    $BB umount /system
+    $BB umount -l /system
+   if [ -e /system_root ]; then
+      $BB umount /system_root
+      $BB umount -l /system_root
+    fi
+  fi
+  
+  (for dir in /system /system_root; do
+  if [ -L "${dir}_link" ]; then
+  rmdir $dir
+  $BB mv -f ${dir}_link $dir
+  fi
+  done) 2>/dev/null
+  cleanup
+}
+
+
+if [ "$ZIPFILE" ]; then
 print "##################################################"
 print "##                                              ##"
 print "##  88      a8P         db        88        88  ##"
@@ -135,10 +155,9 @@ print "##################################################"
 fi
 
 # Unpack the installer
-[ "$zip" ] && {
-	print "- Unpacking the installer, this may take a while..."
-	extract "$zip" "$tmp"
-	print "- Installer unpacked"
+[ "$ZIPFILE" ] && {
+	print "Unpacking the installer, this may take a while..."
+	extract "$ZIPFILE" "$tmp"
 }
 cd "$tmp"
 
@@ -147,16 +166,10 @@ chmod 755 $BB
 
 chmod +x env
 . ./env.sh
-#we need to mount system here as disabled it in update-binary-anykernel
-print "- Mounting partitions for Boot-Patching"
-mount_all;
-print "- Partitions mounted"
-setperm 0755 0755 tools
 
-#Install additional busybox applets to /sbin in case something is missing during installation
-print "- Installing busybox applets to /sbin"
-cp tools/busybox /sbin/busybox_nh
-/sbin/busybox_nh --install /sbin
+print "Mounting partitions..."
+mount_all
+setperm 0755 0755 tools
 
 [ -f tools/freespace.sh ] && {
 	# This actually runs twice when part of the NetHunter updater zip
@@ -164,11 +177,57 @@ cp tools/busybox /sbin/busybox_nh
 		abort "Not enough free space on /system to continue!"
 }
 
-print "- Running busybox installer..."
-sh tools/installbusybox.sh
+[ -d system/etc/firmware ] && {
+	print "Copying firmware to $SYSTEM/etc/firmware"
+	install "/system/etc/firmware" 0755 0644 "$SYSTEM/etc/firmware"
+}
 
-print "- Running boot image patcher..."
+[ -d system/etc/init.d ] && {
+	print "Copying init.d scripts to $SYSTEM/etc/init.d"
+	install "/system/etc/init.d" 0755 0755 "$SYSTEM/etc/init.d"
+}
+
+[ -d system/lib ] && {
+	print "Copying 32-bit shared libraries to $SYSTEM/lib"
+	install "/system/lib" 0755 0644 "$SYSTEM/lib"
+}
+
+[ -d system/lib64 ] && {
+	print "Copying 64-bit shared libraries to $SYSTEM/lib64"
+	install "/system/lib64" 0755 0644 "$SYSTEM/lib64"
+}
+
+[ -d system/bin ] && {
+	print "Installing $SYSTEM/bin binaries"
+	install "/system/bin" 0755 0755 "$SYSTEM/bin"
+}
+
+[ -d system/xbin ] && {
+	print "Installing $SYSTEM/xbin binaries"
+	install "/system/xbin" 0755 0755 "$SYSTEM/xbin"
+}
+
+[ -d data/local ] && {
+	print "Copying additional files to /data/local"
+	install "/data/local" 0755 0644
+}
+
+if [ "$ZIPFILE" ]; then
+print "Running busybox installer..."
+sh tools/installbusybox.sh #run only once
+fi
+
+if ["$ZIPFILE" ]; then
+print "Running kernel installer..."
+else
+print "Running boot image patcher..."
+fi
 sh "META-INF/com/google/android/update-binary-anykernel" || abort
 
-print "- Boot image patching complete"
-cleanup
+if [ "$ZIPFILE" ]; then
+print "Kernel Installed Successfully"
+else
+print "Boot image patching completed";
+fi
+
+restore_env
