@@ -8,7 +8,7 @@ ZIPFILE="$3";
 [ "$OUTFD" ] || OUTFD=/proc/$$/fd/1;
 
 
-test "$tmp" || tmp=/tmp/nethunter/nuker;
+test "$tmp" || tmp=/tmp/nethunter/uninstaller;
 test "$ANDROID_ROOT" || ANDROID_ROOT=/system;
 
 ui_print() {

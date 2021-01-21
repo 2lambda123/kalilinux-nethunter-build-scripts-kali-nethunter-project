@@ -54,7 +54,7 @@ SA=$MNT/app
 DA=/data/app
 AndroidV=$(grep 'ro.build.version.release' ${SYSTEM}/build.prop | cut -d'=' -f2)
 #twrp df from /sbin doesn't has -m flag so we use busybox instead and use df from it
-BB=$tmp/tools/busybox #Use Busybox from tools
+BB=$tmp/tools/busybox_nh #Use Busybox from tools
 chmod 755 $BB #make busybox executable
 FreeSpace=$($BB df -m $MNT | tail -n 1 | tr -s ' ' | cut -d' ' -f4)
 
