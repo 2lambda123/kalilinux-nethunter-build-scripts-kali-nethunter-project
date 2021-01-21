@@ -323,9 +323,8 @@ progress 0.5
 
 [ -f tools/freespace.sh ] && {
 	# This actually runs twice when the NetHunter kernel zip is included
-	print "Freeing up some space on ${SYSTEM}"
-	sh tools/freespace.sh ||
-		abort "Not enough free space on ${SYSTEM} to continue!"
+     sh tools/freespace.sh || 
+            abort "Not enough free space on ${SYSTEM} to continue!"
 }
 
 print "Running busybox installer..."

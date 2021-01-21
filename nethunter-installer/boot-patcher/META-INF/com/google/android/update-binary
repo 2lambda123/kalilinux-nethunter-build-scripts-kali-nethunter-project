@@ -160,7 +160,6 @@ cp tools/busybox /sbin/busybox_nh
 
 [ -f tools/freespace.sh ] && {
 	# This actually runs twice when part of the NetHunter updater zip
-	print "- Freeing up some space on $SYSTEM"
 	sh tools/freespace.sh ||
 		abort "Not enough free space on /system to continue!"
 }
