@@ -38,6 +38,7 @@ ramdisk_compression=auto;
 
 SYSTEM="/system";
 SYSTEM_ROOT="/system_root";
+file_contexts="$ramdisk/file_contexts";
 
 setperm() {
 	find "$3" -type d -exec chmod "$1" {} \;
@@ -153,6 +154,9 @@ import_rc init.nethunter.rc
 
 # ensure /dev/hidg0 and /dev/hidg1 have the correct access rights
 patch_ueventd "$ramdisk/ueventd.rc" "/dev/hidg*" "0666" "root" "root"
+
+found_file_contexts=false
+[ -f "$file_contexts" ] && found_file_contexts=true
 context_set "/dev/hidg[0-9]*" "u:object_r:input_device:s0"
 
 
