@@ -92,10 +92,17 @@ do_install() {
 check_space() {
    #Determine Free space before installing the chroot & abort if fdata is less then 8000 mb
     fdata=$($BB df -m /data | tail -n 1 | tr -s ' ' | cut -d' ' -f4)
+    if [ -z $fdata ]; then
+	print "Warning: Could not get free space status on /data, continuing anyway!"
+	exit 0
+	
+    else
+    
     if [ ! "$fdata" -gt "8000" ]; then
     print "Warning: You don't have enough space in your DATA partition for chroot installation."
     print "Aborting chroot installation..."
     exit 1
+    fi
     fi
 }
 

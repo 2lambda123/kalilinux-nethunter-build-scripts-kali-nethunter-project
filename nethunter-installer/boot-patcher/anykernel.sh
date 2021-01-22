@@ -53,6 +53,37 @@ install() {
 	cp -r "$home$1" "$(dirname "$1")/";
 }
 
+print() {
+	if [ "$1" ]; then
+		echo "ui_print -- $1" > "$console"
+	else
+		echo "ui_print  " > "$console"
+	fi
+	echo
+}
+
+# replace a file, preserving metadata (using cat)
+replace_file() {
+	cat "$2" > "$1" || return
+	rm -f "$2"
+}
+
+# use this to set selinux contexts of file paths
+context_set() {
+	$found_file_contexts || return
+	awk -vfile="$1" -vcontext="$2" '
+		function pfcon() {
+			printf "%-48s %s\n", file, context
+			set = 1
+		}
+		$1 == file && !set { pfcon() }
+		$1 == file { next }
+		{ print }
+		END { if (!set) pfcon() }
+	' "$file_contexts" > "$file_contexts-"
+	replace_file "$file_contexts" "$file_contexts-"
+}
+
 [ -d $home/system/etc/firmware ] && {
 	install "/system/etc/firmware" 0755 0644 "$SYSTEM/etc/firmware";
 }
@@ -112,9 +143,18 @@ set_perm_recursive 0 0 750 750 $ramdisk/init* $ramdisk/sbin;
 ## AnyKernel install
 dump_boot;
 
-
-ui_print "- Patching Ramdisk";
+#This part has no effect on SAR devices
+ui_print "- Patching the ramdisk for NetHunter & init.d...";
 # begin ramdisk changes
+patch_prop "$ramdisk/default.prop" "ro.adb.secure" "1";
+patch_prop "$ramdisk/default.prop" "ro.secure" "1";
+
+import_rc init.nethunter.rc
+
+# ensure /dev/hidg0 and /dev/hidg1 have the correct access rights
+patch_ueventd "$ramdisk/ueventd.rc" "/dev/hidg*" "0666" "root" "root"
+context_set "/dev/hidg[0-9]*" "u:object_r:input_device:s0"
+
 
 # migrate from /overlay to /overlay.d to enable SAR Magisk
 if [ -d $ramdisk/overlay ]; then

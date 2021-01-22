@@ -596,6 +596,10 @@ insert_after_last() {
 	}
 }
 
+import_rc() {
+	insert_after_last "$ramdisk/init.rc" "import .*\.rc" "import /$1"
+}
+
 # insert_line <file> <if search string> <before|after> <line match string> <inserted line>
 insert_line() {
   local offset line;
