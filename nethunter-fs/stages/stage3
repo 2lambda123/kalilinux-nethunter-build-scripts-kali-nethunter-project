@@ -82,8 +82,14 @@ addgroup --gid 3003 sockets
 
 ## Create non-privileged user
 groupadd -g 100000 kali
-useradd -m -u 100000 -g 100000 -G sudo,sockets -s /bin/bash kali
+useradd -m -u 100000 -g 100000 -G sudo,sockets -s /usr/bin/zsh kali
 echo "kali:kali" | chpasswd
+
+## Switch to zsh as default shell
+echo "I: changing default shell of user 'root' to zsh"
+chsh --shell /usr/bin/zsh root 
+done
+
 EOF
 # End of third-stage script
 
@@ -122,6 +128,7 @@ export SHELL=/bin/bash
 ##          XFCE          ##
 startxfce4 &
 EOF
+    chmod +x "$rootfs/etc/skel/.vnc/xstartup"
 	# We should run git clone outside chroot because it has issues with machine-code translation
 	git clone https://github.com/RfidResearchGroup/proxmark3.git "$rootfs/opt/proxmark3"
         ## git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
@@ -294,6 +301,5 @@ chroot_do chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
 
 # Minor fix for mana-toolkit which made changes in update.  We need to mirror fixes.
 sed -i 's|dhcpd -cf /etc/mana-toolkit/dhcpd\.conf.*|dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo|' "$rootfs/usr/share/mana-toolkit/run-mana/"*
-
 
 echo "[+] Completed stage 3!"
