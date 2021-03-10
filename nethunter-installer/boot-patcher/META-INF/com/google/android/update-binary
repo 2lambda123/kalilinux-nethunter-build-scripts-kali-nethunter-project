@@ -130,6 +130,34 @@ restore_env() {
 }
 
 
+get_bb() {
+    cd $tmp/tools
+    BB_latest=`(ls -v busybox_nh-* 2>/dev/null || ls busybox_nh-*) | tail -n 1`
+    BB=$tmp/tools/$BB_latest #Use NetHunter Busybox from tools
+    chmod 755 $BB #make busybox executable
+    echo $BB
+    cd - >/dev/null
+}
+
+
+install_recovery_bb() {
+    # To identify the latest busybox version, we need the command "ls -v" which is not supported by all twrp versions
+    # We will pick the best available busybox version and use that to run "ls -v" to pick the latest version for the recovery partition
+    cd $tmp/tools
+
+    # Try to pick the latest version of busybox, if "ls -v" is not supported by the recovery then make an educated guess for a later version
+    recovery_bb=`(ls -v busybox_nh-* 2>/dev/null || ls busybox_nh-*) | tail -n 1`
+    cp $recovery_bb busybox_tmp
+    setperm 0755 0755 busybox_tmp
+
+    # Now that we picked a reasonably current busybox, use that to copy the absolute latest to the recovery partition using "ls -v"
+    nethunter_bb=$(./busybox_tmp ls -v busybox_nh-* | tail -n 1)
+    print "Installing $nethunter_bb applets to /sbin"
+    cp $nethunter_bb /sbin/busybox_nh
+    /sbin/busybox_nh --install /sbin
+    cd - >/dev/null
+}
+
 if [ "$ZIPFILE" ]; then
 print "##################################################"
 print "##                                              ##"
@@ -142,7 +170,7 @@ print "##  88P   Y8b      d8''''''''8b   88        88  ##"
 print "##  88     '88.   d8'        '8b  88        88  ##"
 print "##  88       Y8b d8'          '8b 888888888 88  ##"
 print "##                                              ##"
-print "########### NetHunter Kernel Installer ###########"
+print "####  ############# NetHunter ####################"
 
 else 
 
@@ -161,11 +189,11 @@ fi
 }
 cd "$tmp"
 
-BB=$tmp/tools/busybox
-chmod 755 $BB
+BB=$(get_bb)
 
 chmod +x env
 . ./env.sh
+<<<<<<< HEAD
 
 print "Mounting partitions..."
 mount_all
@@ -207,6 +235,17 @@ cp tools/busybox /sbin/busybox_nh
 	print "Copying 64-bit shared libraries to $SYSTEM/lib64"
 	install "/system/lib64" 0755 0644 "$SYSTEM/lib64"
 }
+=======
+# Install busybox applets if they haven't been installed by the NetHunter installer already
+[ -e /tmp/nethunter/tools/busybox_tmp ] || install_recovery_bb
+
+#we need to mount system here as it is disabled in update-binary-anykernel
+print "- Mounting partitions for Boot-Patching"
+mount_all;
+print "- Partitions mounted"
+setperm 0755 0755 tools
+
+>>>>>>> upstream/master
 
 [ -d system/bin ] && {
 	print "Installing $SYSTEM/bin binaries"
