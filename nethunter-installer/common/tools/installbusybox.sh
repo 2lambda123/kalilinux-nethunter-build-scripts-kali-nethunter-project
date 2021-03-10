@@ -13,7 +13,9 @@ print() {
 	echo
 }
 
+BB=$tmp/tools/busybox_nh
 xbin=/system/xbin
+chmod 755 $BB
 
 cd "$tmp/tools"
 for bb in busybox_nh-*; do 
@@ -30,7 +32,8 @@ print "Setting $busybox_nh as default"
 ln -s $xbin/$busybox_nh busybox_nh
 $xbin/busybox_nh --install -s $xbin
 
+
 [ -e $xbin/busybox ] || {
 	print "$xbin/busybox not found! Symlinking..."
-	ln -s $xbin/busybox_nh $xbin/busybox
+	$BB ln -sf $xbin/busybox_nh $xbin/busybox 2>/dev/null
 }
