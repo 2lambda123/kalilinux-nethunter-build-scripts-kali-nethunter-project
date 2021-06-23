@@ -185,7 +185,7 @@ pkg_full="kali-linux-nethunter
           dbus-x11 kali-legacy-wallpapers"
 
 # ARCH SPECIFIC PACKAGES
-pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
+pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils zsh"
 pkg_minimal_arm64="$pkg_minimal_armhf"
 pkg_minimal_i386="$pkg_minimal_armhf"
 pkg_minimal_amd64="$pkg_minimal_armhf"
