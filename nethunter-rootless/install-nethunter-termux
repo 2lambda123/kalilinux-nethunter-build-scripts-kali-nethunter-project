@@ -92,7 +92,9 @@ function cleanup() {
 
 function check_dependencies() {
     printf "${blue}\n[*] Checking package dependencies...${reset}\n"
-    apt update -y &> /dev/null
+    ## Workaround for termux-app issue #1283 (https://github.com/termux/termux-app/issues/1283)
+    ##apt update -y &> /dev/null
+    apt-get update -y &> /dev/null || apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y &> /dev/null
 
     for i in proot tar axel; do
         if [ -e $PREFIX/bin/$i ]; then
