@@ -126,9 +126,9 @@ export SHELL=/bin/bash
 
 ############################
 ##          XFCE          ##
-startxfce4 &
+startxfce4
 EOF
-    chmod +x "$rootfs/etc/skel/.vnc/xstartup"
+    chmod 700 "$rootfs/etc/skel/.vnc/xstartup"
 	# We should run git clone outside chroot because it has issues with machine-code translation
 	git clone https://github.com/RfidResearchGroup/proxmark3.git "$rootfs/opt/proxmark3"
         ## git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
