@@ -1,38 +1,57 @@
-# NetHunter - Mobile Penetration Testing Platform
-![Kali NetHunter](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/raw/master/images/nethunter-git-logo.png)
-## A project by Offensive Security
-**The Kali NetHunter** is an Android penetration testing platform targeted towards Nexus and OnePlus devices built on top of Kali Linux, which includes some special and unique features. 
-Of course, you have all the usual Kali tools in NetHunter as well as the ability to get a full VNC session from your phone to a graphical Kali chroot, however the strength of NetHunter does not end there. 
-We've incorporated some amazing features into the NetHunter OS which are both powerful and unique. From pre-programmed HID Keyboard (Teensy) attacks, to BadUSB Man In The Middle attacks, to one-click MANA Evil Access Point setups, access to the Offensive Security Exploit Database... 
-And yes, NetHunter natively supports wireless 802.11 frame injection with a variety of supported USB NICs.
+# Kali NetHunter - Mobile Penetration Testing Platform
+
+[Kali NetHunter](](https://www.kali.org/get-kali/#kali-mobile)) is a Mobile Penetration Testing Platform.
+
+[![Kali NetHunter Logo](./images/nethunter-git-logo.png)](./images/nethunter-git-logo.png)
+
+<!--
+The Kali NetHunter project is the first Open-source Android penetration testing platform for Android devices, allowing for access to the Kali toolset from various supported Android devices. There are multiple unique features not possible on other hardware platforms.
+
+The Kali NetHunter interface allows you to easily work with complex configuration files through a local web interface. This feature, together with a custom kernel that supports 802.11 wireless injection and preconfigured connect back VPN services, make the Kali NetHunter a formidable network security tool or discrete drop box - with Kali Linux at the tip of your fingers wherever you are!
+-->
+
+Kali NetHunter is an **Android** penetration testing platform targeted towards Nexus and OnePlus devices built on top of [Kali Linux](https://www.kali.org/), which includes some special and unique features.
+
+Of course, you have **all the usual Kali tools** in NetHunter as well as the ability to get a **full VNC session** from your phone to a graphical Kali [chroot](https://www.kali.org/docs/nethunter/nethunter-chroot-manager/), however the strength of NetHunter does not end there.
+
+We've incorporated some amazing features into Kali NetHunter OS which are both powerful and bespoke. From **pre-programmed [HID](https://www.kali.org/docs/nethunter/nethunter-hid-attacks/) Keyboard (Teensy) attacks**, to **[BadUSB](https://www.kali.org/docs/nethunter/nethunter-badusb/) Man In The Middle attacks**, to **one-click [MANA](https://www.kali.org/docs/nethunter/nethunter-mana-wireless/) Evil Access Point setups**, as well as access to the **[Exploit-database](https://www.kali.org/docs/nethunter/nethunter-searchsploit/)**.
+
+And yes, Kali NetHunter natively **supports wireless 802.11 frame injection** with a variety of supported USB NICs.
 
 ## Documentation and Attack Descriptions
-Attack descriptions as well as some documentation to get you started with the installation and setup of Kali NetHunter can be found at https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/wikis/home
+
+Attack descriptions as well as some documentation to get you started with the installation and setup of Kali NetHunter can be found at: https://www.kali.org/docs/nethunter/
 
 ## Is Kali NetHunter an Android ROM?
 
-Kali Linux NetHunter is **not** a ROM but is meant to be installed over an existing stock/factory image of Android. It can also be installed over some Cyanogenmod based ROMs depending on device support. It is heavily based on using custom kernels and only supports a select number of devices.
+Kali NetHunter is **not** a ROM but is meant to be installed over an existing stock/factory image of Android. It can also be installed over some Cyanogenmod based ROMs depending on device support. It is heavily based on using custom kernels and only supports a select number of devices.
+
 We're relying on you, the community, to port your devices for the full Kali NetHunter experience.
 
 ## Frequently Asked Questions
-**Q** - Does NetHunter support Marshmallow, or Nexus 9 devices?
 
-**A** - Yes, check our wiki for more information on supported devices and ROMs https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/wikis/home#10-supported-devices-and-roms
-<hr>
+**Q** - Does Kali NetHunter support Marshmallow, or Nexus 9 devices?
 
-**Q** - What kind of attacks does NetHunter support?
+**A** - Yes, check our wiki for more information on supported devices and ROMs: https://www.kali.org/docs/nethunter/#2-0-nethunter-supported-devices-and-roms
 
-**A** - Our wiki has a list of included attack tools https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/wikis/home#60-kali-nethunter-attacks-and-features
-<hr>
+- - -
 
-**Q** - NetHunter is awesome! How do I install it?
+**Q** - What kind of attacks does Kali NetHunter support?
 
-**A** - Follow the instructions on the wiki https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/wikis/home#40-installing-nethunter-on-top-of-android
-<hr>
+**A** - Our wiki has a list of included attack tools: https://www.kali.org/docs/nethunter/#7-0-kali-nethunter-attacks-and-features
 
-**Q** - What is the best wireless card for NetHunter?
+- - -
 
-**A** - A list of supported devices and chipsets is on the wiki https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/wikis/Wireless-Cards
+**Q** - Kali NetHunter is awesome! How do I install it?
 
-Tue Apr  30 02:09:40 AEST 2019
+**A** - Follow the instructions on the wiki: https://www.kali.org/docs/nethunter/#5-0-installing-nethunter-on-top-of-android
+
+- - -
+
+**Q** - What is the best wireless card for Kali NetHunter?
+
+**A** - A list of supported devices and chipsets is on the wiki: https://www.kali.org/docs/nethunter/wireless-cards/
+
+
+Mon Aug 16 10:23:01 UTC 2021
 
