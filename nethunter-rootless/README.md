@@ -1,65 +1,63 @@
-# NetHunter - Mobile Penetration Testing Platform   
-# _Rootless Editions_   
+# Kali NetHunter (Rootless Edition) - Mobile Penetration Testing Platform
 
-###### For use on unmodified stock Android phones without voiding the warranty
+[Kali NetHunter](](https://www.kali.org/get-kali/#kali-mobile)) is a Mobile Penetration Testing Platform, and [rootless edition](https://www.kali.org/docs/nethunter/nethunter-rootless/)) allows for maximum flexibility with no commitment.
 
-![Kali NetHunter](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/raw/master/images/nethunter-git-logo.png)
-### NetHunter Termux Edition  
+_For use on unmodified stock Android phones without voiding the warranty!_
 
-[![](../images/010-NH-Rootless-Installation_Start_s.jpg)](../images/010-NH-Rootless-Installation_Start.jpg)
+<!--[![Kali NetHunter Logo](../images/nethunter-git-logo.png)](../images/nethunter-git-logo.png)-->
 
+<!--### Kali NetHunter Termux Edition-->
 
+[![Termux Menu](../images/010-NH-Rootless-Installation_Start_s.jpg)](../images/010-NH-Rootless-Installation_Start.jpg)
 
-[![](../images/020-NH-Rootless-KeX_s.jpg)](../images/020-NH-Rootless-KeX_s.jpg)
+[![KeX](../images/020-NH-Rootless-KeX_s.jpg)](../images/020-NH-Rootless-KeX_s.jpg)
 
+## Prerequisite:
 
+- Android Device (Stock unmodified device, no root or custom recovery required)
 
-Prerequisite:  
---------------  
-Android Device  
-(Stock unmodified device, no root or custom recovery required)  
+## Installation:
 
-  
+- Install the **NetHunter-Store app** from: https://store.nethunter.com/
+- From the Kali NetHunter Store, install **Termux**, **NetHunter-KeX client**, and **Hacker's keyboard**
+  _Note: The button "install" may not change to "installed" in the store client after installation - just ignore it. Starting termux for the first time may seem stuck while displaying "installing" on some devices - just hit enter._
+- Open **Termux** and type:
 
-Installation:  
---------------  
+```
+termux-setup-storage
+pkg install wget
+wget -O install-nethunter-termux https://offs.ec/2MceZWr
+chmod +x install-nethunter-termux
+./install-nethunter-termux
+```
 
-* Install the NetHunter-Store app from https://store.nethunter.com  
-* From the NetHunter Store, install __Termux__, __NetHunter-KeX client__, and __Hacker's keyboard__  
-  _Note:_  
-       _The button "install" may not change to "installed" in the store client after installation - just ignore it._  
-      _Starting termux for the first time may seem stuck while displaying "installing" on some devices - just hit enter._ 
+## Usage:
 
-* Open Termux and type:  
-  `termux-setup-storage`  
-  `pkg install wget`   
-  `wget -O install-nethunter-termux https://offs.ec/2MceZWr`  
-  `chmod +x install-nethunter-termux`  
-  `./install-nethunter-termux`  
+Open Termux and type one of the following:
 
-  
-
-Usage:  
--------  
-
-Open Termux and type one of the following:  
+<!-- Make sure `./install-nethunter-termux` is in sync -->
 
 | Command                   | To                                                      |
 | ------------------------- | ------------------------------------------------------- |
-| `nethunter`               | start Kali NetHunter command line interface             |
-| `nethunter kex passwd`    | configure the KeX password (only needed before 1st use) |
-| `nethunter kex &`         | start Kali NetHunter Desktop Experience user sessions   |
-| `nethunter kex stop`      | stop Kali NetHunter Desktop Experience                  |
-| `nethunter <command>`     | run <command> in NetHunter environment                  |
-| `nethunter -r`            | start Kali NetHunter cli as root                        |
-| `nethunter -r kex passwd` | configure the KeX password for root                     |
-| `nethunter -r kex &`      | start Kali NetHunter Desktop Experience as root         |
-| `nethunter -r kex stop`   | stop Kali NetHunter Desktop Experience root sessions    |
+| `nethunter`               | Start Kali NetHunter command line interface             |
+| `nethunter kex passwd`    | Configure the KeX password (only needed before 1st use) |
+| `nethunter kex &`         | Start Kali NetHunter Desktop Experience user sessions   |
+| `nethunter kex stop`      | Stop Kali NetHunter Desktop Experience                  |
+| `nethunter <command>`     | Run <command> in Kali NetHunter environment             |
+| `nethunter -r`            | Start Kali NetHunter cli as root                        |
+| `nethunter -r kex passwd` | Configure the KeX password for root                     |
+| `nethunter -r kex &`      | Start Kali NetHunter Desktop Experience as root         |
+| `nethunter -r kex stop`   | Stop Kali NetHunter Desktop Experience root sessions    |
 | `nethunter -r kex kill`   | Kill all KeX sessions                                   |
-| `nethunter -r <command>`  | run `<command>` in NetHunter environment as root          |
+| `nethunter -r <command>`  | Run `<command>` in Kali NetHunter environment as root   |
 
-Note: The command `nethunter` can be abbreviated to `nh`.
-_Tip: If you run kex in the background (`&`) without having set a password, bring it back to the foreground first when prompted to enter the password, i.e. via `fg <job id>` - you can later send it to the background  again via `Ctrl + z` and `bg <job id>`_
+_Note: The command `nethunter` can be abbreviated to **`nh`**._
 
-To use KeX, start the KeX client, enter your password and click connect  
-_Tip: For a better viewing experience, enter a custom resolution under "Advanced Settings" in the KeX Client_
+_Note: If you ran [KeX](https://www.kali.org/docs/nethunter/nethunter-kex-manager/) in the background (`&`) **without having set a password**, you will need to bring it back to the foreground (i.e. via `fg <job id>`) then prompted to enter the password, finally you can then send it to the background again (via `Ctrl + z` and `bg <job id>`)_
+
+To use [KeX](https://www.kali.org/docs/nethunter/nethunter-kex-manager/)], start the KeX client, enter your password and click connect.
+
+_Note: For a better viewing experience, enter a custom resolution under "Advanced Settings" in the KeX Client_
+
+
+Mon Aug 16 06:28:48 UTC 2021
