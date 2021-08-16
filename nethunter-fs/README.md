@@ -1,33 +1,44 @@
-# NetHunter chroot builder
+# Kali NetHunter FileSystem (FS) - chroot Builder
 
-Build a basic NetHunter chroot
+Build a basic [Kali NetHunter](https://www.kali.org/get-kali/#kali-mobile) chroot filesystem.
 
-## Docker support
+## Docker
+
+[Dockerfile](Dockerfile)
+
 ```bash
 docker build -t nethunter .
 docker run --privileged --name nethunter_build -i -t nethunter 2>&1 | tee output.log
 docker cp nethunter_build:/root/nethunter-fs/output .
 ```
 
-## Dependencies
+## Installer
 
-This could be built on any debian based system but I recommend building on Kali.
+### Dependencies
+
+This could be built on any [Debian-based](https://www.debian.org/derivatives/) system but we recommend building on [Kali Linux](https://www.kali.org/).
 
 ```bash
-apt-get install -y git-core gnupg flex bison gperf libesd0-dev build-essential \
-zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib \
-parted kpartx debootstrap pixz qemu-user-static abootimg cgpt vboot-kernel-utils \
-vboot-utils bc lzma lzop xz-utils automake autoconf m4 dosfstools rsync u-boot-tools \
-schedtool git e2fsprogs device-tree-compiler ccache dos2unix debootstrap
+apt install -y abootimg autoconf automake bc bison build-essential ccache \
+  cgpt curl debootstrap debootstrap device-tree-compiler dos2unix dosfstools \
+  e2fsprogs flex g++-multilib gcc-multilib git git-core gnupg gperf kpartx \
+  libncurses5-dev lzma lzop m4 parted pixz qemu-user-static rsync schedtool \
+  u-boot-tools vboot-kernel-utils vboot-utils xz-utils zip zlib1g-dev
 ```
 
-## Running by itself
+### Examples
 
-To create a full NetHunter system:
+To create a **full** Kali NetHunter filesystem:
+
 ```bash
 ./build.sh -f
 ```
-To create a minimal NetHunter filesystem:
+
+To create a **minimal** Kali NetHunter filesystem:
+
 ```bash
 ./build.sh -m
 ```
+
+
+Mon Aug 16 05:19:12 UTC 2021
