@@ -54,4 +54,3 @@ We're relying on you, the community, to port your devices for the full Kali NetH
 
 
 Mon Aug 16 10:23:01 UTC 2021
-
