@@ -32,7 +32,7 @@ dl_apps = {
         'NetHunterStorePrivilegedExtension':
                 ['https://store.nethunter.com/NetHunterStorePrivilegedExtension.apk', '668871f6e3cc03070db4b75a21eb0c208e88b609644bbc1408778217ed716478451ceb487d36bc1d131fa53b1b50c615357b150095c8fb7397db4b8c3e24267a'],
         'NetHunter':
-        ['https://staging.nethunter.com/repo/com.offsec.nethunter_2021020100.apk', '55242bd8a0338ea0e4e0d396a61b7013b03d7ce4a0afc4c828a50c6eeb809d422be87a89eeec8144ef85f8f63d21375ee89f70cd56938d2a74b1cd55972e2ab7'],
+        ['https://staging.nethunter.com/repo/com.offsec.nethunter_2021030200.apk', 'a3b5b61e9f7cf71bbd5e6f4e0e5f96fc4d11e7a02203a9ced77150f6b2512937f0746bc6f77e5b256ae3bf65c0a5011c7eee9866cba867f7aeb0ce355a8e0c88'],
         'NetHunterTerminal':
                 ['https://store.nethunter.com/NetHunterTerminal.apk', 'e1a89ce86df25d95112a0f8c4dd795db7cd92ff362da36b0f939d5ddf7981d46d3da7f92edf075f370b1a22a9faff087bd01af9053dbf8ce70a7bf067b061ff8'],
         'NetHunterKeX':
