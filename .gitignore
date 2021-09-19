@@ -2,6 +2,7 @@
 /nethunter-installer/update/supersu.zip
 /nethunter-installer/tmp_out
 /nethunter-installer/devices
+/nethunter-installer/build-*.sh
 /nethunter-installer/*.zip
 /nethunter-fs/.dep_check
 /nethunter-fs/output.log
