@@ -163,7 +163,7 @@ if [ -f "${build_output}.tar.xz" ]; then
 		;;
 	*)
 		echo "Removing previous chroot"
-		rm -f "${build_output}.tar.xz" "${build_output}.sha512sum"
+		rm -f "${build_output}.tar.xz" ".${build_output}.sha512sum"
 		;;
 	esac
 fi
@@ -275,7 +275,7 @@ cleanup_host
 echo "[+] Tarring and compressing kalifs.  This can take a while...."
 XZ_OPTS=-9 tar cJvf "${build_output}.tar.xz" "$rootfs/"
 echo "[+] Generating sha512sum of kalifs."
-sha512sum "${build_output}.tar.xz" | sed "s|output/||" > "${build_output}.sha512sum"
+sha512sum "${build_output}.tar.xz" | sed "s|output/||" > ".${build_output}.sha512sum"
 
 echo "[+] Finished!  Check output folder for chroot."
 
