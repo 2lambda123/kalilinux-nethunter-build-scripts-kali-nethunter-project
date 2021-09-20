@@ -14,6 +14,7 @@ display_help() {
 	echo
 	echo "  -f, --full      build a rootfs with all the recommended packages"
 	echo "  -m, --minimal   build a rootfs with only the most basic packages"
+	echo "  -n, --nano      build a rootfs with only necessary packages for watch"
 	echo "  -a, --arch      select a different architecture (default: armhf)"
 	echo "                  possible options: armhf, arm64, i386, amd64"
 	echo "  -h, --help      display this help message"
@@ -45,6 +46,9 @@ while [[ $# -gt 0 ]]; do
 		-m|--minimal)
 			build_size=minimal
 			;;
+                -n|--nano)
+                        build_size=nano
+                        ;;
 		-a|--arch)
 			case $2 in
 				armhf|arm64|i386|amd64)
@@ -170,21 +174,27 @@ fi
 
 # Add packages you want installed here:
 
+# NANO PACKAGES
+pkg_nano="kali-menu wpasupplicant kali-defaults initramfs-tools u-boot-tools nmap
+	 openssh-server kali-archive-keyring apt-transport-https ntpdate usbutils pciutils sudo vim git-core binutils ca-certificates
+	 locales console-common less nano git bluetooth bluez
+	 bluez-tools bluez-obexd libbluetooth3 sox spooftooph libbluetooth-dev
+	 redfang bluelog blueranger hcitool usbutils net-tools iw aircrack-ng python nethunter-utils apache2 zsh abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils"
+
 # MINIMAL PACKAGES
 # usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
-pkg_minimal="openssh-server kali-defaults kali-archive-keyring
+pkg_minimal="locales-all openssh-server kali-defaults kali-archive-keyring
 	apt-transport-https ntpdate usbutils pciutils sudo vim"
 
 # DEFAULT PACKAGES FULL INSTALL
-pkg_full="kali-linux-nethunter
-          kali-linux-core kali-desktop-core atril catfish engrampa kali-undercover mate-calc policykit-1-gnome thunar-archive-plugin qterminal xfce4-whiskermenu-plugin xdg-user-dirs-gtk 
-          msfpc exe2hexbat bettercap
-          libapache2-mod-php7.3 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi
-          binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-9 g++-9
-          libbz2-dev libxml2-dev zlib1g-dev
-          dbus-x11 kali-legacy-wallpapers"
+pkg_full="kali-linux-nethunter"
 
 # ARCH SPECIFIC PACKAGES
+pkg_nano_armhf=""
+pkg_nano_arm64=""
+pkg_nano_i386=""
+pkg_nano_amd64=""
+
 pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils zsh"
 pkg_minimal_arm64="$pkg_minimal_armhf"
 pkg_minimal_i386="$pkg_minimal_armhf"
@@ -202,25 +212,33 @@ case $build_arch in
 		packages="$pkg_minimal $pkg_minimal_armhf"
 		[ "$build_size" = full ] &&
 			packages="$packages $pkg_full $pkg_full_armhf"
+                [ "$build_size" = nano ] &&
+                        packages="$pkg_nano"
 		;;
 	arm64)
 		qemu_arch=aarch64
 		packages="$pkg_minimal $pkg_minimal_arm64"
 		[ "$build_size" = full ] &&
 			packages="$packages $pkg_full $pkg_full_arm64"
-		;;
+                [ "$build_size" = nano ] &&
+                        packages="$pkg_nano"
+                ;;
 	i386)
 		qemu_arch=i386
 		packages="$pkg_minimal $pkg_minimal_i386"
 		[ "$build_size" = full ] &&
 			packages="$packages $pkg_full $pkg_full_i386"
-		;;
+                [ "$build_size" = nano ] &&
+                        packages="$pkg_nano"
+                ;;
 	amd64)
 		qemu_arch=x86_64
 		packages="$pkg_minimal $pkg_minimal_amd64"
 		[ "$build_size" = full ] &&
 			packages="$packages $pkg_full $pkg_full_amd64"
-		;;
+                [ "$build_size" = nano ] &&
+                        packages="$pkg_nano"
+                ;;
 esac
 
 # Fix packages to be a single space delimited line using unquoted magic
