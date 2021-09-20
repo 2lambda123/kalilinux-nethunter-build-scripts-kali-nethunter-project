@@ -41,7 +41,7 @@ apt-get update
 
 debconf-set-selections /debconf.set
 rm -f /debconf.set
-apt-get -y install locales-all git-core binutils ca-certificates initramfs-tools locales console-common less nano git
+apt-get -y install git-core binutils ca-certificates initramfs-tools locales console-common less nano git
 echo "root:toor" | chpasswd
 
 # This looks weird, but we do it twice because every so often, there's a failure to download from the mirror
@@ -68,14 +68,16 @@ rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
 dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
 
-## Install custom packages from local repo
-if ls /tmp/deb/*.deb &>/dev/null; then
-   apt install -y /tmp/deb/*.deb
+if [ "$build_size" != nano ]; then
+	echo "I: Installing custom packages from local repo"
+	## Install custom packages from local repo
+	if ls /tmp/deb/*.deb &>/dev/null; then
+	   apt install -y /tmp/deb/*.deb
+	fi
+	if [ -d /tmp/deb ]; then
+   	    rm -rf /tmp/deb
+	fi
 fi
-if [ -d /tmp/deb ]; then
-   rm -rf /tmp/deb
-fi
-
 # Create group to permit vnc users to access sockets to avoid the following error:
 # "vncserver: socket failed: Permission denied"
 addgroup --gid 3003 sockets
@@ -126,9 +128,9 @@ export SHELL=/bin/bash
 
 ############################
 ##          XFCE          ##
-startxfce4 &
+startxfce4
 EOF
-    chmod +x "$rootfs/etc/skel/.vnc/xstartup"
+    chmod 700 "$rootfs/etc/skel/.vnc/xstartup"
 	# We should run git clone outside chroot because it has issues with machine-code translation
 	git clone https://github.com/RfidResearchGroup/proxmark3.git "$rootfs/opt/proxmark3"
         ## git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
