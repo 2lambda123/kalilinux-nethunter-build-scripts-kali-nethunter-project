@@ -187,7 +187,7 @@ pkg_minimal="locales-all openssh-server kali-defaults kali-archive-keyring
 	apt-transport-https ntpdate usbutils pciutils sudo vim"
 
 # DEFAULT PACKAGES FULL INSTALL
-pkg_full="kali-linux-nethunter"
+pkg_full="kali-linux-nethunter proxmark3"
 
 # ARCH SPECIFIC PACKAGES
 pkg_nano_armhf=""
