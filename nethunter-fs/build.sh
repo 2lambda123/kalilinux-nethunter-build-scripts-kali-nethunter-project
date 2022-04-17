@@ -179,12 +179,13 @@ pkg_nano="kali-menu wpasupplicant kali-defaults initramfs-tools u-boot-tools nma
 	 openssh-server kali-archive-keyring apt-transport-https ntpdate usbutils pciutils sudo vim git-core binutils ca-certificates
 	 locales console-common less nano git bluetooth bluez
 	 bluez-tools bluez-obexd libbluetooth3 sox spooftooph libbluetooth-dev
-	 redfang bluelog blueranger hcitool usbutils net-tools iw aircrack-ng python nethunter-utils apache2 zsh abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils python3 pixiewps"
+	 redfang bluelog blueranger hcitool usbutils net-tools iw aircrack-ng
+	 nethunter-utils apache2 zsh abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils python3 pixiewps python2.7-minimal"
 
 # MINIMAL PACKAGES
 # usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 pkg_minimal="locales-all openssh-server kali-defaults kali-archive-keyring
-	apt-transport-https ntpdate usbutils pciutils sudo vim"
+	apt-transport-https ntpdate usbutils pciutils sudo vim python2.7-minimal"
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter proxmark3"
