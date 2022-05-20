@@ -32,19 +32,19 @@ We're relying on you, the community, to port your devices for the full Kali NetH
 
 **Q** - Does Kali NetHunter support Marshmallow, or Nexus 9 devices?
 
-**A** - Yes, check our wiki for more information on supported devices and ROMs: https://www.kali.org/docs/nethunter/#2-0-nethunter-supported-devices-and-roms
+**A** - Yes, check our wiki for more information on supported devices and ROMs: https://www.kali.org/docs/nethunter/#20-nethunter-supported-devices-and-roms
 
 - - -
 
 **Q** - What kind of attacks does Kali NetHunter support?
 
-**A** - Our wiki has a list of included attack tools: https://www.kali.org/docs/nethunter/#7-0-kali-nethunter-attacks-and-features
+**A** - Our wiki has a list of included attack tools: https://www.kali.org/docs/nethunter/#70-kali-nethunter-attacks-and-features
 
 - - -
 
 **Q** - Kali NetHunter is awesome! How do I install it?
 
-**A** - Follow the instructions on the wiki: https://www.kali.org/docs/nethunter/#5-0-installing-nethunter-on-top-of-android
+**A** - Follow the instructions on the wiki: https://www.kali.org/docs/nethunter/#50-installing-nethunter-on-top-of-android
 
 - - -
 
