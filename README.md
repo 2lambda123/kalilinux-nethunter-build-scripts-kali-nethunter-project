@@ -18,9 +18,16 @@ We've incorporated some amazing features into Kali NetHunter OS which are both p
 
 And yes, Kali NetHunter natively **supports wireless 802.11 frame injection** with a variety of supported USB NICs.
 
+## Repository Structure
+
+- [./nethunter-fs/](nethunter-fs/) - Kali NetHunter FileSystem (FS) - chroot Builder + [scripts](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-utils) <!-- aka /rootfs/ -> https://kali.download/nethunter-images/current/rootfs/ -->
+- [./nethunter-installer/](nethunter-installer/) - Kali NetHunter Installer <!-- aka /images/ -> https://kali.download/nethunter-images/current/ -->
+  - [./nethunter-installer/devices/](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-devices) - all the [pre-compiled kernels](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel), kernel modules, and installation scripts
+- [./nethunter-rootless/](nethunter-rootless/) - Kali NetHunter (Rootless Edition)
+
 ## Documentation and Attack Descriptions
 
-Attack descriptions as well as some documentation to get you started with the installation and setup of Kali NetHunter can be found at: https://www.kali.org/docs/nethunter/
+Attack descriptions as well as some documentation to get you started with the [installation](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-lrt) and setup of Kali NetHunter can be found at: <https://www.kali.org/docs/nethunter/>
 
 ## Is Kali NetHunter an Android ROM?
 
@@ -32,25 +39,25 @@ We're relying on you, the community, to port your devices for the full Kali NetH
 
 **Q** - Does Kali NetHunter support Marshmallow, or Nexus 9 devices?
 
-**A** - Yes, check our wiki for more information on supported devices and ROMs: https://www.kali.org/docs/nethunter/#20-nethunter-supported-devices-and-roms
+**A** - Yes, check our wiki for more information on supported devices and ROMs: <https://www.kali.org/docs/nethunter/#20-nethunter-supported-devices-and-roms>
 
 - - -
 
 **Q** - What kind of attacks does Kali NetHunter support?
 
-**A** - Our wiki has a list of included attack tools: https://www.kali.org/docs/nethunter/#70-kali-nethunter-attacks-and-features
+**A** - Our wiki has a list of included attack tools: <https://www.kali.org/docs/nethunter/#70-kali-nethunter-attacks-and-features>
 
 - - -
 
 **Q** - Kali NetHunter is awesome! How do I install it?
 
-**A** - Follow the instructions on the wiki: https://www.kali.org/docs/nethunter/#50-installing-nethunter-on-top-of-android
+**A** - Follow the instructions on the wiki: <https://www.kali.org/docs/nethunter/#50-installing-nethunter-on-top-of-android>
 
 - - -
 
 **Q** - What is the best wireless card for Kali NetHunter?
 
-**A** - A list of supported devices and chipsets is on the wiki: https://www.kali.org/docs/nethunter/wireless-cards/
+**A** - A list of supported devices and chipsets is on the wiki: <https://www.kali.org/docs/nethunter/wireless-cards/>
 
 
-Mon Aug 16 10:23:01 UTC 2021
+Sun May 29 22:51:35 UTC 2022
