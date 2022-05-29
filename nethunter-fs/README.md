@@ -2,15 +2,25 @@
 
 Build a basic [Kali NetHunter](https://www.kali.org/get-kali/#kali-mobile) chroot filesystem.
 
+- - -
+
 ## Docker
 
-[Dockerfile](Dockerfile)
+**[Dockerfile](Dockerfile)**:
 
 ```bash
 docker build -t nethunter .
 docker run --privileged --name nethunter_build -i -t nethunter 2>&1 | tee output.log
 docker cp nethunter_build:/root/nethunter-fs/output .
 ```
+
+**[Docker registry](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/container_registry)**:
+
+```bash
+./docker-push-gitlab.sh
+```
+
+- - -
 
 ## Installer
 
@@ -41,4 +51,4 @@ To create a **minimal** Kali NetHunter filesystem:
 ```
 
 
-Mon Aug 16 05:19:12 UTC 2021
+Sun May 29 22:51:35 UTC 2022
