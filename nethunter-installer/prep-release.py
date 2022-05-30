@@ -7,7 +7,6 @@
 ##
 ## - "./build-<release>.sh": shell script to build all images
 ## - "<outputdir>/manifest.csv": manifest file mapping image name to display name
-## - "<outputdir>/legacy": manifest file mapping image name to display name using legacy format
 ##
 ## Usage:
 ##   python3 prep-release.py --inputfile <input file> --outputdir <output directory> --release <release>
@@ -25,7 +24,6 @@ import getopt, os, stat, sys
 FS_SIZE = "full"
 build_script = "" # Generated automatically (./build-<release>.sh)
 manifest = ""     # Generated automatically (<outputdir>/manifest.csv)
-old_manifest = "" # Generated automatically (<outputdir>/legacy.txt)
 release = ""
 outputdir = ""
 inputfile = ""
@@ -158,22 +156,6 @@ def generate_manifest(data):
                     manifest += "{},nethunter-{}-{}-kalifs-{}.zip\n".format(image.get('name', default), release, image.get('id', default), FS_SIZE)
     return manifest
 
-def generate_old_manifest(data):
-    manifest = ""
-    clean_manifest = ""
-    global FS_SIZE, release
-
-    default = ""
-    # iterate over all the devices
-    for element in data:
-        # iterate over all the versions
-        for key in element.keys():
-            if 'images' in element[key]:
-                for image in element[key]['images']:
-                    manifest += "{{% set prettyName = prettyName|regex_replace('{}','{}') %}}\n".format(image.get('id', default).capitalize(), element[key]['model'])
-    manifest = deduplicate(manifest)
-    return manifest
-
 def deduplicate(data):
     # Remove duplicate lines
     clean_data = ""
@@ -227,7 +209,6 @@ def main(argv):
 
     # Assign variables 
     manifest = outputdir + "/manifest.csv"
-    old_manifest = outputdir + "/legacy.txt"
     build_script = "./build-" + release + ".sh"
     data = readfile(inputfile)
 
@@ -235,7 +216,6 @@ def main(argv):
     res = yaml_parse(data)
     build_list  = generate_build_script(res)
     manifest_list  = generate_manifest(res)
-    old_manifest_list  = generate_old_manifest(res)
 
     # Create output directory if required
     createdir(outputdir)
@@ -246,9 +226,6 @@ def main(argv):
 
     # Create manifest file
     writefile(manifest_list, manifest)
-
-    # Create legacy manifest file
-    writefile(old_manifest_list, old_manifest)
 
     # Print result and exit
     print('Stats:')
