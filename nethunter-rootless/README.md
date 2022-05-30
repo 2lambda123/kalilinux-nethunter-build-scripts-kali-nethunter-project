@@ -1,12 +1,12 @@
-# Kali NetHunter (Rootless Edition) - KeX using Termux
+# Kali NetHunter (Rootless Edition) - Kali Linux CLI and KeX using Termux
 
-[Kali NetHunter](](https://www.kali.org/get-kali/#kali-mobile)) is a Mobile Penetration Testing Platform, and [rootless edition](https://www.kali.org/docs/nethunter/nethunter-rootless/)) allows for maximum flexibility with no commitment.
+[Kali NetHunter](https://www.kali.org/get-kali/#kali-mobile)) is a Mobile Penetration Testing Platform, and the [rootless edition](https://www.kali.org/docs/nethunter/nethunter-rootless/) allows for maximum flexibility with no commitment.
 
 _For use on **unmodified stock Android phones without voiding the warranty**!_
 
 [![Termux Menu](../images/010-NH-Rootless-Installation_Start_s.jpg)](../images/010-NH-Rootless-Installation_Start.jpg)
 
-[![KeX](../images/020-NH-Rootless-KeX_s.jpg)](../images/020-NH-Rootless-KeX_s.jpg)
+[![KeX](../images/020-NH-Rootless-KeX_s.jpg)](../images/020-NH-Rootless-KeX.jpg)
 
 ## Prerequisite:
 
@@ -28,8 +28,6 @@ wget -O install-nethunter-termux https://offs.ec/2MceZWr
 chmod +x install-nethunter-termux
 ./install-nethunter-termux
 ```
-
-[termux](install-nethunter-termux)
 
 ## Usage:
 
@@ -53,9 +51,9 @@ Open Termux and type one of the following:
 
 _Note: The command `nethunter` can be abbreviated to **`nh`**._
 
-_Note: If you ran [KeX](https://www.kali.org/docs/nethunter/nethunter-kex-manager/) in the background (`&`) **without having set a password**, you will need to bring it back to the foreground (i.e. via `fg <job id>`) then prompted to enter the password, finally you can then send it to the background again (via `Ctrl + z` and `bg <job id>`)_
+_Note: If you ran KeX in the background (`&`) **without having set a password**, you will need to bring it back to the foreground (i.e. via `fg <job id>`) then prompted to enter the password, finally you can then send it to the background again (via `Ctrl + z` and `bg <job id>`)_
 
-To use [KeX](https://www.kali.org/docs/nethunter/nethunter-kex-manager/)], start the KeX client, enter your password and click connect.
+To use KeX, start the KeX client, enter your password and click connect.
 
 _Note: For a better viewing experience, enter a custom resolution under "Advanced Settings" in the KeX Client_
 
