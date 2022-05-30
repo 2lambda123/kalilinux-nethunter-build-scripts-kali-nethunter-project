@@ -68,11 +68,8 @@ def getargs(argv):
 
     try:
         opts, args = getopt.getopt(argv,"hi:o:r:",["inputfile=","outputdir=","release="])
-    except getopt.GetoptError:
-        bail("Missing arguments (1)")
-
-#    if not args:
- #       bail("Missing arguments (2)")
+    except getopt.GetoptError as e:
+        bail("Incorrect arguments: {}".format(e))
 
     for opt, arg in opts:
         if opt == '-h':
