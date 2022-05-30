@@ -83,7 +83,7 @@ def getargs(argv):
         elif opt in ("-r", "--release"):
            release = arg
         else:
-           bail("Incorrect arguments: %s" % opt)
+           bail("Incorrect arguments (2): %s" % opt)
     return 0
 
 def yaml_parse(content):
