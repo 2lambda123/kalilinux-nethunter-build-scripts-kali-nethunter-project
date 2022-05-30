@@ -27,7 +27,7 @@ And yes, Kali NetHunter natively **supports wireless 802.11 frame injection** wi
 
 ## Documentation and Attack Descriptions
 
-Attack descriptions as well as some documentation to get you started with the [installation](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-lrt) and setup of Kali NetHunter can be found at: <https://www.kali.org/docs/nethunter/>
+Attack descriptions as well as some documentation to get you started with the installation and setup of Kali NetHunter can be found at: <https://www.kali.org/docs/nethunter/>
 
 ## Is Kali NetHunter an Android ROM?
 
