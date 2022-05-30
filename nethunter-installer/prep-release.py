@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 
 ##############################################################
-## Script to prepare Kali NetHunter quarterly release
+## Script to prepare Kali NetHunter quarterly releases
 ##
 ## It parses the YAML sections of devices/devices.cfg and creates:
 ##
 ## - "./build-<release>.sh": shell script to build all images
 ## - "<outputdir>/manifest.json": manifest file mapping image name to display name
 ##
+## Dependencies:
+##   sudo apt -y install python3 python3-yaml
+##
 ## Usage:
-##   python3 prep-release.py --inputfile <input file> --outputdir <output directory> --release <release>
+## ./prep-release.py -i <input file> -o <output directory> -r <release>
 ##
 ## E.g.:
-##   python3 prep-release.py --inputfile devices/devices.cfg --outputdir /opt/NetHunter/2021.3/images/ --release 2021.3
-##
-## Install:
-##   sudo apt -y install python3 python3-yaml
+## ./prep-release.py -i devices/devices.cfg -o /media/re4son/dev/NetHunter/2020.3/images -r 2020.3
 
 import json
 import datetime
@@ -41,11 +41,13 @@ qty_devices = 0
 ##*         id:      xangler
 ##*         os:      oreo
 ##*         status:  Stable
+##*         rootfs:  full
 ##*         note:    "** Our preferred low end device **"
 ##*       - name:    Nexus 6P (LineageOS 17.1)
 ##*         id:      angler-los
 ##*         os:      ten
 ##*         status:  Latest
+##*         rootfs:  full
 ##*         note:    "** Warning: Android ten is very unstable at the moment. **"
 
 
@@ -67,27 +69,23 @@ def getargs(argv):
 
     try:
         opts, args = getopt.getopt(argv,"hi:o:r:",["inputfile=","outputdir=","release="])
-    except getopt.GetoptError as e:
-        bail("Incorrect arguments: {}".format(e))
+    except getopt.GetoptError:
+        bail("Missing arguments")
 
-    for opt, arg in opts:
-        if opt == '-h':
-           bail()
-        elif opt in ("-i", "--inputfile"):
-           inputfile = arg
-        elif opt in ("-o", "--outputdir"):
-           outputdir = arg.rstrip("/")
-        elif opt in ("-r", "--release"):
-           release = arg
-        else:
-           bail("Incorrect arguments (2): %s" % opt)
-
-    if not inputfile:
-        bail("--inputfile required")
-    if not outputdir:
-        bail("--outputdir required")
-    if not release:
-        bail("--release required")
+    if opts:
+        for opt, arg in opts:
+            if opt == '-h':
+                bail()
+            elif opt in ("-i", "--inputfile"):
+                inputfile = arg
+            elif opt in ("-o", "--outputdir"):
+                outputdir = arg.rstrip("/")
+            elif opt in ("-r", "--release"):
+                release = arg
+            else:
+                bail("Unrecognised argument: " + opt)
+    else:
+        bail("Unrecognised arguments")
     return 0
 
 def yaml_parse(content):
@@ -97,7 +95,6 @@ def yaml_parse(content):
         if line.startswith('##*'):
             ## yaml doesn't like tabs so let's replace them with four spaces
             result += line.replace('\t', '    ')[3:] + "\n"
-    #return yaml.load(result, Loader=yaml.FullLoader)
     return yaml.safe_load(result)
 
 def generate_build_script(data):
@@ -113,8 +110,9 @@ def generate_build_script(data):
     ## Add builds for NetHunter Lite (Light Edition)
     build_list += "# Kali NetHunter Lite:"
     build_list += "# -----------------------------------------------\n"
-    build_list += "./build.py -g arm64 -fs {} -r ${{RELEASE}} && mv *${{RELEASE}}*.zip ${{OUT_DIR}}\n".format(FS_SIZE)
-    build_list += "./build.py -g armhf -fs {} -r ${{RELEASE}} && mv *${{RELEASE}}*.zip ${{OUT_DIR}}\n".format(FS_SIZE)
+    build_list += "./build.py -g arm64 -fs full -r ${{RELEASE}} && mv *${{RELEASE}}*.zip ${{OUT_DIR}}\n"
+    build_list += "./build.py -g arm64 -fs nano -r ${{RELEASE}} && mv *${{RELEASE}}*.zip ${{OUT_DIR}}\n"
+    build_list += "./build.py -g armhf -fs full -r ${{RELEASE}} && mv *${{RELEASE}}*.zip ${{OUT_DIR}}\n"
 
     build_list += "\n"
     default = ""
@@ -129,7 +127,7 @@ def generate_build_script(data):
                     build_list += "\n"
                     build_list += "# {}\n".format(image.get('name'))
                     build_list += "# -----------------------------------------------\n"
-                    build_list += "./build.py -d {} --{} -fs {} -r ${{RELEASE}} && mv *${{RELEASE}}*.zip ${{OUT_DIR}}\n".format(image.get('id', default), image.get('os', default), FS_SIZE)
+                    build_list += "./build.py -d {} --{} -fs {} -r ${{RELEASE}} && mv *${{RELEASE}}*.zip ${{OUT_DIR}}\n".format(image.get('id', default), image.get('os', default), image.get('rootfs', FS_SIZE))
 
     ## Create sha files for each image
     build_list += "\n\n"
@@ -150,9 +148,10 @@ def generate_manifest(data):
     default = ""
     devices = {}
 
-    ## Add NetHunter Lite (Light Edition)
-    jsonarray(devices, "Generic", "NetHunter Lite ARM64", "nethunter-{}-{}-kalifs-{}.zip".format(release, "generic-arm64", FS_SIZE))
-    jsonarray(devices, "Generic", "NetHunter Lite ARMhf", "nethunter-{}-{}-kalifs-{}.zip".format(release, "generic-armhf", FS_SIZE))
+    ## Add NetHunter Lite (Light Editions)
+    jsonarray(devices, "Generic", "NetHunter Lite ARM64 (Full)", "nethunter-{}-{}-kalifs-{}.zip".format(release, "generic-arm64", "full"))
+    jsonarray(devices, "Generic", "NetHunter Lite ARM64 (Nano)", "nethunter-{}-{}-kalifs-{}.zip".format(release, "generic-arm64", "nano"))
+    jsonarray(devices, "Generic", "NetHunter Lite ARMhf (Full)", "nethunter-{}-{}-kalifs-{}.zip".format(release, "generic-armhf", "full"))
 
     # Iterate over all the devices
     for element in data:
@@ -190,7 +189,7 @@ def readfile(file):
             data = f.read()
             f.close()
     except:
-        bail("Cannot open input file")
+        bail("Cannot open input file " + file)
     return data
 
 def writefile(data, file):
@@ -215,7 +214,13 @@ def main(argv):
     global inputfile, outputdir, release
 
     # Parse command-line arguments
-    getargs(argv)
+    if len(sys.argv) > 1:
+        getargs(argv)
+    else:
+        bail("Missing arguments")
+
+    if inputfile == "":
+        bail("Missing arguments")
 
     # Assign variables
     manifest = outputdir + "/manifest.json"
