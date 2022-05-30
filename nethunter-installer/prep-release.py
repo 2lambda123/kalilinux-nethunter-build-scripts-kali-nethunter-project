@@ -28,6 +28,7 @@ manifest = ""     # Generated automatically (<outputdir>/manifest.csv)
 old_manifest = "" # Generated automatically (<outputdir>/legacy.txt)
 release = ""
 outputdir = ""
+inputfile = ""
 qty_images = 0
 qty_devices = 0
 
@@ -84,6 +85,14 @@ def getargs(argv):
            release = arg
         else:
            bail("Incorrect arguments (2): %s" % opt)
+
+    if not inputfile:
+        bail("--inputfile required")
+    if not outputdir:
+        bail("--outputdir required")
+    if not release:
+        bail("--release required")
+
     return 0
 
 def yaml_parse(content):
