@@ -207,8 +207,8 @@ def main(argv):
     # Parse command-line arguments
     getargs(argv)
 
-    # Assign variables 
     manifest = outputdir + "/manifest.csv"
+    # Assign variables
     build_script = "./build-" + release + ".sh"
     data = readfile(inputfile)
 
