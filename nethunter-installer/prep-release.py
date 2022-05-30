@@ -214,7 +214,7 @@ def mkexec(file):
 def main(argv):
     global inputfile, outputdir, release
 
-    # Parse commandline arguments
+    # Parse command-line arguments
     getargs(argv)
 
     # Assign variables 
