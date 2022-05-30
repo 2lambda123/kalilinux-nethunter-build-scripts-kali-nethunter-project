@@ -6,7 +6,7 @@
 ## It parses the YAML sections of devices/devices.cfg and creates:
 ##
 ## - "./build-<release>.sh": shell script to build all images
-## - "<outputdir>/manifest.csv": manifest file mapping image name to display name
+## - "<outputdir>/manifest.json": manifest file mapping image name to display name
 ##
 ## Usage:
 ##   python3 prep-release.py --inputfile <input file> --outputdir <output directory> --release <release>
@@ -17,13 +17,14 @@
 ## Install:
 ##   sudo apt -y install python3 python3-yaml
 
+import json
 import datetime
 import yaml # install pyyaml
 import getopt, os, stat, sys
 
 FS_SIZE = "full"
 build_script = "" # Generated automatically (./build-<release>.sh)
-manifest = ""     # Generated automatically (<outputdir>/manifest.csv)
+manifest = ""     # Generated automatically (<outputdir>/manifest.json)
 release = ""
 outputdir = ""
 inputfile = ""
@@ -138,13 +139,20 @@ def generate_build_script(data):
     build_list += "cd -\n"
     return build_list
 
-def generate_manifest(data):
-    manifest = ""
-    global FS_SIZE, release
+def jsonarray(devices, manufacture, name, filename):
+    if not manufacture in devices:
+        devices[manufacture] = []
+    jsondata = {"name": name, "filename": filename}
+    devices[manufacture].append(jsondata)
+    return devices
 
-    ## Add lines for NetHunter Lite (Light Edition)
-    manifest += "NetHunter Lite ARM64,nethunter-{}-generic-arm64-kalifs-{}.zip\n".format(release, FS_SIZE)
-    manifest += "NetHunter Lite ARMhf,nethunter-{}-generic-armhf-kalifs-{}.zip\n".format(release, FS_SIZE)
+def generate_manifest(data):
+    global FS_SIZE, release
+    devices = {}
+
+    ## Add NetHunter Lite (Light Edition)
+    jsonarray(devices, "Generic", "NetHunter Lite ARM64", "nethunter-{}-{}-kalifs-{}.zip".format(release, "generic-arm64", FS_SIZE))
+    jsonarray(devices, "Generic", "NetHunter Lite ARMhf", "nethunter-{}-{}-kalifs-{}.zip".format(release, "generic-armhf", FS_SIZE))
 
     default = ""
     # iterate over all the devices
@@ -153,8 +161,11 @@ def generate_manifest(data):
         for key in element.keys():
             if 'images' in element[key]:
                 for image in element[key]['images']:
-                    manifest += "{},nethunter-{}-{}-kalifs-{}.zip\n".format(image.get('name', default), release, image.get('id', default), FS_SIZE)
-    return manifest
+                    name = image.get('name', default)
+                    manufacture = name.split()[0]
+                    filename = "nethunter-{}-{}-kalifs-{}.zip".format(release, image.get('id', default), FS_SIZE)
+                    jsonarray(devices, manufacture, name, filename)
+    return json.dumps(devices, indent = 2)
 
 def deduplicate(data):
     # Remove duplicate lines
@@ -207,8 +218,8 @@ def main(argv):
     # Parse command-line arguments
     getargs(argv)
 
-    manifest = outputdir + "/manifest.csv"
     # Assign variables
+    manifest = outputdir + "/manifest.json"
     build_script = "./build-" + release + ".sh"
     data = readfile(inputfile)
 
