@@ -181,7 +181,7 @@ def createdir(dir):
         if not os.path.exists(dir):
             os.makedirs(dir)
     except:
-        bail('Directory "' + dir + 'does not exist and cannot be created')
+        bail('Directory "' + dir + '" does not exist and cannot be created')
     return 0
 
 def readfile(file):
