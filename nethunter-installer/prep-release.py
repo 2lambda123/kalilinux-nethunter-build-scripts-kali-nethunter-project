@@ -88,7 +88,6 @@ def getargs(argv):
         bail("--outputdir required")
     if not release:
         bail("--release required")
-
     return 0
 
 def yaml_parse(content):
@@ -102,8 +101,8 @@ def yaml_parse(content):
     return yaml.safe_load(result)
 
 def generate_build_script(data):
-    build_list = ""
     global OUTPUT_FILE, FS_SIZE, release, outputdir, qty_devices, qty_images
+    build_list = ""
 
     ## Create script header
     build_list += "#!/usr/bin/env bash\n\n"
@@ -148,14 +147,14 @@ def jsonarray(devices, manufacture, name, filename):
 
 def generate_manifest(data):
     global FS_SIZE, release
+    default = ""
     devices = {}
 
     ## Add NetHunter Lite (Light Edition)
     jsonarray(devices, "Generic", "NetHunter Lite ARM64", "nethunter-{}-{}-kalifs-{}.zip".format(release, "generic-arm64", FS_SIZE))
     jsonarray(devices, "Generic", "NetHunter Lite ARMhf", "nethunter-{}-{}-kalifs-{}.zip".format(release, "generic-armhf", FS_SIZE))
 
-    default = ""
-    # iterate over all the devices
+    # Iterate over all the devices
     for element in data:
         # iterate over all the versions
         for key in element.keys():
