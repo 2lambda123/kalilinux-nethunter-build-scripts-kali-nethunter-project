@@ -219,9 +219,6 @@ def main(argv):
     else:
         bail("Missing arguments")
 
-    if inputfile == "":
-        bail("Missing arguments")
-
     # Assign variables
     manifest = outputdir + "/manifest.json"
     build_script = "./build-" + release + ".sh"
