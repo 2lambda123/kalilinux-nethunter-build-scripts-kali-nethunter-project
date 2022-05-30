@@ -89,7 +89,7 @@ def yaml_parse(content):
     lines = content.split('\n')
     for line in lines:
         if line.startswith('##*'):
-            ## yaml doesn't like tabs so let's replace them with four spaces 
+            ## yaml doesn't like tabs so let's replace them with four spaces
             result += line.replace('\t', '    ')[3:] + "\n"
     #return yaml.load(result, Loader=yaml.FullLoader)
     return yaml.safe_load(result)
@@ -172,7 +172,7 @@ def deduplicate(data):
     lines_seen = set()
     for line in data.splitlines():
         if line not in lines_seen: # not a duplicate
-            clean_data += line + "\n" 
+            clean_data += line + "\n"
             lines_seen.add(line)
     return clean_data
 
