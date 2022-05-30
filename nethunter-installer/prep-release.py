@@ -110,8 +110,8 @@ def generate_build_script(data):
     build_list += "OUT_DIR={}\n".format(outputdir)
     build_list += "\n"
 
-    ## Add builds for NetHunter Light
-    build_list += "# Kali NetHunter Light:"
+    ## Add builds for NetHunter Lite (Light Edition)
+    build_list += "# Kali NetHunter Lite:"
     build_list += "# -----------------------------------------------\n"
     build_list += "./build.py -g arm64 -fs {} -r ${{RELEASE}} && mv *${{RELEASE}}*.zip ${{OUT_DIR}}\n".format(FS_SIZE)
     build_list += "./build.py -g armhf -fs {} -r ${{RELEASE}} && mv *${{RELEASE}}*.zip ${{OUT_DIR}}\n".format(FS_SIZE)
@@ -142,7 +142,7 @@ def generate_manifest(data):
     manifest = ""
     global FS_SIZE, release
 
-    ## Add lines for NetHunter light
+    ## Add lines for NetHunter Lite (Light Edition)
     manifest += "NetHunter Lite ARM64,nethunter-{}-generic-arm64-kalifs-{}.zip\n".format(release, FS_SIZE)
     manifest += "NetHunter Lite ARMhf,nethunter-{}-generic-armhf-kalifs-{}.zip\n".format(release, FS_SIZE)
 
