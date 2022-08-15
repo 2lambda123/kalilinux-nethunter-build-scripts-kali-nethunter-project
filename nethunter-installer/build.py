@@ -45,7 +45,7 @@ dl_apps = {
         'NetHunterStorePrivilegedExtension':
                 ['https://store.nethunter.com/NetHunterStorePrivilegedExtension.apk', '668871f6e3cc03070db4b75a21eb0c208e88b609644bbc1408778217ed716478451ceb487d36bc1d131fa53b1b50c615357b150095c8fb7397db4b8c3e24267a'],
         'NetHunter':
-        ['https://staging.nethunter.com/repo/com.offsec.nethunter_2022010300.apk', '4939df51f8595c97ad14842b3d3547af8f49d323114417d085af53a9f569a05b8a191d6df7deb75fd413958a9df78f8a5460a75b082754f7aeda76a327cfef83'],
+        ['https://staging.nethunter.com/repo/com.offsec.nethunter_2022030100.apk', '16111a1c6e5a3b91d493fa0ec465d043951584ef7221f9dc9db10a476a26297264a26a6549284f8b70416c98b4299464d91880a5f774df63ee62523ad5fb0e19'],
         'NetHunterTerminal':
                 ['https://store.nethunter.com/NetHunterTerminal.apk', 'e1a89ce86df25d95112a0f8c4dd795db7cd92ff362da36b0f939d5ddf7981d46d3da7f92edf075f370b1a22a9faff087bd01af9053dbf8ce70a7bf067b061ff8'],
         'NetHunterKeX':
@@ -206,16 +206,12 @@ def allapps(forcedown):
 
         print('Finished downloading all apps')
 
-def rootfs(forcedown, fs_size, nightly):
+def rootfs(forcedown, fs_size):
         global Arch
         fs_arch = Arch
         fs_file = 'kalifs-' + fs_arch + '-' + fs_size + '.tar.xz'
         fs_path = os.path.join('rootfs', fs_file)
-
-        if nightly:
-                fs_host = 'https://build.nethunter.com/kalifs/kalifs-latest/'
-        else:
-                fs_host = 'https://kali.download/nethunter-images/current/rootfs/'
+        fs_host = 'https://kali.download/nethunter-images/current/rootfs/'
 
         fs_url = fs_host + fs_file
 
@@ -430,7 +426,7 @@ def setupkernel():
                 print('Found DTBO image at: ' + dtbo_location)
                 shutil.copy(dtbo_location, os.path.join(out_path, 'dtbo.img'))
 
-       # Copy any patch.d scripts
+        # Copy any patch.d scripts
         patchd_path = os.path.join(device_path, 'patch.d')
         if os.path.exists(patchd_path):
                 print('Found additional patch.d scripts at: ' + patchd_path)
@@ -569,6 +565,7 @@ def main():
         parser.add_argument('--pie', '-p', action='store_true', help='Android 9')
         parser.add_argument('--ten', '-q', action='store_true', help='Android 10')
         parser.add_argument('--eleven', '-R', action='store_true', help='Android 11')
+        parser.add_argument('--twelve', '-S', action='store_true', help='Android 12')
         parser.add_argument('--wearos', '-w', action='store_true', help='WearOS')
         parser.add_argument('--forcedown', '-f', action='store_true', help='Force redownloading')
         parser.add_argument('--uninstaller', '-u', action='store_true', help='Create an uninstaller')
@@ -577,7 +574,6 @@ def main():
         parser.add_argument('--nobrand', '-nb', action='store_true', help='Build without wallpaper or boot animation')
         parser.add_argument('--nofreespace', '-nf', action='store_true', help='Build without free space check')
         parser.add_argument('--supersu', '-su', action='store_true', help='Build with SuperSU installer included')
-        parser.add_argument('--nightly', '-ni', action='store_true', help='Use nightly mirror for Kali rootfs download (experimental)')
         parser.add_argument('--generic', '-g', action='store', metavar='ARCH', help='Build a generic installer (modify ramdisk only)')
         parser.add_argument('--rootfs', '-fs', action='store', metavar='SIZE', help='Build with Kali chroot rootfs (full, minimal or nano)')
         parser.add_argument('--release', '-r', action='store', metavar='VERSION', help='Specify NetHunter release version')
@@ -643,13 +639,16 @@ def main():
                 if args.eleven:
                         OS = 'eleven'
                         i += 1
+                if args.twelve:
+                        OS = 'twelve'
+                        i += 1
                 if args.wearos:
                         OS = 'wearos'
                         i += 1
                 if i == 0:
-                        abort('Missing Android version. Available options: --kitkat, --lollipop, --marshmallow, --nougat, --oreo, --pie, --ten, --eleven, wearos')
+                        abort('Missing Android version. Available options: --kitkat, --lollipop, --marshmallow, --nougat, --oreo, --pie, --ten, --eleven, --twelve, --wearos')
                 elif i > 1:
-                        abort('Select only one Android version: --kitkat, --lollipop, --marshmallow, --nougat, --oreo, --pie, --ten, --eleven, --wearos')
+                        abort('Select only one Android version: --kitkat, --lollipop, --marshmallow, --nougat, --oreo, --pie, --ten, --eleven, --twelve, --wearos')
 
                 if args.rootfs and not (args.rootfs == 'full' or args.rootfs == 'minimal' or args.rootfs == 'nano'):
                         abort('Invalid Kali rootfs size. Available options: --rootfs full, --rootfs minimal, --rootfs nano')
@@ -678,7 +677,7 @@ def main():
 
         # Download Kali rootfs if we are building a zip with the chroot environment included
         if args.rootfs:
-                rootfs(args.forcedown, args.rootfs, args.nightly)
+                rootfs(args.forcedown, args.rootfs)
 
         # Set file name tag depending on the options chosen
         if args.release:
@@ -736,6 +735,12 @@ def main():
         # Set up the update zip
         setupupdate()
 
+        # Change bootanimation folder for product partition devices
+        if Device.find('oneplus8') == 0:                
+                shutil.copytree(os.path.join('tmp_out', 'system', 'media'),
+                           os.path.join('tmp_out', 'product', 'media'), dirs_exist_ok=True)
+                shutil.rmtree(os.path.join('tmp_out', 'system', 'media'))
+        
         file_prefix = ''
         if not args.rootfs:
                 file_prefix += 'update-'
