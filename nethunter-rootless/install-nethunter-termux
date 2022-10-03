@@ -129,7 +129,7 @@ function get_rootfs() {
     fi
     printf "${blue}[*] Downloading rootfs...${reset}\n\n"
     get_url
-    axel ${EXTRA_ARGS} --alternate --num-connections=1 "${ROOTFS_URL}"
+    wget ${EXTRA_ARGS} --continue "${ROOTFS_URL}"
 }
 
 function get_sha() {
@@ -139,7 +139,7 @@ function get_sha() {
         if [ -f ${SHA_NAME} ]; then
             rm -f ${SHA_NAME}
         fi
-        axel ${EXTRA_ARGS} --alternate --num-connections=1 "${SHA_URL}"
+        wget ${EXTRA_ARGS} --continue "${SHA_URL}"
     fi
 }
 
@@ -362,7 +362,7 @@ reset='\033[0m'
 EXTRA_ARGS=""
 if [[ ! -z $1 ]]; then
     EXTRA_ARGS=$1
-    if [[ $EXTRA_ARGS != "--insecure" ]]; then
+    if [[ $EXTRA_ARGS != "--no-check-certificate" ]]; then
         EXTRA_ARGS=""
     fi
 fi
