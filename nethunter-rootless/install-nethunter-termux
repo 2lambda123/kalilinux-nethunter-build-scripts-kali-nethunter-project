@@ -358,6 +358,12 @@ function fix_profile_bash() {
     fi
 }
 
+function fix_resolv_conf() {
+    ## We don't have systemd so let's use static entries for Quad9 DNS servers
+    echo "nameserver 9.9.9.9" > $CHROOT/etc/resolv.conf
+    echo "nameserver 149.112.112.112" >> $CHROOT/etc/resolv.conf
+}
+
 function fix_sudo() {
     ## fix sudo & su on start
     chmod +s $CHROOT/usr/bin/sudo
@@ -427,6 +433,7 @@ cleanup
 
 printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
 fix_profile_bash
+fix_resolv_conf
 fix_sudo
 create_kex_launcher
 fix_uid
