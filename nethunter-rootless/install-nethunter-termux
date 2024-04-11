@@ -90,14 +90,11 @@ function set_strings() {
         echo "[2] NetHunter ARMhf (minimal)"
         echo "[3] NetHunter ARMhf (nano)"
         read -p "Enter the image you want to install: " wimg
-        if (( $wimg == "1" ));
-        then
+        if [[ "$wimg" == "1" ]]; then
             wimg="full"
-        elif (( $wimg == "2" ));
-        then
+        elif [[ "$wimg" == "2" ]]; then
             wimg="minimal"
-        elif (( $wimg == "3" ));
-        then
+        elif [[ "$wimg" == "3" ]]; then
             wimg="nano"
         else
             wimg="full"
