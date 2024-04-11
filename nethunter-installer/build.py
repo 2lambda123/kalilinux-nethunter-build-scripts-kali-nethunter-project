@@ -45,11 +45,11 @@ dl_apps = {
         'NetHunterStorePrivilegedExtension':
                 ['https://store.nethunter.com/NetHunterStorePrivilegedExtension.apk', '668871f6e3cc03070db4b75a21eb0c208e88b609644bbc1408778217ed716478451ceb487d36bc1d131fa53b1b50c615357b150095c8fb7397db4b8c3e24267a'],
         'NetHunter':
-        ['https://staging.nethunter.com/repo/com.offsec.nethunter_2022030100.apk', '16111a1c6e5a3b91d493fa0ec465d043951584ef7221f9dc9db10a476a26297264a26a6549284f8b70416c98b4299464d91880a5f774df63ee62523ad5fb0e19'],
+        ['https://staging.nethunter.com/NetHunter.apk', 'c9628de9cef00cfed97b2b888f7e758448878d8a1e29173cd979fc642609cc85fd1d3203405cc592b3e4de7d17d7b53c54201b60004101b30e1a2d3c8f5d613b'],
         'NetHunterTerminal':
-                ['https://store.nethunter.com/NetHunterTerminal.apk', 'e1a89ce86df25d95112a0f8c4dd795db7cd92ff362da36b0f939d5ddf7981d46d3da7f92edf075f370b1a22a9faff087bd01af9053dbf8ce70a7bf067b061ff8'],
+                ['https://staging.nethunter.com/NetHunterTerminal.apk', '3e5524119e55d1217169d368113bc42763f654a8dc69175b6339f93a4f587c335b2a2252d9285d7ebfe3fcc11d5f41fe7a4caf3d1f82d0306d347519340a89a9'],
         'NetHunterKeX':
-                ['https://store.nethunter.com/NetHunterKeX.apk', 'b4c9ce17a89eda65aa572948f03f4593918d35dde31fd5af3bf5d66f6c830bc4729e97f1b629c95118ef827655454bb32709d352ea1a387c5735a399d7a9e95c'],
+                ['https://staging.nethunter.com/NetHunterKeX.apk', 'f3e705532d0aa1372c8d19bdece6a1d82fbe6b1845ee6992c984dbe154fdc811230ddb0193a5c42c74926b54a6e0e689ecc3afc5ac5b93780ee0cc67d93a8dc9'],
 }
 
 def copytree(src, dst):
@@ -567,6 +567,7 @@ def main():
         parser.add_argument('--eleven', '-R', action='store_true', help='Android 11')
         parser.add_argument('--twelve', '-S', action='store_true', help='Android 12')
         parser.add_argument('--thirteen', '-T', action='store_true', help='Android 13')
+        parser.add_argument('--fourteen', '-U', action='store_true', help='Android 14')
         parser.add_argument('--wearos', '-w', action='store_true', help='WearOS')
         parser.add_argument('--forcedown', '-f', action='store_true', help='Force redownloading')
         parser.add_argument('--uninstaller', '-u', action='store_true', help='Create an uninstaller')
@@ -646,13 +647,16 @@ def main():
                 if args.thirteen:
                         OS = 'thirteen'
                         i += 1
+                if args.fourteen:
+                        OS = 'fourteen'
+                        i += 1
                 if args.wearos:
                         OS = 'wearos'
                         i += 1
                 if i == 0:
-                        abort('Missing Android version. Available options: --kitkat, --lollipop, --marshmallow, --nougat, --oreo, --pie, --ten, --eleven, --twelve, --thirteen, --wearos')
+                        abort('Missing Android version. Available options: --kitkat, --lollipop, --marshmallow, --nougat, --oreo, --pie, --ten, --eleven, --twelve, --thirteen, --fourteen, --wearos')
                 elif i > 1:
-                        abort('Select only one Android version: --kitkat, --lollipop, --marshmallow, --nougat, --oreo, --pie, --ten, --eleven, --twelve, --thirteen, --wearos')
+                        abort('Select only one Android version: --kitkat, --lollipop, --marshmallow, --nougat, --oreo, --pie, --ten, --eleven, --twelve, --thirteen, --fourteen, --wearos')
 
                 if args.rootfs and not (args.rootfs == 'full' or args.rootfs == 'minimal' or args.rootfs == 'nano'):
                         abort('Invalid Kali rootfs size. Available options: --rootfs full, --rootfs minimal, --rootfs nano')
@@ -710,7 +714,8 @@ def main():
                 IgnoredFiles.append('bootanimation.zip')
                 IgnoredFiles.append('NetHunterStorePrivilegedExtension.apk')
                 IgnoredFiles.append('NetHunterStore.apk')
-                IgnoredFiles.append('NetHunterKeX.apk')
+                if args.device == 'ticwatchpro':
+                        IgnoredFiles.append('NetHunterKeX.apk')
         # Don't include wearos bootanimation by default
         else:
                 IgnoredFiles.append('bootanimation_wearos.zip')
