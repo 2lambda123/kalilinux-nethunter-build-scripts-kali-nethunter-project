@@ -46,9 +46,6 @@ cp -v /bin/true /usr/sbin/invoke-rc.d
 echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
 
-apt-get clean
-rm -rfv /var/lib/apt/lists/*
-apt-get clean
 apt-get update
 
 debconf-set-selections /debconf.set
