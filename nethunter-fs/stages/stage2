@@ -17,6 +17,8 @@ deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmwa
 EOF
 fi
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # fix for TUN symbolic link to enable programs like openvpn
 # set terminal length to 80 because root destroy terminal length
 # add fd to enable stdin/stdout/stderr
@@ -38,6 +40,8 @@ if [ ! -d /dev/fd ]; then
 fi
 EOF
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Create hosts file
 echo "I: Creating /etc/hosts file"
 cat << EOF > "$rootfs/etc/hosts"
@@ -48,6 +52,8 @@ ff00::0         ip6-mcastprefix
 ff02::1         ip6-allnodes
 ff02::2         ip6-allrouters
 EOF
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Create default capture folders along with /sdcard, /external_sd, /system, /root/.ssh
 echo "I: Creating /root/.ssh directory"
@@ -71,5 +77,7 @@ mkdir -p "$cap/evilap" "$cap/ettercap" "$cap/kismet/db" "$cap/nmap" \
 # Link /lib/modules to /system/lib/modules for modprobe
 echo "I: Creating mountpoint /lib/modules"
 mkdir -p "$rootfs/lib/modules"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 echo "[+] Completed stage 2!"

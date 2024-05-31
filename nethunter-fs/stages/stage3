@@ -4,6 +4,8 @@ export MALLOC_CHECK_=0 # workaround for LP: #520465
 export LC_ALL=C
 export DEBIAN_FRONTEND=noninteractive
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 ## Sometimes we might need to install packages that are not in the kali repository
 ## Copy packages from local repository to chroot for installation
 mkdir -p $rootfs/tmp/deb/
@@ -16,10 +18,14 @@ if ls $rootfs/../data/deb/all/*.deb &>/dev/null; then
   cp $rootfs/../data/deb/all/*.deb $rootfs/tmp/deb/
 fi
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 mount -t proc proc "$rootfs/proc"
 mount -o bind /dev "$rootfs/dev"
 mount -o bind /dev/pts "$rootfs/dev/pts"
 mount -t sysfs sys "$rootfs/sys"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 cat << EOF > "$rootfs/debconf.set"
 console-common console-data/keymap/policy select Select keymap from full list
@@ -205,6 +211,8 @@ fi
 chmod +x "$rootfs/third-stage"
 chroot_do /third-stage
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Sometimes we want to use kali-experimental
 # Let's remove it after we are done with stage 3
 if [ -n "$build_repo" ]; then
@@ -216,6 +224,8 @@ deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmwa
 EOF
 fi
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Add /system/xbin and /system/bin to PATH
 echo "[+] Adding /system/xbin and /system/bin to path"
 cat << EOF >> "$rootfs/root/.profile"
@@ -223,6 +233,8 @@ cat << EOF >> "$rootfs/root/.profile"
 # Add /system/xbin and /system/bin to PATH
 PATH="$PATH:/system/xbin:/system/bin"
 EOF
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Source .bashrc and .profile at login
 echo "[+] Adding bashrc/profile sourcing to bash_profile"
@@ -233,17 +245,23 @@ cat << EOF >> "$rootfs/root/.bash_profile"
 cd ~
 EOF
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Removing Xfce4 panel plugins that are not needed in KeX
 echo "[+] Removing unneeded Xfce4 panel plugins"
 sed -i '/\n/!N;/\n.*\n/!N;/\n.*\n.*kazam/{$d;N;N;d};P;D' "$rootfs/etc/xdg/xfce4/panel/default.xml"
 sed -i '/pulseaudio/d' "$rootfs/etc/xdg/xfce4/panel/default.xml"
 sed -i '/power-manager-plugin/d' "$rootfs/etc/xdg/xfce4/panel/default.xml"
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Modify Kismet log saving folder
 echo "[+] Modifying Kismet log folder"
 sed -i 's|.*\blogprefix=.*|logprefix=/captures/kismet/|g' "$rootfs/etc/kismet/kismet.conf"
 sed -i 's|.*\bncsource=wlan0|ncsource=wlan1|g' "$rootfs/etc/kismet/kismet.conf"
 sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g' "$rootfs/etc/kismet/kismet.conf"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Modify SSHD to allow password logins which is a security risk
 # if the user doesn't change their password
@@ -254,15 +272,21 @@ sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' "$rootfs/etc/
 sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
 sed -i 's/\#PermitRootLogin yes/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Install dictionary
 mkdir -p "$rootfs/opt/dic"
 tar xvf ./data/dictionaries/89.tar.gz -C "$rootfs/opt/dic"
 cp ./data/dictionaries/wordlist.txt "$rootfs/opt/dic/wordlist.txt"
 cp ./data/dictionaries/pinlist.txt "$rootfs/opt/dic/pinlist.txt"
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Sets the default for hostapd.conf to the mana karma version
 sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
 sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-mana-"*
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # DNSMASQ Configuration options for optional access point
 cat << EOF > "$rootfs/etc/dnsmasq.conf"
@@ -277,6 +301,8 @@ dhcp-option=6,10.0.0.1
 log-queries
 EOF
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # In order for metasploit to work daemon,nginx,postgres must all be added to inet
 # beef-xss creates user beef-xss. Openvpn server requires nobdy:nobody in order to work.
 cat << EOF >> "$rootfs/etc/group"
@@ -284,24 +310,38 @@ inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql
 nobody:x:3004:nobody
 EOF
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 cp -f "$rootfs/etc/skel/.vnc/xstartup" "$rootfs/root/.vnc/xstartup"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Apt now adds a new user to "nobody" but the _apt user can't access updates
 # because of inet.  Modify passwd to put them in inet group for android
 sed -i -e 's/^\(_apt:\)\([^:]\)\(:[0-9]*\)\(:[0-9]*\):/\1\2\3:3004:/' "$rootfs/etc/passwd"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Fix armitage to run on NH
 # https://github.com/offensive-security/kali-nethunter/issues/600
 sed -i s/-XX\:\+AggressiveHeap//g "$rootfs/usr/share/armitage/armitage"
 
 # Insert correct .bashrc file from kali-defaults
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 chroot_do cp /etc/skel/.bashrc /root/.bashrc
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
 chroot_do chmod 755 /usr/bin/* 2> /dev/null
 chroot_do chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Minor fix for mana-toolkit which made changes in update.  We need to mirror fixes.
 sed -i 's|dhcpd -cf /etc/mana-toolkit/dhcpd\.conf.*|dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo|' "$rootfs/usr/share/mana-toolkit/run-mana/"*
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 echo "[+] Completed stage 3!"

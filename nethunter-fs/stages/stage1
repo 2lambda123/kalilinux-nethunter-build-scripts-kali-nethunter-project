@@ -2,6 +2,8 @@
 
 mkdir -p "$rootfs"
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 if [ ! -f /usr/share/debootstrap/scripts/kali-rolling ]; then
   #
   # For those not building on Kali
@@ -11,6 +13,8 @@ if [ ! -f /usr/share/debootstrap/scripts/kali-rolling ]; then
   curl "https://gitlab.com/kalilinux/packages/debootstrap/raw/kali/master/scripts/kali" > /usr/share/debootstrap/scripts/kali
   ln -s /usr/share/debootstrap/scripts/kali /usr/share/debootstrap/scripts/kali-rolling
 fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #
 # Docker needs binfmt to run arm.  Without below commands second-stage and chroot will fail
@@ -27,6 +31,8 @@ if [ "$suse" = true ]; then
 else
   update-binfmts --enable "qemu-$qemu_arch"
 fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 echo "[+] Starting debootstrap (download)..."
 tries=0
@@ -54,5 +60,7 @@ fi
 
 echo "[+] Starting debootstrap in chroot (second stage)..."
 chroot_do /debootstrap/debootstrap --second-stage
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 echo "[+] Completed stage 1!"

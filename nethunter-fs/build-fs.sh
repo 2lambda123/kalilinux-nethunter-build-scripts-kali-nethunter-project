@@ -3,11 +3,7 @@
 # If we want to install packages from kali-experimental, set this
 ##build_repo=kali-experimental
 
-# Check for root
-if [[ $EUID -ne 0 ]]; then
-  echo "Please run this as root"
-  exit 1
-fi
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 display_help() {
   echo "Usage: ./build-fs.sh [arguments]..."
@@ -26,66 +22,6 @@ exit_help() {
   echo "Error: $1"
   exit 1
 }
-
-# no arguments provided? show help
-if [ $# -eq 0 ]; then
-  display_help
-  exit 0
-fi
-
-# process arguments
-while [[ $# -gt 0 ]]; do
-  arg=$1
-  case $arg in
-    -h|--help)
-      display_help
-      exit 0 ;;
-    -f|--full)
-      build_size=full
-      ;;
-    -m|--minimal)
-      build_size=minimal
-      ;;
-    -n|--nano)
-      build_size=nano
-      ;;
-    -a|--arch)
-      case $2 in
-        armhf|arm64|i386|amd64)
-          build_arch=$2
-          ;;
-        *)
-          exit_help "Unknown architecture: $2"
-          ;;
-      esac
-      shift
-      ;;
-    *)
-      exit_help "Unknown argument: $arg"
-      ;;
-  esac
-  shift
-done
-
-[ "$build_size" ] || exit_help "Build size not specified!"
-
-# set default architecture for most Android devices if not specified
-[ "$build_arch" ] || build_arch=armhf
-
-rootfs="kali-$build_arch"
-build_output="output/kalifs-$build_arch-$build_size"
-
-mkdir -p output
-
-# Capture all output from here on in kalifs-*.log
-exec &> >(tee -a "${build_output}.log")
-
-echo "[+] Selected build size: $build_size"
-echo "[+] Selected architecture: $build_arch"
-if [ -n "$build_repo" ]; then
-  echo "[+] Additional apt repo: $build_repo"
-fi
-sleep 1
 
 # OS check
 os_check() {
@@ -131,13 +67,110 @@ dep_check() {
   touch .dep_check
 }
 
+cleanup_host() {
+  umount -l "$rootfs/dev/pts" &>/dev/null
+  umount -l "$rootfs/dev" &>/dev/null
+  umount -l "$rootfs/proc" &>/dev/null
+  umount -l "$rootfs/sys" &>/dev/null
+
+  # Remove read only from nano
+  chattr -i $(which nano)
+}
+
+chroot_do() {
+  DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+  LC_ALL=C LANGUAGE=C LANG=C \
+  chroot "$rootfs" "$@"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# no arguments provided? show help
+if [ $# -eq 0 ]; then
+  display_help
+  exit 0
+fi
+
+# process arguments
+while [[ $# -gt 0 ]]; do
+  arg=$1
+  case $arg in
+    -h|--help)
+      display_help
+      exit 0 ;;
+    -f|--full)
+      build_size=full
+      ;;
+    -m|--minimal)
+      build_size=minimal
+      ;;
+    -n|--nano)
+      build_size=nano
+      ;;
+    -a|--arch)
+      case $2 in
+        armhf|arm64|i386|amd64)
+          build_arch=$2
+          ;;
+        *)
+          exit_help "Unknown architecture: $2"
+          ;;
+      esac
+      shift
+      ;;
+    *)
+      exit_help "Unknown argument: $arg"
+      ;;
+  esac
+  shift
+done
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Check for root
+if [[ $EUID -ne 0 ]]; then
+  echo "Please run this as root"
+  exit 1
+fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[ "$build_size" ] || exit_help "Build size not specified!"
+
+# set default architecture for most Android devices if not specified
+[ "$build_arch" ] || build_arch=armhf
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+rootfs="kali-$build_arch"
+build_output="output/kalifs-$build_arch-$build_size"
+
+mkdir -p output
+
+# Capture all output from here on in kalifs-*.log
+exec &> >(tee -a "${build_output}.log")
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+echo "[+] Selected build size: $build_size"
+echo "[+] Selected architecture: $build_arch"
+if [ -n "$build_repo" ]; then
+  echo "[+] Additional apt repo: $build_repo"
+fi
+sleep 1
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 os_check
+
 # Run dependency check once (see above for dep check)
 if [ ! -f ".dep_check" ]; then
   dep_check
 else
   echo "[+] Dependency check previously conducted. To rerun remove file .dep_check"
 fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 if [ -d "$rootfs" ]; then
   echo "Detected prebuilt chroot."
@@ -173,6 +206,8 @@ if [ -f "${build_output}.tar.xz" ]; then
     ;;
   esac
 fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Add packages you want installed here:
 
@@ -247,21 +282,7 @@ esac
 # Fix packages to be a single space delimited line using unquoted magic
 packages=$(echo $packages)
 
-cleanup_host() {
-  umount -l "$rootfs/dev/pts" &>/dev/null
-  umount -l "$rootfs/dev" &>/dev/null
-  umount -l "$rootfs/proc" &>/dev/null
-  umount -l "$rootfs/sys" &>/dev/null
-
-  # Remove read only from nano
-  chattr -i $(which nano)
-}
-
-chroot_do() {
-  DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-  LC_ALL=C LANGUAGE=C LANG=C \
-  chroot "$rootfs" "$@"
-}
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # It's dangerous to leave these mounted if user cleans git after using Ctrl+C
 trap cleanup_host EXIT
@@ -292,13 +313,20 @@ echo "[+] Starting stage 4 (cleanup)"
 # Unmount and fix nano
 cleanup_host
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Compress final file
 echo "[+] Tarring and compressing kalifs.  This can take a while...."
 XZ_OPTS=-9 tar cJvf "${build_output}.tar.xz" "$rootfs/"
+
 echo "[+] Generating sha512sum of kalifs."
 sha512sum "${build_output}.tar.xz" | sed "s|output/||" > "${build_output}.sha512sum"
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 echo "[+] Finished!  Check output folder for chroot."
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Extract on device
 # xz -dc /sdcard/kalifs.tar.xz | tar xvf - -C /data/local/nhsystem
