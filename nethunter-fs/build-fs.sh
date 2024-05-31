@@ -6,7 +6,7 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 display_help() {
-  echo "Usage: $0 [arguments]..."
+  echo "Usage: $0 [arguments]"
   echo "  -f, --full      build a rootfs with all the recommended packages"
   echo "  -m, --minimal   build a rootfs with only the most basic packages"
   echo "  -n, --nano      build a rootfs with only necessary packages for watch"
@@ -46,7 +46,7 @@ dep_check() {
       echo "[+] Checking for installed dependency: $dep"
       if ! rpm -q $dep; then
         echo "[-] Missing dependency: $dep"
-        echo "[+] Attempting to install...."
+        echo "[+] Attempting to install"
         zypper in -y "$dep"
       fi
     done
@@ -68,7 +68,7 @@ dep_check() {
     fi
   fi
 
-  echo "[+] All done! Creating hidden file .dep_check so we don't have preform check again."
+  echo "[+] All done! Creating hidden file .dep_check so we don't have preform check again"
   touch .dep_check
 }
 
@@ -177,7 +177,7 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 if [ -d "$rootfs" ]; then
-  echo "Detected prebuilt chroot."
+  echo "Detected prebuilt chroot"
   echo
   read -rp "Would you like to create a new chroot? (Y/n): " createrootfs
   case $createrootfs in
@@ -191,7 +191,7 @@ if [ -d "$rootfs" ]; then
     ;;
   esac
 else
-  echo "Previous rootfs build not found. Ready to build."
+  echo "Previous rootfs build not found. Ready to build"
   sleep 1
 fi
 
@@ -320,16 +320,16 @@ cleanup_host
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Compress final file
-echo "[+] Tarring and compressing kalifs.  This can take a while...."
+echo "[+] Tarring and compressing kalifs. This can take a while..."
 XZ_OPTS=-9 tar cJvf "${build_output}.tar.xz" "$rootfs/"
 
-echo "[+] Generating sha512sum of kalifs."
+echo "[+] Generating sha512sum of kalifs"
 sha512sum "${build_output}.tar.xz" | sed "s|output/||" > "${build_output}.sha512sum"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Finish
-echo "[+] Finished!  Check output folder for chroot."
+echo "[+] Finished!  Check output folder for chroot"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
