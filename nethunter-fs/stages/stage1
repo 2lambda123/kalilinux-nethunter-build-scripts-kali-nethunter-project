@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p "$rootfs"
+mkdir -pv "$rootfs"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -9,7 +9,7 @@ if [ ! -f /usr/share/debootstrap/scripts/kali-rolling ]; then
   echo "[i] Missing kali from debootstrap, downloading it"
 
   curl "https://gitlab.com/kalilinux/packages/debootstrap/raw/kali/master/scripts/kali" > /usr/share/debootstrap/scripts/kali
-  ln -s /usr/share/debootstrap/scripts/kali /usr/share/debootstrap/scripts/kali-rolling
+  ln -sv /usr/share/debootstrap/scripts/kali /usr/share/debootstrap/scripts/kali-rolling
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -19,7 +19,7 @@ fi
 ##   https://web.archive.org/web/20191108143948/http://neophob.com/2014/10/run-arm-binaries-in-your-docker-container-using-boot2docker/
 if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
   echo "[+] binfmt_misc not mounted, setting up binfmts"
-  mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+  mount -v binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 fi
 
 if [ "$suse" = true ]; then
@@ -48,10 +48,10 @@ debootstrap --foreign --verbose --arch $build_arch kali-rolling "$rootfs" http:/
 
 echo "[+] Installing qemu-$qemu_arch-static interpreter to rootfs"
 if [ "$suse" = true ]; then
-  cp "/usr/bin/qemu-$qemu_arch-binfmt" "$rootfs/usr/bin/"
-  cp "/usr/bin/qemu-$qemu_arch" "$rootfs/usr/bin/"
+  cp -v "/usr/bin/qemu-$qemu_arch-binfmt" "$rootfs/usr/bin/"
+  cp -v "/usr/bin/qemu-$qemu_arch" "$rootfs/usr/bin/"
 else
-  cp "/usr/bin/qemu-$qemu_arch-static" "$rootfs/usr/bin/"
+  cp -v "/usr/bin/qemu-$qemu_arch-static" "$rootfs/usr/bin/"
 fi
 
 echo "[+] Starting debootstrap in chroot (second stage)"

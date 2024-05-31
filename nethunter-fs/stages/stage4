@@ -2,14 +2,14 @@
 
 cat << EOF > "$rootfs/cleanup"
 #!/bin/bash
-rm -f /root/.bash_history
+rm -fv /root/.bash_history
 apt-get clean
-rm -f /var/lib/apt/lists/*
-rm -f /0
-rm -f /hs_err*
-rm -f /third-stage
-rm -f /cleanup
-rm -f /usr/bin/qemu*
+rm -fv /var/lib/apt/lists/*
+rm -fv /0
+rm -fv /hs_err*
+rm -fv /third-stage
+rm -fv /cleanup
+rm -fv /usr/bin/qemu*
 EOF
 
 chmod +x "$rootfs/cleanup"

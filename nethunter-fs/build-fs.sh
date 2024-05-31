@@ -73,10 +73,10 @@ dep_check() {
 }
 
 cleanup_host() {
-  umount -l "$rootfs/dev/pts" &>/dev/null
-  umount -l "$rootfs/dev" &>/dev/null
-  umount -l "$rootfs/proc" &>/dev/null
-  umount -l "$rootfs/sys" &>/dev/null
+  umount -v -l "$rootfs/dev/pts" &>/dev/null
+  umount -v -l "$rootfs/dev" &>/dev/null
+  umount -v -l "$rootfs/proc" &>/dev/null
+  umount -v -l "$rootfs/sys" &>/dev/null
 
   ## Remove read only from nano
   chattr -i $(which nano)
@@ -148,7 +148,7 @@ fi
 rootfs="kali-$build_arch"
 build_output="output/kalifs-$build_arch-$build_size"
 
-mkdir -p output
+mkdir -pv output/
 
 ## Capture all output from here on in kalifs-*.log
 ##   What would be nice is if able to detect if moreutils is installed, then pipe to `| ts -s`
@@ -187,7 +187,7 @@ if [ -d "$rootfs" ]; then
     ;;
   *)
     echo "[i] Removing previous chroot"
-    rm -rf "$rootfs"
+    rm -rfv "$rootfs"
     ;;
   esac
 else
@@ -206,7 +206,7 @@ if [ -f "${build_output}.tar.xz" ]; then
     ;;
   *)
     echo "[i] Removing previous chroot"
-    rm -f "${build_output}.tar.xz" "${build_output}.sha512sum"
+    rm -fv "${build_output}.tar.xz" "${build_output}.sha512sum"
     ;;
   esac
 fi

@@ -8,22 +8,22 @@ export DEBIAN_FRONTEND=noninteractive
 
 ## Sometimes we might need to install packages that are not in the kali repository
 ## Copy packages from local repository to chroot for installation
-mkdir -p $rootfs/tmp/deb/
+mkdir -pv $rootfs/tmp/deb/
 if ls $rootfs/../data/deb/$build_arch/*.deb &>/dev/null; then
   echo "[+] Copying $build_arch packages to chroot from local repository"
-  cp $rootfs/../data/deb/$build_arch/*.deb $rootfs/tmp/deb/
+  cp -v $rootfs/../data/deb/$build_arch/*.deb $rootfs/tmp/deb/
 fi
 if ls $rootfs/../data/deb/all/*.deb &>/dev/null; then
   echo "[+] Copying generic packages to chroot from local repository"
-  cp $rootfs/../data/deb/all/*.deb $rootfs/tmp/deb/
+  cp -v $rootfs/../data/deb/all/*.deb $rootfs/tmp/deb/
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-mount -t proc proc "$rootfs/proc"
-mount -o bind /dev "$rootfs/dev"
-mount -o bind /dev/pts "$rootfs/dev/pts"
-mount -t sysfs sys "$rootfs/sys"
+mount -v -t proc proc "$rootfs/proc"
+mount -v -o bind /dev "$rootfs/dev"
+mount -v -o bind /dev/pts "$rootfs/dev/pts"
+mount -v -t sysfs sys "$rootfs/sys"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -36,17 +36,17 @@ cat << EOF > "$rootfs/third-stage"
 #!/bin/bash
 
 dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d
-cp /bin/true /usr/sbin/invoke-rc.d
+cp -v /bin/true /usr/sbin/invoke-rc.d
 echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
 
 apt-get clean
-rm -rf /var/lib/apt/lists/*
+rm -rfv /var/lib/apt/lists/*
 apt-get clean
 apt-get update
 
 debconf-set-selections /debconf.set
-rm -f /debconf.set
+rm -fv /debconf.set
 apt-get -y install git-core binutils ca-certificates initramfs-tools locales console-common less nano git
 echo "root:toor" | chpasswd
 
@@ -70,8 +70,8 @@ else
   done
 fi
 
-rm -f /usr/sbin/policy-rc.d
-rm -f /usr/sbin/invoke-rc.d
+rm -fv /usr/sbin/policy-rc.d
+rm -fv /usr/sbin/invoke-rc.d
 dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
 
 if [ "$build_size" != nano ]; then
@@ -81,7 +81,7 @@ if [ "$build_size" != nano ]; then
      apt install -y /tmp/deb/*.deb
   fi
   if [ -d /tmp/deb ]; then
-    rm -rf /tmp/deb
+    rm -rfv /tmp/deb
   fi
 fi
 
@@ -144,16 +144,16 @@ EOF
 
   ## powershell for arm64 is not yet available in Microsofts repos so let's install it manually
   if [ $build_arch == "arm64" ]; then
-    mkdir -p $rootfs/opt/microsoft/powershell
+    mkdir -pv $rootfs/opt/microsoft/powershell
     wget -P $rootfs/opt/microsoft/powershell https://github.com/PowerShell/PowerShell/releases/download/v6.2.0-preview.4/powershell-6.2.0-preview.4-linux-arm64.tar.gz
     tar -xzf $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm64.tar.gz -C $rootfs/opt/microsoft/powershell
-    rm $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm64.tar.gz
+    rm -v $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm64.tar.gz
   fi
   if [ $build_arch == "armhf" ]; then
-    mkdir -p $rootfs/opt/microsoft/powershell
+    mkdir -pv $rootfs/opt/microsoft/powershell
     wget -P $rootfs/opt/microsoft/powershell https://github.com/PowerShell/PowerShell/releases/download/v6.2.0-preview.4/powershell-6.2.0-preview.4-linux-arm32.tar.gz
     tar -xzf $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz -C $rootfs/opt/microsoft/powershell
-    rm $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz
+    rm -v $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz
   fi
   ## Microsoft no longer supports deletion of the file DELETE_ME_TO_DISABLE_CONSOLEHOST_TELEMETRY to disable telemetry
   ## We have to set this environment variable instead
@@ -276,10 +276,10 @@ sed -i 's/\#PermitRootLogin yes/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_con
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Install dictionaries/wordlists
-mkdir -p "$rootfs/opt/dic"
+mkdir -pv "$rootfs/opt/dic"
 tar xvf ./data/dictionaries/89.tar.gz -C "$rootfs/opt/dic"
-cp ./data/dictionaries/wordlist.txt "$rootfs/opt/dic/wordlist.txt"
-cp ./data/dictionaries/pinlist.txt "$rootfs/opt/dic/pinlist.txt"
+cp -v ./data/dictionaries/wordlist.txt "$rootfs/opt/dic/wordlist.txt"
+cp -v ./data/dictionaries/pinlist.txt  "$rootfs/opt/dic/pinlist.txt"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -313,7 +313,7 @@ EOF
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-cp -f "$rootfs/etc/skel/.vnc/xstartup" "$rootfs/root/.vnc/xstartup"
+cp -fv "$rootfs/etc/skel/.vnc/xstartup" "$rootfs/root/.vnc/xstartup"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -330,7 +330,7 @@ sed -i s/-XX\:\+AggressiveHeap//g "$rootfs/usr/share/armitage/armitage"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Insert correct .bashrc file from kali-defaults
-chroot_do cp /etc/skel/.bashrc /root/.bashrc
+chroot_do cp -v /etc/skel/.bashrc /root/.bashrc
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
