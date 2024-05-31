@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ## $ ./$0 --help
 ## $ BUILD_MIRROR=http://kali.download ./$0 --full
 

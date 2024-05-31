@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ## Add our sources
 echo "Creating /etc/apt/sources.list file"

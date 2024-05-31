@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "[+] Environments"
 export MALLOC_CHECK_=0 # Workaround for LP: #520465 (https://bugs.launchpad.net/ubuntu/+bug/520465)
@@ -37,7 +37,7 @@ console-common console-data/keymap/full select en-latin1-nodeadkeys
 EOF
 
 cat << EOF > "$rootfs/third-stage"
-#!/bin/bash
+#!/usr/bin/env bash
 
 dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d
 cp -v /bin/true /usr/sbin/invoke-rc.d
@@ -115,7 +115,7 @@ if [ "$build_size" = full ]; then
   echo "[+] VNC"
   ## Add default xstartup file for tigervnc-standalone-server
   cat << EOF >> "$rootfs/etc/skel/.vnc/xstartup"
-#!/bin/sh
+#!/usr/bin/env sh
 
 #############################
 ##          All            ##

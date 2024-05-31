@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "[+] Creating cleanup script"
 cat << EOF > "$rootfs/cleanup"
-#!/bin/bash
+#!/usr/bin/env sh
 rm -fv /root/.bash_history
 apt-get clean
 rm -fv /var/lib/apt/lists/*
