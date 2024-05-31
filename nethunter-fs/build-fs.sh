@@ -70,7 +70,7 @@ dep_check() {
       fi
     done
     if [ -n "$pkg_missing" ]; then
-      echo "[+] Identified missing dependency"
+      echo "[+] Identified missing dependencies"
       apt-get update
       for dep in $pkg_missing; do
         echo "[+] Attempting to install: $dep"
