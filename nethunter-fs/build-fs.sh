@@ -95,12 +95,14 @@ os_check() {
 }
 
 # Dependency checks
+##   If editing, needs to match whats in ./Dockerfile, ./README.md and ./build-fs.sh
 dep_check() {
-  debian_deps="git-core gnupg flex bison gperf build-essential binfmt-support
-    zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib
-    parted kpartx pixz qemu-user qemu-user-static abootimg cgpt vboot-kernel-utils
-    vboot-utils bc lzma lzop xz-utils automake autoconf m4 dosfstools rsync u-boot-tools
-    schedtool e2fsprogs device-tree-compiler ccache dos2unix debootstrap"
+  debian_deps="binfmt-support
+               ca-certificates
+               curl
+               debootstrap
+               qemu-user-static
+               xz-utils"
   suse_deps="gpg2 flex bison gperf zip curl libncurses6 glibc-devel-32bit
     parted kpartx pixz qemu-linux-user abootimg vboot bc xz lzop automake autoconf m4 dosfstools rsync u-boot-tools
     schedtool e2fsprogs dtc ccache dos2unix debootstrap dpkg"

@@ -28,12 +28,15 @@ docker cp nethunter_build:/root/nethunter-fs/output .
 
 This could be built on any [Debian-based](https://www.debian.org/derivatives/) system but we recommend building on [Kali Linux](https://www.kali.org/).
 
+<!-- If editing, needs to match whats in ./Dockerfile, ./README.md and ./build-fs.sh -->
 ```bash
-apt install -y abootimg autoconf automake bc bison build-essential ccache \
-  cgpt curl debootstrap debootstrap device-tree-compiler dos2unix dosfstools \
-  e2fsprogs flex g++-multilib gcc-multilib git git-core gnupg gperf kpartx \
-  libncurses5-dev lzma lzop m4 parted pixz qemu-user-static rsync schedtool \
-  u-boot-tools vboot-kernel-utils vboot-utils xz-utils zip zlib1g-dev
+apt install -y \
+  binfmt-support \
+  ca-certificates \
+  curl \
+  debootstrap \
+  qemu-user-static \
+  xz-utils
 ```
 
 ### Examples
