@@ -86,7 +86,7 @@ cleanup_host() {
   umount -v -l "$rootfs/sys" &>/dev/null
 
   ## Remove read only from nano
-  chattr -i $(which nano)
+  #chattr -i $(which nano)
 }
 
 chroot_do() {
@@ -318,7 +318,7 @@ esac
 trap cleanup_host EXIT
 
 ## Need to find where this error occurs, but we make nano read only during build and reset after installation is completed
-chattr +i $(which nano)
+#chattr +i $(which nano)
 
 export build_arch build_size qemu_arch rootfs packages
 export -f chroot_do
