@@ -57,4 +57,4 @@ RUN mkdir -p ${KALI_WORKSPACE}
 COPY . ${KALI_WORKSPACE}
 WORKDIR ${KALI_WORKSPACE}
 
-CMD ["/root/nethunter-fs/build.sh", "-f"]
+CMD ["/root/nethunter-fs/build-fs.sh", "-f"]

@@ -17,7 +17,7 @@ docker cp nethunter_build:/root/nethunter-fs/output .
 **[Docker registry](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/container_registry)**:
 
 ```bash
-./docker-push-gitlab.sh
+./docker-push.sh
 ```
 
 - - -
@@ -41,13 +41,13 @@ apt install -y abootimg autoconf automake bc bison build-essential ccache \
 To create a **full** Kali NetHunter filesystem:
 
 ```bash
-./build.sh -f
+./build-fs.sh -f
 ```
 
 To create a **minimal** Kali NetHunter filesystem:
 
 ```bash
-./build.sh -m
+./build-fs.sh -m
 ```
 
 

@@ -10,7 +10,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 display_help() {
-	echo "Usage: ./build.sh [arguments]..."
+	echo "Usage: ./build-fs.sh [arguments]..."
 	echo
 	echo "  -f, --full      build a rootfs with all the recommended packages"
 	echo "  -m, --minimal   build a rootfs with only the most basic packages"
