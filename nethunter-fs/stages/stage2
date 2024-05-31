@@ -66,13 +66,24 @@ echo "[i] Creating /etc/skel/.vnc directory"
 mkdir -pv "$rootfs/etc/skel/.vnc"
 
 echo "[i] Creating /sdcard, /external_sd, /system mountpoints"
-mkdir -pv "$rootfs/sdcard" "$rootfs/external_sd" "$rootfs/system"
+mkdir -pv "$rootfs/external_sd" \
+          "$rootfs/sdcard" \
+          "$rootfs/system"
 
 echo "[i] Creating /captures directories"
 cap="$rootfs/captures"
-mkdir -pv "$cap/evilap" "$cap/ettercap" "$cap/kismet/db" "$cap/nmap" \
-  "$cap/sslstrip" "$cap/tshark" "$cap/wifite" "$cap/tcpdump" \
-  "$cap/urlsnarf" "$cap/dsniff" "$cap/honeyproxy" "$cap/mana/sslsplit"
+mkdir -pv "$cap/dsniff" \
+          "$cap/ettercap" \
+          "$cap/evilap" \
+          "$cap/honeyproxy" \
+          "$cap/kismet/db" \
+          "$cap/mana/sslsplit" \
+          "$cap/nmap" \
+          "$cap/sslstrip" \
+          "$cap/tcpdump" \
+          "$cap/tshark" \
+          "$cap/urlsnarf" \
+          "$cap/wifite"
 
 ## Link /lib/modules to /system/lib/modules for modprobe
 echo "[i] Creating mountpoint /lib/modules"
