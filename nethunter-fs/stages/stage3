@@ -7,13 +7,13 @@ export DEBIAN_FRONTEND=noninteractive
 ## Sometimes we might need to install packages that are not in the kali repository
 ## Copy packages from local repository to chroot for installation
 mkdir -p $rootfs/tmp/deb/
-if ls $rootfs/../repo/$build_arch/*.deb &>/dev/null; then
+if ls $rootfs/../data/deb/$build_arch/*.deb &>/dev/null; then
     echo "[+] Copying $build_arch packages to chroot from local repository"
-    cp $rootfs/../repo/$build_arch/*.deb $rootfs/tmp/deb/
+    cp $rootfs/../data/deb/$build_arch/*.deb $rootfs/tmp/deb/
 fi
-if ls $rootfs/../repo/all/*.deb &>/dev/null; then
+if ls $rootfs/../data/deb/all/*.deb &>/dev/null; then
     echo "[+] Copying generic packages to chroot from local repository"
-    cp $rootfs/../repo/all/*.deb $rootfs/tmp/deb/
+    cp $rootfs/../data/deb/all/*.deb $rootfs/tmp/deb/
 fi
 
 mount -t proc proc "$rootfs/proc"
@@ -256,9 +256,9 @@ sed -i 's/\#PermitRootLogin yes/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_con
 
 # Install dictionary
 mkdir -p "$rootfs/opt/dic"
-tar xvf dictionary/89.tar.gz -C "$rootfs/opt/dic"
-cp dictionary/wordlist.txt "$rootfs/opt/dic/wordlist.txt"
-cp dictionary/pinlist.txt "$rootfs/opt/dic/pinlist.txt"
+tar xvf ./data/dictionaries/89.tar.gz -C "$rootfs/opt/dic"
+cp ./data/dictionaries/wordlist.txt "$rootfs/opt/dic/wordlist.txt"
+cp ./data/dictionaries/pinlist.txt "$rootfs/opt/dic/pinlist.txt"
 
 # Sets the default for hostapd.conf to the mana karma version
 sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
