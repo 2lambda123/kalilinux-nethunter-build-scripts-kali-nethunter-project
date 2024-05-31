@@ -13,6 +13,7 @@ You can use the [pre-created container](https://gitlab.com/kalilinux/nethunter/b
 To pull the image from GitLab's registry:
 
 ```console
+$ apt install docker.io qemu-user-static
 $ docker pull registry.gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project:latest
 $ docker run --privileged --interactive --tty --rm --volume ./output:/srv/nethunter-fs/output registry.gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project --help
 $ docker run --privileged --interactive --tty --rm --volume ./output:/srv/nethunter-fs/output registry.gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project
@@ -21,6 +22,7 @@ $ docker run --privileged --interactive --tty --rm --volume ./output:/srv/nethun
 Otherwise, you can build the image using the [Dockerfile](./Dockerfile):
 
 ```console
+$ apt install git docker.io qemu-user-static
 $ git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project.git
 $ cd kali-nethunter-project/kali-nethunter-project/
 $ docker build -t nethunter .

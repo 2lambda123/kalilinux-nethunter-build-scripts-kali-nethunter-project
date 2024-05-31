@@ -20,6 +20,9 @@ fi
 if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
   echo "[+] binfmt_misc not mounted"
   mount -v binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+  if [ -e "/.dockerenv" ]; then
+    ls -lh /proc/sys/fs/binfmt_misc/qemu-* >/dev/null || echo "[!] Try installing qemu-user-static on the host"
+  fi
 fi
 
 echo "[+] Setting up binfmts"
