@@ -321,7 +321,7 @@ cleanup_host
 
 ## Compress final file
 echo "[+] Tarring and compressing kalifs. This can take a while..."
-XZ_OPTS=-9 tar cJvf "${build_output}.tar.xz" "$rootfs/"
+XZ_OPTS=-9 tar cJf "${build_output}.tar.xz" "$rootfs/"
 
 echo "[+] Generating sha512sum of kalifs"
 sha512sum "${build_output}.tar.xz" | sed "s|output/||" > "${build_output}.sha512sum"
