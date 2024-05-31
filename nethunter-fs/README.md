@@ -11,7 +11,7 @@ Build a basic [Kali NetHunter](https://www.kali.org/get-kali/#kali-mobile) chroo
 ```bash
 docker build -t nethunter .
 docker run --privileged --name nethunter_build -i -t nethunter 2>&1 | tee output.log
-docker cp nethunter_build:/root/nethunter-fs/output .
+docker cp nethunter_build:/srv/nethunter-fs/output .
 ```
 
 **[Docker registry](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/container_registry)**:
