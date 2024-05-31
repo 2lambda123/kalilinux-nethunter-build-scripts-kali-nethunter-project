@@ -5,66 +5,66 @@
 
 # Check for root
 if [[ $EUID -ne 0 ]]; then
-	echo "Please run this as root"
-	exit 1
+  echo "Please run this as root"
+  exit 1
 fi
 
 display_help() {
-	echo "Usage: ./build-fs.sh [arguments]..."
-	echo
-	echo "  -f, --full      build a rootfs with all the recommended packages"
-	echo "  -m, --minimal   build a rootfs with only the most basic packages"
-	echo "  -n, --nano      build a rootfs with only necessary packages for watch"
-	echo "  -a, --arch      select a different architecture (default: armhf)"
-	echo "                  possible options: armhf, arm64, i386, amd64"
-	echo "  -h, --help      display this help message"
-	echo
+  echo "Usage: ./build-fs.sh [arguments]..."
+  echo
+  echo "  -f, --full      build a rootfs with all the recommended packages"
+  echo "  -m, --minimal   build a rootfs with only the most basic packages"
+  echo "  -n, --nano      build a rootfs with only necessary packages for watch"
+  echo "  -a, --arch      select a different architecture (default: armhf)"
+  echo "                  possible options: armhf, arm64, i386, amd64"
+  echo "  -h, --help      display this help message"
+  echo
 }
 
 exit_help() {
-	display_help
-	echo "Error: $1"
-	exit 1
+  display_help
+  echo "Error: $1"
+  exit 1
 }
 
 # no arguments provided? show help
 if [ $# -eq 0 ]; then
-	display_help
-	exit 0
+  display_help
+  exit 0
 fi
 
 # process arguments
 while [[ $# -gt 0 ]]; do
-	arg=$1
-	case $arg in
-		-h|--help)
-			display_help
-			exit 0 ;;
-		-f|--full)
-			build_size=full
-			;;
-		-m|--minimal)
-			build_size=minimal
-			;;
-                -n|--nano)
-                        build_size=nano
-                        ;;
-		-a|--arch)
-			case $2 in
-				armhf|arm64|i386|amd64)
-					build_arch=$2
-					;;
-				*)
-					exit_help "Unknown architecture: $2"
-					;;
-			esac
-			shift
-			;;
-		*)
-			exit_help "Unknown argument: $arg"
-			;;
-	esac
-	shift
+  arg=$1
+  case $arg in
+    -h|--help)
+      display_help
+      exit 0 ;;
+    -f|--full)
+      build_size=full
+      ;;
+    -m|--minimal)
+      build_size=minimal
+      ;;
+    -n|--nano)
+      build_size=nano
+      ;;
+    -a|--arch)
+      case $2 in
+        armhf|arm64|i386|amd64)
+          build_arch=$2
+          ;;
+        *)
+          exit_help "Unknown architecture: $2"
+          ;;
+      esac
+      shift
+      ;;
+    *)
+      exit_help "Unknown argument: $arg"
+      ;;
+  esac
+  shift
 done
 
 [ "$build_size" ] || exit_help "Build size not specified!"
@@ -83,109 +83,109 @@ exec &> >(tee -a "${build_output}.log")
 echo "[+] Selected build size: $build_size"
 echo "[+] Selected architecture: $build_arch"
 if [ -n "$build_repo" ]; then
-    echo "[+] Additional apt repo: $build_repo"
+  echo "[+] Additional apt repo: $build_repo"
 fi
 sleep 1
 
 # OS check
 os_check() {
-	if [ -f /etc/SUSE-brand ]; then
-		suse=true
-	fi
+  if [ -f /etc/SUSE-brand ]; then
+    suse=true
+  fi
 }
 
 # Dependency checks
 dep_check() {
-	debian_deps="git-core gnupg flex bison gperf build-essential binfmt-support
-		zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib
-		parted kpartx pixz qemu-user qemu-user-static abootimg cgpt vboot-kernel-utils
-		vboot-utils bc lzma lzop xz-utils automake autoconf m4 dosfstools rsync u-boot-tools
-		schedtool e2fsprogs device-tree-compiler ccache dos2unix debootstrap"
-	suse_deps="gpg2 flex bison gperf zip curl libncurses6 glibc-devel-32bit
-                parted kpartx pixz qemu-linux-user abootimg vboot bc xz lzop automake autoconf m4 dosfstools rsync u-boot-tools
-                schedtool e2fsprogs dtc ccache dos2unix debootstrap dpkg"
+  debian_deps="git-core gnupg flex bison gperf build-essential binfmt-support
+    zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib
+    parted kpartx pixz qemu-user qemu-user-static abootimg cgpt vboot-kernel-utils
+    vboot-utils bc lzma lzop xz-utils automake autoconf m4 dosfstools rsync u-boot-tools
+    schedtool e2fsprogs device-tree-compiler ccache dos2unix debootstrap"
+  suse_deps="gpg2 flex bison gperf zip curl libncurses6 glibc-devel-32bit
+    parted kpartx pixz qemu-linux-user abootimg vboot bc xz lzop automake autoconf m4 dosfstools rsync u-boot-tools
+    schedtool e2fsprogs dtc ccache dos2unix debootstrap dpkg"
 
-	if [ "$suse" = true ]; then
-		for dep in $suse_deps; do
-			echo "[+] Checking for installed dependency: $dep"
-			if ! rpm -q $dep; then
-				echo "[-] Missing dependency: $dep"
-				echo "[+] Attempting to install...."
-				zypper in -y "$dep"
-			fi
-		done
-	else
-		for dep in $debian_deps; do
-			echo "[+] Checking for installed dependency: $dep"
-			if ! dpkg-query -W --showformat='${Status}\n' "$dep" | grep -q "install ok installed"; then
-				echo "[-] Missing dependency: $dep"
-				echo "[+] Attempting to install...."
-				apt-get -y install "$dep"
-			fi
-		done
-	fi
+  if [ "$suse" = true ]; then
+    for dep in $suse_deps; do
+      echo "[+] Checking for installed dependency: $dep"
+      if ! rpm -q $dep; then
+        echo "[-] Missing dependency: $dep"
+        echo "[+] Attempting to install...."
+        zypper in -y "$dep"
+      fi
+    done
+  else
+    for dep in $debian_deps; do
+      echo "[+] Checking for installed dependency: $dep"
+      if ! dpkg-query -W --showformat='${Status}\n' "$dep" | grep -q "install ok installed"; then
+        echo "[-] Missing dependency: $dep"
+        echo "[+] Attempting to install...."
+        apt-get -y install "$dep"
+      fi
+    done
+  fi
 
-	echo "[+] All done! Creating hidden file .dep_check so we don't have preform check again."
-	touch .dep_check
+  echo "[+] All done! Creating hidden file .dep_check so we don't have preform check again."
+  touch .dep_check
 }
 
 os_check
 # Run dependency check once (see above for dep check)
 if [ ! -f ".dep_check" ]; then
-	dep_check
+  dep_check
 else
-	echo "[+] Dependency check previously conducted. To rerun remove file .dep_check"
+  echo "[+] Dependency check previously conducted. To rerun remove file .dep_check"
 fi
 
 if [ -d "$rootfs" ]; then
-	echo "Detected prebuilt chroot."
-	echo
-	read -rp "Would you like to create a new chroot? (Y/n): " createrootfs
-	case $createrootfs in
-	n*|N*)
-		echo "Exiting"
-		exit
-		;;
-	*)
-		echo "Removing previous chroot"
-		rm -rf "$rootfs"
-		;;
-	esac
+  echo "Detected prebuilt chroot."
+  echo
+  read -rp "Would you like to create a new chroot? (Y/n): " createrootfs
+  case $createrootfs in
+  n*|N*)
+    echo "Exiting"
+    exit
+    ;;
+  *)
+    echo "Removing previous chroot"
+    rm -rf "$rootfs"
+    ;;
+  esac
 else
-	echo "Previous rootfs build not found. Ready to build."
-	sleep 1
+  echo "Previous rootfs build not found. Ready to build."
+  sleep 1
 fi
 
 if [ -f "${build_output}.tar.xz" ]; then
-	echo "Detected previously created chroot output file: ${build_output}.tar.xz"
-	echo
-	read -rp "Would you like to create a new file? (Y/n): " createnewxz
-	case $createnewxz in
-	n*|N*)
-		echo "Exiting"
-		exit
-		;;
-	*)
-		echo "Removing previous chroot"
-		rm -f "${build_output}.tar.xz" "${build_output}.sha512sum"
-		;;
-	esac
+  echo "Detected previously created chroot output file: ${build_output}.tar.xz"
+  echo
+  read -rp "Would you like to create a new file? (Y/n): " createnewxz
+  case $createnewxz in
+  n*|N*)
+    echo "Exiting"
+    exit
+    ;;
+  *)
+    echo "Removing previous chroot"
+    rm -f "${build_output}.tar.xz" "${build_output}.sha512sum"
+    ;;
+  esac
 fi
 
 # Add packages you want installed here:
 
 # NANO PACKAGES
 pkg_nano="kali-menu wpasupplicant kali-defaults initramfs-tools u-boot-tools nmap
-	 openssh-server kali-archive-keyring apt-transport-https ntpdate usbutils pciutils sudo vim git-core binutils ca-certificates
-	 locales console-common less nano git bluetooth bluez
-	 bluez-tools bluez-obexd libbluetooth3 sox spooftooph libbluetooth-dev
-	 redfang bluelog blueranger hcitool usbutils net-tools iw aircrack-ng
-	 nethunter-utils apache2 zsh abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils python3 pixiewps python2.7-minimal"
+  openssh-server kali-archive-keyring apt-transport-https ntpdate usbutils pciutils sudo vim git-core binutils ca-certificates
+  locales console-common less nano git bluetooth bluez
+  bluez-tools bluez-obexd libbluetooth3 sox spooftooph libbluetooth-dev
+  redfang bluelog blueranger hcitool usbutils net-tools iw aircrack-ng
+  nethunter-utils apache2 zsh abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils python3 pixiewps python2.7-minimal"
 
 # MINIMAL PACKAGES
 # usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 pkg_minimal="locales-all openssh-server kali-defaults kali-archive-keyring
-	apt-transport-https ntpdate usbutils pciutils sudo vim python2.7-minimal"
+  apt-transport-https ntpdate usbutils pciutils sudo vim python2.7-minimal"
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter proxmark3"
@@ -208,57 +208,57 @@ pkg_full_amd64=""
 
 # Set packages to install by arch and size
 case $build_arch in
-	armhf)
-		qemu_arch=arm
-		packages="$pkg_minimal $pkg_minimal_armhf"
-		[ "$build_size" = full ] &&
-			packages="$packages $pkg_full $pkg_full_armhf"
-                [ "$build_size" = nano ] &&
-                        packages="$pkg_nano"
-		;;
-	arm64)
-		qemu_arch=aarch64
-		packages="$pkg_minimal $pkg_minimal_arm64"
-		[ "$build_size" = full ] &&
-			packages="$packages $pkg_full $pkg_full_arm64"
-                [ "$build_size" = nano ] &&
-                        packages="$pkg_nano"
-                ;;
-	i386)
-		qemu_arch=i386
-		packages="$pkg_minimal $pkg_minimal_i386"
-		[ "$build_size" = full ] &&
-			packages="$packages $pkg_full $pkg_full_i386"
-                [ "$build_size" = nano ] &&
-                        packages="$pkg_nano"
-                ;;
-	amd64)
-		qemu_arch=x86_64
-		packages="$pkg_minimal $pkg_minimal_amd64"
-		[ "$build_size" = full ] &&
-			packages="$packages $pkg_full $pkg_full_amd64"
-                [ "$build_size" = nano ] &&
-                        packages="$pkg_nano"
-                ;;
+  armhf)
+    qemu_arch=arm
+    packages="$pkg_minimal $pkg_minimal_armhf"
+    [ "$build_size" = full ] &&
+      packages="$packages $pkg_full $pkg_full_armhf"
+    [ "$build_size" = nano ] &&
+      packages="$pkg_nano"
+    ;;
+  arm64)
+    qemu_arch=aarch64
+    packages="$pkg_minimal $pkg_minimal_arm64"
+    [ "$build_size" = full ] &&
+      packages="$packages $pkg_full $pkg_full_arm64"
+    [ "$build_size" = nano ] &&
+      packages="$pkg_nano"
+    ;;
+  i386)
+    qemu_arch=i386
+    packages="$pkg_minimal $pkg_minimal_i386"
+    [ "$build_size" = full ] &&
+      packages="$packages $pkg_full $pkg_full_i386"
+    [ "$build_size" = nano ] &&
+      packages="$pkg_nano"
+    ;;
+  amd64)
+    qemu_arch=x86_64
+    packages="$pkg_minimal $pkg_minimal_amd64"
+    [ "$build_size" = full ] &&
+      packages="$packages $pkg_full $pkg_full_amd64"
+    [ "$build_size" = nano ] &&
+      packages="$pkg_nano"
+    ;;
 esac
 
 # Fix packages to be a single space delimited line using unquoted magic
 packages=$(echo $packages)
 
 cleanup_host() {
-	umount -l "$rootfs/dev/pts" &>/dev/null
-	umount -l "$rootfs/dev" &>/dev/null
-	umount -l "$rootfs/proc" &>/dev/null
-	umount -l "$rootfs/sys" &>/dev/null
+  umount -l "$rootfs/dev/pts" &>/dev/null
+  umount -l "$rootfs/dev" &>/dev/null
+  umount -l "$rootfs/proc" &>/dev/null
+  umount -l "$rootfs/sys" &>/dev/null
 
-	# Remove read only from nano
-	chattr -i $(which nano)
+  # Remove read only from nano
+  chattr -i $(which nano)
 }
 
 chroot_do() {
-	DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-	LC_ALL=C LANGUAGE=C LANG=C \
-	chroot "$rootfs" "$@"
+  DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+  LC_ALL=C LANGUAGE=C LANG=C \
+  chroot "$rootfs" "$@"
 }
 
 # It's dangerous to leave these mounted if user cleans git after using Ctrl+C

@@ -26,15 +26,15 @@ export TERM=xterm-256color
 stty columns 80
 cd /root
 if [ ! -d /dev/net ]; then
-	mkdir -p /dev/net
-	ln -sf /dev/tun /dev/net/tun
+  mkdir -p /dev/net
+  ln -sf /dev/tun /dev/net/tun
 fi
 
 if [ ! -d /dev/fd ]; then
-	ln -sf /proc/self/fd /dev/fd
-	ln -sf /dev/fd/0 /dev/stdin
-	ln -sf /dev/fd/1 /dev/stdout
-	ln -sf /dev/fd/2 /dev/stderr
+  ln -sf /proc/self/fd /dev/fd
+  ln -sf /dev/fd/0 /dev/stdin
+  ln -sf /dev/fd/1 /dev/stdout
+  ln -sf /dev/fd/2 /dev/stderr
 fi
 EOF
 
@@ -65,8 +65,8 @@ mkdir -p "$rootfs/sdcard" "$rootfs/external_sd" "$rootfs/system"
 echo "I: Creating /captures directories"
 cap="$rootfs/captures"
 mkdir -p "$cap/evilap" "$cap/ettercap" "$cap/kismet/db" "$cap/nmap" \
-	"$cap/sslstrip" "$cap/tshark" "$cap/wifite" "$cap/tcpdump" \
-	"$cap/urlsnarf" "$cap/dsniff" "$cap/honeyproxy" "$cap/mana/sslsplit"
+  "$cap/sslstrip" "$cap/tshark" "$cap/wifite" "$cap/tcpdump" \
+  "$cap/urlsnarf" "$cap/dsniff" "$cap/honeyproxy" "$cap/mana/sslsplit"
 
 # Link /lib/modules to /system/lib/modules for modprobe
 echo "I: Creating mountpoint /lib/modules"
