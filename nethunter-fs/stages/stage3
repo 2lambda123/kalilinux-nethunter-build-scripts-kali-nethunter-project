@@ -153,7 +153,8 @@ export SHELL=/bin/bash
 ##          XFCE          ##
 startxfce4
 EOF
-  chmod 700 "$rootfs/etc/skel/.vnc/xstartup"
+  chmod 0700 "$rootfs/etc/skel/.vnc/xstartup"
+
   ## powershell for arm64 is not yet available in Microsofts repos so let's install it manually
   echo "[+] PowerShell"
   if [ $build_arch == "arm64" ]; then
