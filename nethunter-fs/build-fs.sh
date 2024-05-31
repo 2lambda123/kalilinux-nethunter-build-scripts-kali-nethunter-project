@@ -165,7 +165,6 @@ echo "[+] Selected architecture: $build_arch"
 if [ -n "$build_repo" ]; then
   echo "[+] Additional apt repo  : $build_repo"
 fi
-sleep 1
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -196,7 +195,6 @@ if [ -d "$rootfs" ]; then
   esac
 else
   echo "[i] Previous rootfs build not found. Ready to build"
-  sleep 1
 fi
 
 if [ -f "${build_output}.tar.xz" ]; then
