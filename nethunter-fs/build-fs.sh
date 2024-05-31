@@ -288,8 +288,7 @@ pkg_minimal="locales-all"
 ## DEFAULT PACKAGES FULL INSTALL - all the recommended packages
 ##   REF: https://gitlab.com/kalilinux/packages/kali-meta/-/blob/kali/master/debian/control
 pkg_full="kali-linux-nethunter
-          proxmark3
-          wpa" # hostapd
+          proxmark3"
 
 packages="$pkg_minimal"
 [ "$build_size" = full ] &&
