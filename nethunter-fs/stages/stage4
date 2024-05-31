@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "[+] Creating cleanup script"
 cat << EOF > "$rootfs/cleanup"
 #!/bin/bash
 rm -fv /root/.bash_history

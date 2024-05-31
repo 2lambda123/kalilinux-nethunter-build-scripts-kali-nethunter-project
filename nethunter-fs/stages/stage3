@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "[+] Environments"
 export MALLOC_CHECK_=0 # Workaround for LP: #520465 (https://bugs.launchpad.net/ubuntu/+bug/520465)
 export LC_ALL=C
 export DEBIAN_FRONTEND=noninteractive
@@ -8,6 +9,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 ## Sometimes we might need to install packages that are not in the kali repository
 ## Copy packages from local repository to chroot for installation
+echo "[+] DEBs"
 mkdir -pv $rootfs/tmp/deb/
 if ls $rootfs/../data/deb/$build_arch/*.deb &>/dev/null; then
   echo "[+] Copying $build_arch packages to chroot from local repository"
@@ -20,6 +22,7 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+echo "[+] Mounts"
 mount -v -t proc proc "$rootfs/proc"
 mount -v -o bind /dev "$rootfs/dev"
 mount -v -o bind /dev/pts "$rootfs/dev/pts"
@@ -27,6 +30,7 @@ mount -v -t sysfs sys "$rootfs/sys"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+echo "[+] Prep"
 cat << EOF > "$rootfs/debconf.set"
 console-common console-data/keymap/policy select Select keymap from full list
 console-common console-data/keymap/full select en-latin1-nodeadkeys
@@ -47,6 +51,8 @@ apt-get update
 
 debconf-set-selections /debconf.set
 rm -fv /debconf.set
+
+echo "[i] Installing core packages"
 apt-get -y install git-core binutils ca-certificates initramfs-tools locales console-common less nano git
 echo "root:toor" | chpasswd
 
@@ -74,7 +80,9 @@ rm -fv /usr/sbin/policy-rc.d
 rm -fv /usr/sbin/invoke-rc.d
 dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
 
-if [ "$build_size" != nano ]; then
+if [ "$build_size" == nano ]; then
+  echo "[i] Skipping local repo of packages"
+else
   echo "[i] Installing custom packages from local repo"
   ## Install custom packages from local repo
   if ls /tmp/deb/*.deb &>/dev/null; then
@@ -104,6 +112,7 @@ EOF
 
 ## Let's do a little bit of magic from outside the chroot
 if [ "$build_size" = full ]; then
+  echo "[+] VNC"
   ## Add default xstartup file for tigervnc-standalone-server
   cat << EOF >> "$rootfs/etc/skel/.vnc/xstartup"
 #!/bin/sh
@@ -143,6 +152,7 @@ EOF
   #git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
 
   ## powershell for arm64 is not yet available in Microsofts repos so let's install it manually
+  echo "[+] PowerShell"
   if [ $build_arch == "arm64" ]; then
     mkdir -pv $rootfs/opt/microsoft/powershell
     wget -P $rootfs/opt/microsoft/powershell https://github.com/PowerShell/PowerShell/releases/download/v6.2.0-preview.4/powershell-6.2.0-preview.4-linux-arm64.tar.gz
@@ -276,6 +286,7 @@ sed -i 's/\#PermitRootLogin yes/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_con
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Install dictionaries/wordlists
+echo "[+] Dictionaries"
 mkdir -pv "$rootfs/opt/dic"
 tar xvf ./data/dictionaries/89.tar.gz -C "$rootfs/opt/dic"
 cp -v ./data/dictionaries/wordlist.txt "$rootfs/opt/dic/wordlist.txt"
@@ -284,12 +295,14 @@ cp -v ./data/dictionaries/pinlist.txt  "$rootfs/opt/dic/pinlist.txt"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Sets the default for hostapd.conf to the mana karma version
+echo "[+] hostapd"
 sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
 sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-mana-"*
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## DNSMASQ Configuration options for optional access point
+echo "[+] dnsmasq"
 cat << EOF > "$rootfs/etc/dnsmasq.conf"
 log-facility=/var/log/dnsmasq.log
 #address=/#/10.0.0.1
@@ -306,6 +319,7 @@ EOF
 
 ## In order for metasploit to work daemon,nginx,postgres must all be added to inet beef-xss creates user beef-xss.
 ## Openvpn server requires nobdy:nobody in order to work.
+echo "[+] Groups"
 cat << EOF >> "$rootfs/etc/group"
 inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql
 nobody:x:3004:nobody
@@ -313,29 +327,37 @@ EOF
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+echo "[+] VNC"
 cp -fv "$rootfs/etc/skel/.vnc/xstartup" "$rootfs/root/.vnc/xstartup"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Apt now adds a new user to "nobody" but the _apt user can't access updates because of inet
 ## Modify passwd to put them in inet group for android
+echo "[+] Users"
 sed -i -e 's/^\(_apt:\)\([^:]\)\(:[0-9]*\)\(:[0-9]*\):/\1\2\3:3004:/' "$rootfs/etc/passwd"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Fix armitage to run on NetHunter
 ##   REF: https://github.com/offensive-security/kali-nethunter/issues/600
+echo "[+] armitage"
 sed -i s/-XX\:\+AggressiveHeap//g "$rootfs/usr/share/armitage/armitage"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Insert correct .bashrc file from kali-defaults
+echo "[+] bashrc"
 chroot_do cp -v /etc/skel/.bashrc /root/.bashrc
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
 chroot_do chmod 755 /usr/bin/* 2> /dev/null
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+echo "[+] mana-toolkit"
 chroot_do chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
 
 ## Minor fix for mana-toolkit which made changes in update.  We need to mirror fixes.

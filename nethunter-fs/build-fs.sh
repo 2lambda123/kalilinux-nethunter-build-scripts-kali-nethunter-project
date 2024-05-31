@@ -43,7 +43,7 @@ dep_check() {
 
   if [ "$suse" = true ]; then
     for dep in $suse_deps; do
-      echo "[+] Checking for installed dependency: $dep"
+      echo "[+] Checking for: $dep"
       if ! rpm -q $dep; then
         echo "[-] Missing dependency: $dep"
         echo "[+] Attempting to install"
@@ -52,14 +52,16 @@ dep_check() {
     done
   else
     pkg_missing=""
+    echo "[+] Checking for dependencies"
     for dep in $debian_deps; do
-      echo "[+] Checking for installed dependency: $dep"
+      echo "[+] Checking for: $dep"
       if ! dpkg-query -W --showformat='${Status}\n' "$dep" | grep -q "install ok installed"; then
         echo "[-] Missing dependency: $dep"
         pkg_missing="$pkg_missing $dep"
       fi
     done
     if [ -n "$pkg_missing" ]; then
+      echo "[+] Identified missing dependency"
       apt-get update
       for dep in $pkg_missing; do
         echo "[+] Attempting to install: $dep"
@@ -83,9 +85,11 @@ cleanup_host() {
 }
 
 chroot_do() {
+  echo "<--- Entering chroot for: $@ --->"
   DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
   LC_ALL=C LANGUAGE=C LANG=C \
   chroot "$rootfs" "$@"
+  echo "<--- Exiting chroot from: $@ --->"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,10 +160,10 @@ exec &> >(tee -a "${build_output}.log")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-echo "[+] Selected build size: $build_size"
+echo "[+] Selected build size  : $build_size"
 echo "[+] Selected architecture: $build_arch"
 if [ -n "$build_repo" ]; then
-  echo "[+] Additional apt repo: $build_repo"
+  echo "[+] Additional apt repo  : $build_repo"
 fi
 sleep 1
 
@@ -303,11 +307,11 @@ echo "[+] Starting stage 1 (debootstrap)"
 . stages/stage1
 
 ## Stage 2 - Adds repo, bash_profile, hosts file
-echo "[+] Starting stage 2 (repo/config)"
+echo "[+] Starting stage 2 (config)"
 . stages/stage2
 
 ## Stage 3 - Downloads all packages, modify configuration files
-echo "[+] Starting stage 3 (packages/installation)"
+echo "[+] Starting stage 3 (packages)"
 . stages/stage3
 
 ## Stage 4 - Cleanup stage
@@ -329,7 +333,8 @@ sha512sum "${build_output}.tar.xz" | sed "s|output/||" > "${build_output}.sha512
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Finish
-echo "[+] Finished!  Check output folder for chroot"
+echo "[+] Successful build! The following build artifacts were produced:"
+find "output/" -maxdepth 1 -type f | sed 's_^_* _'
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
