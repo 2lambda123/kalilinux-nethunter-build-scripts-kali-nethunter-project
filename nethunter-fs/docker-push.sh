@@ -14,9 +14,8 @@ cd "$( dirname "$0" )"
 docker build -t nethunter .
 
 ## Remote build (GitLab.com)
-docker build -t "registry.gitlab.com/${GIT_ACCOUNT}/${GIT_REPOSITORY}" .
-docker push "registry.gitlab.com/${GIT_ACCOUNT}/${GIT_REPOSITORY}"
+docker build -t "registry.gitlab.com/${GIT_ACCOUNT}/${GIT_REPOSITORY}" . # ${CI_REGISTRY_IMAGE}
+docker push "registry.gitlab.com/${GIT_ACCOUNT}/${GIT_REPOSITORY}"       # ${CI_REGISTRY_IMAGE}
 
 ## Done
-echo "[i] Done ~ https://gitlab.com/${GIT_ACCOUNT}/${GIT_REPOSITORY}/container_registry"
-exit 0
+echo "[i] Done ~ https://gitlab.com/${GIT_ACCOUNT}/${GIT_REPOSITORY}/container_registry" # ${CI_SERVER_PROTOCOL}://${CI_SERVER_HOST}/${CI_PROJECT_PATH}/container_registry
