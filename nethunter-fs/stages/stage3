@@ -221,6 +221,7 @@ fi
 
 chmod +x "$rootfs/third-stage"
 chroot_do /third-stage
+rm -v "$rootfs/third-stage"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

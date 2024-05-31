@@ -3,18 +3,37 @@
 echo "[+] Creating cleanup script"
 cat << EOF > "$rootfs/cleanup"
 #!/usr/bin/env sh
-rm -fv /root/.bash_history
-apt-get clean
-rm -fv /var/lib/apt/lists/*
-rm -fv /0
-rm -fv /hs_err*
-rm -fv /third-stage
-rm -fv /cleanup
-rm -fv /usr/bin/qemu*
+apt-get clean --yes
+apt-get autoremove --yes --purge
+
+rm -rv /usr/bin/qemu*
+
+## REF: https://gitlab.com/kalilinux/build-scripts/kali-arm/-/blob/master/common.d/clean_system.sh
+rm -rfv /0
+rm -rfv /bsp
+#command fc-cache && fc-cache -frs
+rm -rfv /tmp/*
+rm -rfv /etc/*-
+rm -rfv /hs_err*
+rm -rfv /etc/console-setup/cached_*
+rm -rfv /userland
+rm -rfv /opt/vc/src
+rm -rfv /third-stage
+rm -rfv /etc/ssh/ssh_host_*
+rm -rfv /var/lib/dpkg/*-old
+rm -rfv /var/lib/apt/lists/*
+rm -rfv /var/cache/apt/*.bin
+rm -rfv /var/cache/debconf/*-old
+rm -rfv /var/cache/apt/archives/*
+rm -rfv /etc/apt/apt.conf.d/apt_opts
+rm -rfv /etc/apt/apt.conf.d/99_norecommends
+for logs in \$( find /var/log -type f ); do echo \$logs; echo > \$logs; done
+#history -cw
 EOF
 
 chmod +x "$rootfs/cleanup"
 chroot_do /cleanup
+rm -v "$rootfs/cleanup"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
