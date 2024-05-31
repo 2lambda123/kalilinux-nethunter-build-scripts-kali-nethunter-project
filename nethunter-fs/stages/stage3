@@ -355,11 +355,6 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
-chroot_do chmod 755 /usr/bin/* 2> /dev/null
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 ## Sets the default for hostapd.conf to the mana karma version
 if [ -e "$rootfs/etc/init.d/hostapd" ]; then
   echo "[+] hostapd"
