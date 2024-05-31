@@ -30,6 +30,8 @@ $ docker run --privileged --interactive --tty --rm --volume ./output:/srv/nethun
 <!--
 Alt commands/methods:
 ```console
+$ docker run --privileged --interactive --tty --rm --volume ./output:/srv/nethunter-fs/output --env BUILD_MIRROR=http://kali.download/kali nethunter
+$
 $ docker run --privileged --interactive --tty --name nethunter-build nethunter 2>&1 | tee output.log
 $ docker cp nethunter-build:/srv/nethunter-fs/output .
 ```

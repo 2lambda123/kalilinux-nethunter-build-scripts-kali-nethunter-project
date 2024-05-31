@@ -18,4 +18,13 @@ chroot_do /cleanup
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+echo "[+] Resetting /etc/apt/sources.list file"
+cat << EOF > "$rootfs/etc/apt/sources.list"
+deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware
+# For source package access, uncomment the following line
+# deb-src http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware
+EOF
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 echo "[+] Completed stage 4!"

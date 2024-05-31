@@ -1,7 +1,11 @@
 #!/bin/bash
+## $ BUILD_MIRROR=http://kali.download ./$0 --full
 
 ## If we want to install packages from kali-experimental, set this:
 #build_repo=kali-experimental
+
+## If want to use a different mirror to build
+BUILD_MIRROR=${BUILD_MIRROR:-http://http.kali.org/kali}
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -163,6 +167,7 @@ exec &> >(tee -a "${build_output}.log")
 
 echo "[+] Selected build size  : $build_size"
 echo "[+] Selected architecture: $build_arch"
+echo "[+] Selected build mirror: $BUILD_MIRROR"
 if [ -n "$build_repo" ]; then
   echo "[+] Additional apt repo  : $build_repo"
 fi
