@@ -40,12 +40,23 @@ rm -v "$rootfs/cleanup"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-echo "[+] Resetting /etc/apt/sources.list file"
+## Add our sources (finished with $BUILD_MIRROR)
+##   REF: https://www.kali.org/docs/general-use/updating-kali/
+echo "[+] Defining stock /etc/apt/sources.list file"
 cat << EOF > "$rootfs/etc/apt/sources.list"
+# See: https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/
 deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware
-# For source package access, uncomment the following line
-# deb-src http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware
+
+# Additional line for source packages
+#deb-src http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware
 EOF
+
+## Sometimes we want to use kali-experimental
+## Let's remove it after we are done with
+if [ -n "$BUILD_REPO" ]; then
+  echo "[+] Resetting /etc/apt/sources.list file"
+  rm -v "$rootfs/etc/apt/sources.list.d/$BUILD_REPO.list"
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
