@@ -2,10 +2,10 @@
 
 ## Add our sources
 echo "Creating /etc/apt/sources.list file"
-if [ -n "$build_repo" ]; then
+if [ -n "$BUILD_REPO" ]; then
     cat << EOF > "$rootfs/etc/apt/sources.list"
 deb $BUILD_MIRROR kali-rolling main contrib non-free non-free-firmware
-deb $BUILD_MIRROR $build_repo main contrib non-free non-free-firmware
+deb $BUILD_MIRROR $BUILD_REPO main contrib non-free non-free-firmware
 # For source package access, uncomment the following line
 # deb-src $BUILD_MIRROR kali-rolling main contrib non-free non-free-firmware
 EOF

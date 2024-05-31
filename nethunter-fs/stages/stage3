@@ -58,13 +58,13 @@ echo "root:toor" | chpasswd
 
 ## This looks weird, but we do it twice because every so often, there's a failure to download from the mirror
 ## So to workaround it, we attempt to install them twice.
-if [ -n "$build_repo" ]; then
-  echo "[i] Installing packages from $build_repo with apt-get: $packages"
+if [ -n "$BUILD_REPO" ]; then
+  echo "[i] Installing packages from $BUILD_REPO with apt-get: $packages"
   for i in $packages;
   do
     echo "[i] Installing package \$i"
-    apt-get -t $build_repo --yes install \$i || apt-get -t $build_repo --yes --fix-broken install
-    apt-get -t $build_repo --yes install \$i || apt-get -t $build_repo --yes --fix-broken install
+    apt-get -t $BUILD_REPO --yes install \$i || apt-get -t $BUILD_REPO --yes --fix-broken install
+    apt-get -t $BUILD_REPO --yes install \$i || apt-get -t $BUILD_REPO --yes --fix-broken install
   done
 else
   echo "[i] Installing packages with apt-get: $packages"
