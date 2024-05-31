@@ -285,7 +285,7 @@ echo "[+] Starting stage 3 (packages/installation)"
 
 # Cleanup stage
 echo "[+] Starting stage 4 (cleanup)"
-. stages/stage4-cleanup
+. stages/stage4
 
 # Unmount and fix nano
 cleanup_host
