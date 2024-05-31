@@ -95,8 +95,6 @@ echo "kali:kali" | chpasswd
 ## Switch to zsh as default shell
 echo "[i] changing default shell of user 'root' to zsh"
 chsh --shell /usr/bin/zsh root 
-done
-
 EOF
 ## End of third-stage script
 
