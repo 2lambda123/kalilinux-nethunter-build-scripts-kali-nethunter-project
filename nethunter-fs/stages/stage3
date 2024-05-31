@@ -250,18 +250,26 @@ EOF
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Removing Xfce4 panel plugins that are not needed in KeX
-echo "[+] Removing unneeded Xfce4 panel plugins"
-sed -i '/\n/!N;/\n.*\n/!N;/\n.*\n.*kazam/{$d;N;N;d};P;D' "$rootfs/etc/xdg/xfce4/panel/default.xml"
-sed -i '/pulseaudio/d' "$rootfs/etc/xdg/xfce4/panel/default.xml"
-sed -i '/power-manager-plugin/d' "$rootfs/etc/xdg/xfce4/panel/default.xml"
+if [ -e "$rootfs/etc/xdg/xfce4/panel/default.xml" ]; then
+  echo "[+] Removing unneeded xfce4 panel plugins"
+  sed -i '/\n/!N;/\n.*\n/!N;/\n.*\n.*kazam/{$d;N;N;d};P;D' "$rootfs/etc/xdg/xfce4/panel/default.xml"
+  sed -i '/pulseaudio/d'                                   "$rootfs/etc/xdg/xfce4/panel/default.xml"
+  sed -i '/power-manager-plugin/d'                         "$rootfs/etc/xdg/xfce4/panel/default.xml"
+else
+  echo "[i] Skipping xfce4"
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Modify Kismet log saving folder
-echo "[+] Modifying Kismet log folder"
-sed -i 's|.*\blogprefix=.*|logprefix=/captures/kismet/|g' "$rootfs/etc/kismet/kismet.conf"
-sed -i 's|.*\bncsource=wlan0|ncsource=wlan1|g' "$rootfs/etc/kismet/kismet.conf"
-sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g' "$rootfs/etc/kismet/kismet.conf"
+if [ -e "$rootfs/etc/kismet/kismet.conf" ]; then
+  echo "[+] Modifying Kismet log folder"
+  sed -i 's|.*\blogprefix=.*|logprefix=/captures/kismet/|g' "$rootfs/etc/kismet/kismet.conf"
+  sed -i 's|.*\bncsource=wlan0|ncsource=wlan1|g'            "$rootfs/etc/kismet/kismet.conf"
+  sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g'        "$rootfs/etc/kismet/kismet.conf"
+else
+  echo "[i] Skipping Kismet"
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -269,7 +277,6 @@ sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g' "$rootfs/etc/kismet/kismet.co
 ## if the user doesn't change their password
 ## or change their configuration for key based ssh
 echo "[+] Modifying SSH to allow root user"
-
 sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
 sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
 sed -i 's/\#PermitRootLogin yes/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
@@ -286,15 +293,20 @@ cp -v ./data/dictionaries/pinlist.txt  "$rootfs/opt/dic/pinlist.txt"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Sets the default for hostapd.conf to the mana karma version
-echo "[+] hostapd"
-sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
-sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-mana-"*
+if [ -e "$rootfs/etc/init.d/hostapd" ]; then
+  echo "[+] hostapd"
+  sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
+  sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-mana-"*
+else
+  echo "[i] Skipping hostapd"
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## DNSMASQ Configuration options for optional access point
-echo "[+] dnsmasq"
-cat << EOF > "$rootfs/etc/dnsmasq.conf"
+if [ -e "$rootfs/etc/dnsmasq.conf" ]; then
+  echo "[+] dnsmasq"
+  cat << EOF > "$rootfs/etc/dnsmasq.conf"
 log-facility=/var/log/dnsmasq.log
 #address=/#/10.0.0.1
 #address=/google.com/10.0.0.1
@@ -305,6 +317,9 @@ dhcp-option=6,10.0.0.1
 #no-resolv
 log-queries
 EOF
+else
+  echo "[i] Skipping dnsmasq"
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -318,8 +333,12 @@ EOF
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-echo "[+] VNC"
-cp -fv "$rootfs/etc/skel/.vnc/xstartup" "$rootfs/root/.vnc/xstartup"
+if [ -e "$rootfs/etc/skel/.vnc/xstartup" ]; then
+  echo "[+] VNC"
+  cp -fv "$rootfs/etc/skel/.vnc/xstartup" "$rootfs/root/.vnc/xstartup"
+else
+  echo "[i] Skipping VNC"
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -332,8 +351,12 @@ sed -i -e 's/^\(_apt:\)\([^:]\)\(:[0-9]*\)\(:[0-9]*\):/\1\2\3:3004:/' "$rootfs/e
 
 ## Fix armitage to run on NetHunter
 ##   REF: https://github.com/offensive-security/kali-nethunter/issues/600
-echo "[+] armitage"
-sed -i s/-XX\:\+AggressiveHeap//g "$rootfs/usr/share/armitage/armitage"
+if [ -e "$rootfs/usr/share/armitage/armitage" ]; then
+  echo "[+] armitage"
+  sed -i s/-XX\:\+AggressiveHeap//g "$rootfs/usr/share/armitage/armitage"
+else
+  echo "[i] Skipping armitage"
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -348,11 +371,19 @@ chroot_do chmod 755 /usr/bin/* 2> /dev/null
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-echo "[+] mana-toolkit"
-chroot_do chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
+if [ -e "$rootfs/usr/share/mana-toolkit/run-mana/" ]; then
+  echo "[+] mana-toolkit"
+  chmod 0755 $rootfs/usr/share/mana-toolkit/run-mana/*.sh
 
-## Minor fix for mana-toolkit which made changes in update.  We need to mirror fixes.
-sed -i 's|dhcpd -cf /etc/mana-toolkit/dhcpd\.conf.*|dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo|' "$rootfs/usr/share/mana-toolkit/run-mana/"*
+  ## Happens in hostapd
+  #sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-mana-"*
+
+  ## Minor fix for mana-toolkit which made changes in update
+  ## We need to mirror fixes
+  sed -i 's|dhcpd -cf /etc/mana-toolkit/dhcpd\.conf.*|dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo|' "$rootfs/usr/share/mana-toolkit/run-mana/"*
+else
+  echo "[i] Skipping mana-toolkit"
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
