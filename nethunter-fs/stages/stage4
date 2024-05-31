@@ -3,6 +3,9 @@
 echo "[+] Creating cleanup script"
 cat << EOF > "$rootfs/cleanup"
 #!/usr/bin/env sh
+
+set -e
+
 apt-get clean --yes
 apt-get autoremove --yes --purge
 

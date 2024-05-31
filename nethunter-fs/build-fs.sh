@@ -10,6 +10,10 @@ BUILD_MIRROR=${BUILD_MIRROR:-http://http.kali.org/kali}
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+set -e
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 display_help() {
   echo "Usage: $0 [arguments]"
   echo "  -f, --full      build a rootfs with all the recommended packages (biggest)"
