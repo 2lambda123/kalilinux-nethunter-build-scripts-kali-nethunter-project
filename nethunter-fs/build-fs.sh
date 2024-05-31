@@ -51,14 +51,21 @@ dep_check() {
       fi
     done
   else
+    pkg_missing=""
     for dep in $debian_deps; do
       echo "[+] Checking for installed dependency: $dep"
       if ! dpkg-query -W --showformat='${Status}\n' "$dep" | grep -q "install ok installed"; then
         echo "[-] Missing dependency: $dep"
-        echo "[+] Attempting to install...."
-        apt-get -y install "$dep"
+        pkg_missing="$pkg_missing $dep"
       fi
     done
+    if [ -n "$pkg_missing" ]; then
+      apt-get update
+      for dep in $pkg_missing; do
+        echo "[+] Attempting to install: $dep"
+        apt-get install --yes "$dep"
+      done
+    fi
   fi
 
   echo "[+] All done! Creating hidden file .dep_check so we don't have preform check again."
