@@ -73,7 +73,9 @@ else
   echo "[i] Installing custom packages from local repo"
   ## Install custom packages from local repo
   if ls /tmp/deb/*.deb &>/dev/null; then
-     apt install -y /tmp/deb/*.deb
+     #apt install --yes /tmp/deb/*.deb
+     dpkg --install /tmp/deb/*.deb
+     apt-get install --fix-broken
   fi
   if [ -d /tmp/deb ]; then
     rm -rfv /tmp/deb
