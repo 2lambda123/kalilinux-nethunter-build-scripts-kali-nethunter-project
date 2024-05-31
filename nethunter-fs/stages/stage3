@@ -53,18 +53,18 @@ echo "root:toor" | chpasswd
 ## This looks weird, but we do it twice because every so often, there's a failure to download from the mirror
 ## So to workaround it, we attempt to install them twice.
 if [ -n "$build_repo" ]; then
-  echo "I: Installing packages from $build_repo with apt-get: $packages"
+  echo "[i] Installing packages from $build_repo with apt-get: $packages"
   for i in $packages;
   do
-    echo "I: Installing package \$i"
+    echo "[i] Installing package \$i"
     apt-get -t $build_repo --yes install \$i || apt-get -t $build_repo --yes --fix-broken install
     apt-get -t $build_repo --yes install \$i || apt-get -t $build_repo --yes --fix-broken install
   done
 else
-  echo "I: Installing packages with apt-get: $packages"
+  echo "[i] Installing packages with apt-get: $packages"
   for i in $packages;
   do
-    echo "I: Installing package \$i"
+    echo "[i] Installing package \$i"
     apt-get --yes install \$i || apt-get --yes --fix-broken install
     apt-get --yes install \$i || apt-get --yes --fix-broken install
   done
@@ -75,7 +75,7 @@ rm -f /usr/sbin/invoke-rc.d
 dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
 
 if [ "$build_size" != nano ]; then
-  echo "I: Installing custom packages from local repo"
+  echo "[i] Installing custom packages from local repo"
   ## Install custom packages from local repo
   if ls /tmp/deb/*.deb &>/dev/null; then
      apt install -y /tmp/deb/*.deb
@@ -95,7 +95,7 @@ useradd -m -u 100000 -g 100000 -G sudo,sockets -s /usr/bin/zsh kali
 echo "kali:kali" | chpasswd
 
 ## Switch to zsh as default shell
-echo "I: changing default shell of user 'root' to zsh"
+echo "[i] changing default shell of user 'root' to zsh"
 chsh --shell /usr/bin/zsh root 
 done
 

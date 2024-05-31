@@ -6,7 +6,7 @@ mkdir -p "$rootfs"
 
 if [ ! -f /usr/share/debootstrap/scripts/kali-rolling ]; then
   ## For those not building on Debian 9 or older
-  echo "Missing kali from debootstrap, downloading it"
+  echo "[i] Missing kali from debootstrap, downloading it"
 
   curl "https://gitlab.com/kalilinux/packages/debootstrap/raw/kali/master/scripts/kali" > /usr/share/debootstrap/scripts/kali
   ln -s /usr/share/debootstrap/scripts/kali /usr/share/debootstrap/scripts/kali-rolling

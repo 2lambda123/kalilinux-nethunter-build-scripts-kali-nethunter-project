@@ -177,35 +177,35 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 if [ -d "$rootfs" ]; then
-  echo "Detected prebuilt chroot"
+  echo "[i] Detected prebuilt chroot"
   echo
   read -rp "Would you like to create a new chroot? (Y/n): " createrootfs
   case $createrootfs in
   n*|N*)
-    echo "Exiting"
+    echo "[i] Exiting"
     exit
     ;;
   *)
-    echo "Removing previous chroot"
+    echo "[i] Removing previous chroot"
     rm -rf "$rootfs"
     ;;
   esac
 else
-  echo "Previous rootfs build not found. Ready to build"
+  echo "[i] Previous rootfs build not found. Ready to build"
   sleep 1
 fi
 
 if [ -f "${build_output}.tar.xz" ]; then
-  echo "Detected previously created chroot output file: ${build_output}.tar.xz"
+  echo "[i] Detected previously created chroot output file: ${build_output}.tar.xz"
   echo
   read -rp "Would you like to create a new file? (Y/n): " createnewxz
   case $createnewxz in
   n*|N*)
-    echo "Exiting"
+    echo "[i] Exiting"
     exit
     ;;
   *)
-    echo "Removing previous chroot"
+    echo "[i] Removing previous chroot"
     rm -f "${build_output}.tar.xz" "${build_output}.sha512sum"
     ;;
   esac
