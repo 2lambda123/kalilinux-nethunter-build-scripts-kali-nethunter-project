@@ -6,20 +6,18 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 display_help() {
-  echo "Usage: ./build-fs.sh [arguments]..."
-  echo
+  echo "Usage: $0 [arguments]..."
   echo "  -f, --full      build a rootfs with all the recommended packages"
   echo "  -m, --minimal   build a rootfs with only the most basic packages"
   echo "  -n, --nano      build a rootfs with only necessary packages for watch"
   echo "  -a, --arch      select a different architecture (default: armhf)"
   echo "                  possible options: armhf, arm64, i386, amd64"
   echo "  -h, --help      display this help message"
-  echo
+  exit 0
 }
 
 exit_help() {
-  display_help
-  echo "Error: $1"
+  echo "[-] Error: $1"
   exit 1
 }
 
@@ -88,7 +86,6 @@ chroot_do() {
 # no arguments provided? show help
 if [ $# -eq 0 ]; then
   display_help
-  exit 0
 fi
 
 # process arguments
@@ -97,7 +94,7 @@ while [[ $# -gt 0 ]]; do
   case $arg in
     -h|--help)
       display_help
-      exit 0 ;;
+      ;;
     -f|--full)
       build_size=full
       ;;
@@ -129,8 +126,7 @@ done
 
 # Check for root
 if [[ $EUID -ne 0 ]]; then
-  echo "Please run this as root"
-  exit 1
+  exit_help "Please run this as root"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

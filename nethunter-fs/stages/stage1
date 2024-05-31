@@ -40,8 +40,7 @@ max_tries=5
 while ! debootstrap --download-only --verbose --arch $build_arch kali-rolling "$rootfs" http://http.kali.org/kali; do
   ((tries++))
   if [ $tries -ge $max_tries ]; then
-    echo "[!] Error, maximum retries ($max_tries) reached, could not download packages!"
-    exit 1
+    exit_help "maximum retries ($max_tries) reached, could not download packages!"
   fi
   echo "[!] Failed to download packages (attempt $tries/$max_tries), trying again in 5 minutes!"
   sleep 300
