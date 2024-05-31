@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Add our sources
+## Add our sources
 echo "Creating /etc/apt/sources.list file"
 if [ -n "$build_repo" ]; then
     cat << EOF > "$rootfs/etc/apt/sources.list"
@@ -19,9 +19,9 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# fix for TUN symbolic link to enable programs like openvpn
-# set terminal length to 80 because root destroy terminal length
-# add fd to enable stdin/stdout/stderr
+## Fix for TUN symbolic link to enable programs like openvpn
+## Set terminal length to 80 because root destroy terminal length
+## Add fd to enable stdin/stdout/stderr
 echo "I: Creating /root/.bash_profile file"
 cat << EOF > "$rootfs/root/.bash_profile"
 export TERM=xterm-256color
@@ -42,7 +42,7 @@ EOF
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Create hosts file
+## Create hosts file
 echo "I: Creating /etc/hosts file"
 cat << EOF > "$rootfs/etc/hosts"
 127.0.0.1       kali localhost
@@ -55,7 +55,7 @@ EOF
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Create default capture folders along with /sdcard, /external_sd, /system, /root/.ssh
+## Create default capture folders along with /sdcard, /external_sd, /system, /root/.ssh
 echo "I: Creating /root/.ssh directory"
 mkdir -p "$rootfs/root/.ssh"
 
@@ -74,7 +74,7 @@ mkdir -p "$cap/evilap" "$cap/ettercap" "$cap/kismet/db" "$cap/nmap" \
   "$cap/sslstrip" "$cap/tshark" "$cap/wifite" "$cap/tcpdump" \
   "$cap/urlsnarf" "$cap/dsniff" "$cap/honeyproxy" "$cap/mana/sslsplit"
 
-# Link /lib/modules to /system/lib/modules for modprobe
+## Link /lib/modules to /system/lib/modules for modprobe
 echo "I: Creating mountpoint /lib/modules"
 mkdir -p "$rootfs/lib/modules"
 

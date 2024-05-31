@@ -5,9 +5,7 @@ mkdir -p "$rootfs"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 if [ ! -f /usr/share/debootstrap/scripts/kali-rolling ]; then
-  #
-  # For those not building on Kali
-  #
+  ## For those not building on Debian 9 or older
   echo "Missing kali from debootstrap, downloading it"
 
   curl "https://gitlab.com/kalilinux/packages/debootstrap/raw/kali/master/scripts/kali" > /usr/share/debootstrap/scripts/kali
@@ -16,10 +14,9 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#
-# Docker needs binfmt to run arm.  Without below commands second-stage and chroot will fail
-# http://neophob.com/2014/10/run-arm-binaries-in-your-docker-container-using-boot2docker/
-#
+## Docker needs binfmt to run arm
+##   Without below commands second-stage and chroot will fail
+##   https://web.archive.org/web/20191108143948/http://neophob.com/2014/10/run-arm-binaries-in-your-docker-container-using-boot2docker/
 if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
   echo "[+] binfmt_misc not mounted, setting up binfmts"
   mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc

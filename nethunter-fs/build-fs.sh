@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# If we want to install packages from kali-experimental, set this
-##build_repo=kali-experimental
+## If we want to install packages from kali-experimental, set this:
+#build_repo=kali-experimental
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -21,14 +21,14 @@ exit_help() {
   exit 1
 }
 
-# OS check
+## OS check
 os_check() {
   if [ -f /etc/SUSE-brand ]; then
     suse=true
   fi
 }
 
-# Dependency checks
+## Package dependency checks, whats required to build rather than whats inside the chroot/filesystem
 ##   If editing, needs to match whats in ./Dockerfile, ./README.md and ./build-fs.sh
 dep_check() {
   debian_deps="binfmt-support
@@ -78,7 +78,7 @@ cleanup_host() {
   umount -l "$rootfs/proc" &>/dev/null
   umount -l "$rootfs/sys" &>/dev/null
 
-  # Remove read only from nano
+  ## Remove read only from nano
   chattr -i $(which nano)
 }
 
@@ -90,12 +90,12 @@ chroot_do() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# no arguments provided? show help
+## no arguments provided? show help
 if [ $# -eq 0 ]; then
   display_help
 fi
 
-# process arguments
+## process arguments
 while [[ $# -gt 0 ]]; do
   arg=$1
   case $arg in
@@ -131,7 +131,7 @@ done
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Check for root
+## Check for root
 if [[ $EUID -ne 0 ]]; then
   exit_help "Please run this as root"
 fi
@@ -140,7 +140,7 @@ fi
 
 [ "$build_size" ] || exit_help "Build size not specified!"
 
-# set default architecture for most Android devices if not specified
+## Set default architecture for most Android devices if not specified
 [ "$build_arch" ] || build_arch=armhf
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -150,7 +150,8 @@ build_output="output/kalifs-$build_arch-$build_size"
 
 mkdir -p output
 
-# Capture all output from here on in kalifs-*.log
+## Capture all output from here on in kalifs-*.log
+##   What would be nice is if able to detect if moreutils is installed, then pipe to `| ts -s`
 exec &> >(tee -a "${build_output}.log")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -166,7 +167,7 @@ sleep 1
 
 os_check
 
-# Run dependency check once (see above for dep check)
+## Run dependency check once (see above for dep check)
 if [ ! -f ".dep_check" ]; then
   dep_check
 else
@@ -212,9 +213,9 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Add packages you want installed here:
+## Packages that will be installed inside the chroot/filesystem
 
-# NANO PACKAGES
+## NANO PACKAGES - only necessary packages for watch
 pkg_nano="kali-menu wpasupplicant kali-defaults initramfs-tools u-boot-tools nmap
   openssh-server kali-archive-keyring apt-transport-https ntpdate usbutils pciutils sudo vim git-core binutils ca-certificates
   locales console-common less nano git bluetooth bluez
@@ -222,8 +223,9 @@ pkg_nano="kali-menu wpasupplicant kali-defaults initramfs-tools u-boot-tools nma
   redfang bluelog blueranger hcitool usbutils net-tools iw aircrack-ng
   nethunter-utils apache2 zsh abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils python3 pixiewps python2.7-minimal"
 
-# MINIMAL PACKAGES
-# usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
+## NANO PACKAGES - only necessary packages for watch
+# - apt-transport-https for updates
+# - usbutils and pciutils is needed for wifite (unsure why)
 pkg_minimal="locales-all openssh-server kali-defaults kali-archive-keyring
   apt-transport-https ntpdate usbutils pciutils sudo vim python2.7-minimal"
 
@@ -287,38 +289,37 @@ packages=$(echo $packages)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# It's dangerous to leave these mounted if user cleans git after using Ctrl+C
+## It's dangerous to leave these mounted if user cleans git after using Ctrl+C
 trap cleanup_host EXIT
 
-# Need to find where this error occurs, but we make nano read
-# only during build and reset after installation is completed
+## Need to find where this error occurs, but we make nano read only during build and reset after installation is completed
 chattr +i $(which nano)
 
 export build_arch build_size qemu_arch rootfs packages
 export -f chroot_do
 
-# Stage 1 - Debootstrap creates basic chroot
+## Stage 1 - Debootstrap creates basic chroot
 echo "[+] Starting stage 1 (debootstrap)"
 . stages/stage1
 
-# Stage 2 - Adds repo, bash_profile, hosts file
+## Stage 2 - Adds repo, bash_profile, hosts file
 echo "[+] Starting stage 2 (repo/config)"
 . stages/stage2
 
-# Stage 3 - Downloads all packages, modify configuration files
+## Stage 3 - Downloads all packages, modify configuration files
 echo "[+] Starting stage 3 (packages/installation)"
 . stages/stage3
 
-# Cleanup stage
+## Stage 4 - Cleanup stage
 echo "[+] Starting stage 4 (cleanup)"
 . stages/stage4
 
-# Unmount and fix nano
+## Unmount and fix nano
 cleanup_host
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Compress final file
+## Compress final file
 echo "[+] Tarring and compressing kalifs.  This can take a while...."
 XZ_OPTS=-9 tar cJvf "${build_output}.tar.xz" "$rootfs/"
 
@@ -327,11 +328,12 @@ sha512sum "${build_output}.tar.xz" | sed "s|output/||" > "${build_output}.sha512
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+## Finish
 echo "[+] Finished!  Check output folder for chroot."
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Extract on device
-# xz -dc /sdcard/kalifs.tar.xz | tar xvf - -C /data/local/nhsystem
-# or
-# tar xJvf /sdcard/kalifs.tar.xz -C /data/local/nhsystem
+## Extract on device
+## xz -dc /sdcard/kalifs.tar.xz | tar xvf - -C /data/local/nhsystem
+## or
+## tar xJvf /sdcard/kalifs.tar.xz -C /data/local/nhsystem
