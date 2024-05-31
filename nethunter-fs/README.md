@@ -58,6 +58,20 @@ $ sudo apt-get install \
 
 ## Commands
 
+### Help
+
+```console
+$ ./build-fs.sh --help
+Usage: ./build-fs.sh [arguments]
+  -f, --full      build a rootfs with all the recommended packages (biggest)
+  -m, --minimal   build a rootfs with only the most basic packages (smallest)
+  -n, --nano      build a rootfs designed for Kali NetNunter watch (middle ground)
+  -a, --arch      select a different architecture (default: armhf)
+                  possible options: armhf, arm64, i386, amd64
+  -h, --help      display this help message
+$
+````
+
 ### Examples
 
 To create a **full** Kali NetHunter filesystem:

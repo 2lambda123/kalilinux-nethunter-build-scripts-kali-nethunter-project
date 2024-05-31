@@ -1,4 +1,5 @@
 #!/bin/bash
+## $ ./$0 --help
 ## $ BUILD_MIRROR=http://kali.download ./$0 --full
 
 ## If we want to install packages from kali-experimental, set this:
@@ -11,9 +12,9 @@ BUILD_MIRROR=${BUILD_MIRROR:-http://http.kali.org/kali}
 
 display_help() {
   echo "Usage: $0 [arguments]"
-  echo "  -f, --full      build a rootfs with all the recommended packages"
-  echo "  -m, --minimal   build a rootfs with only the most basic packages"
-  echo "  -n, --nano      build a rootfs with only necessary packages for watch"
+  echo "  -f, --full      build a rootfs with all the recommended packages (biggest)"
+  echo "  -m, --minimal   build a rootfs with only the most basic packages (smallest)"
+  echo "  -n, --nano      build a rootfs designed for Kali NetNunter watch (middle ground)"
   echo "  -a, --arch      select a different architecture (default: armhf)"
   echo "                  possible options: armhf, arm64, i386, amd64"
   echo "  -h, --help      display this help message"
