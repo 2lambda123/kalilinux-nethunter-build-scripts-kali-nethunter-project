@@ -224,77 +224,92 @@ fi
 
 ## Packages that will be installed inside the chroot/filesystem
 
-## NANO PACKAGES - only necessary packages for watch
-pkg_nano="kali-menu wpasupplicant kali-defaults initramfs-tools u-boot-tools nmap
-  openssh-server kali-archive-keyring apt-transport-https ntpdate usbutils pciutils sudo vim git-core binutils ca-certificates
-  locales console-common less nano git bluetooth bluez
-  bluez-tools bluez-obexd libbluetooth3 sox spooftooph libbluetooth-dev
-  redfang bluelog blueranger hcitool usbutils net-tools iw aircrack-ng
-  nethunter-utils apache2 zsh abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils python3 pixiewps python2.7-minimal"
+## CORE PACKAGES - every chroot will have these
+##   - apt-transport-https for updates
+##   - usbutils and pciutils is needed for wifite (unsure why)
+pkg_core="abootimg
+          apt-transport-https
+          binutils
+          ca-certificates
+          cgpt
+          console-common
+          fake-hwclock
+          git
+          git-core
+          initramfs-tools
+          kali-archive-keyring
+          kali-defaults
+          less
+          locales
+          nano
+          nethunter-utils
+          ntpdate
+          openssh-server
+          pciutils
+          python2.7-minimal
+          sudo
+          usbutils
+          vboot-kernel-utils
+          vboot-utils
+          vim
+          zsh"
 
 ## NANO PACKAGES - only necessary packages for watch
-# - apt-transport-https for updates
-# - usbutils and pciutils is needed for wifite (unsure why)
-pkg_minimal="locales-all openssh-server kali-defaults kali-archive-keyring
-  apt-transport-https ntpdate usbutils pciutils sudo vim python2.7-minimal"
+pkg_nano="aircrack-ng
+          apache2
+          bluelog
+          blueranger
+          bluetooth
+          bluez
+          bluez-obexd
+          bluez-tools
+          iw
+          kali-menu
+          libbluetooth-dev
+          libbluetooth3
+          net-tools
+          nmap
+          pixiewps
+          python3
+          redfang
+          sox
+          spooftooph
+          u-boot-tools
+          wpasupplicant"
 
-# DEFAULT PACKAGES FULL INSTALL
-pkg_full="kali-linux-nethunter proxmark3"
+## MINIMAL PACKAGES - only the most basic packages
+pkg_minimal="locales-all"
 
-# ARCH SPECIFIC PACKAGES
-pkg_nano_armhf=""
-pkg_nano_arm64=""
-pkg_nano_i386=""
-pkg_nano_amd64=""
+## DEFAULT PACKAGES FULL INSTALL - all the recommended packages
+##   REF: https://gitlab.com/kalilinux/packages/kali-meta/-/blob/kali/master/debian/control
+pkg_full="kali-linux-nethunter
+          proxmark3
+          wpa" # hostapd
 
-pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils zsh"
-pkg_minimal_arm64="$pkg_minimal_armhf"
-pkg_minimal_i386="$pkg_minimal_armhf"
-pkg_minimal_amd64="$pkg_minimal_armhf"
+packages="$pkg_minimal"
+[ "$build_size" = full ] &&
+  packages="$packages $pkg_full"
+[ "$build_size" = nano ] &&
+  packages="$pkg_nano"
 
-pkg_full_armhf=""
-pkg_full_arm64=""
-pkg_full_i386=""
-pkg_full_amd64=""
+## Fix packages to be a single space delimited line using unquoted magic
+packages=$( echo $packages )
 
-# Set packages to install by arch and size
+## Set qemnu names
 case $build_arch in
   armhf)
     qemu_arch=arm
-    packages="$pkg_minimal $pkg_minimal_armhf"
-    [ "$build_size" = full ] &&
-      packages="$packages $pkg_full $pkg_full_armhf"
-    [ "$build_size" = nano ] &&
-      packages="$pkg_nano"
     ;;
   arm64)
     qemu_arch=aarch64
-    packages="$pkg_minimal $pkg_minimal_arm64"
-    [ "$build_size" = full ] &&
-      packages="$packages $pkg_full $pkg_full_arm64"
-    [ "$build_size" = nano ] &&
-      packages="$pkg_nano"
     ;;
   i386)
     qemu_arch=i386
-    packages="$pkg_minimal $pkg_minimal_i386"
-    [ "$build_size" = full ] &&
-      packages="$packages $pkg_full $pkg_full_i386"
-    [ "$build_size" = nano ] &&
-      packages="$pkg_nano"
     ;;
   amd64)
     qemu_arch=x86_64
-    packages="$pkg_minimal $pkg_minimal_amd64"
-    [ "$build_size" = full ] &&
-      packages="$packages $pkg_full $pkg_full_amd64"
-    [ "$build_size" = nano ] &&
-      packages="$pkg_nano"
     ;;
 esac
-
-# Fix packages to be a single space delimited line using unquoted magic
-packages=$(echo $packages)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
