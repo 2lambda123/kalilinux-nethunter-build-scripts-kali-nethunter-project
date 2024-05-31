@@ -149,10 +149,11 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+output_dir="output"
 rootfs="kali-$build_arch"
-build_output="output/kalifs-$build_arch-$build_size"
+build_output="$output_dir/kalifs-$build_arch-$build_size"
 
-mkdir -pv output/
+mkdir -pv $output_dir/
 
 ## Capture all output from here on in kalifs-*.log
 ##   What would be nice is if able to detect if moreutils is installed, then pipe to `| ts -s`
@@ -326,13 +327,13 @@ echo "[+] Tarring and compressing kalifs. This can take a while..."
 XZ_OPTS=-9 tar cJf "${build_output}.tar.xz" "$rootfs/"
 
 echo "[+] Generating sha512sum of kalifs"
-sha512sum "${build_output}.tar.xz" | sed "s|output/||" > "${build_output}.sha512sum"
+sha512sum "${build_output}.tar.xz" | sed "s|$output_dir/||" > "${build_output}.sha512sum"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Finish
 echo "[+] Successful build! The following build artifacts were produced:"
-find "output/" -maxdepth 1 -type f | sed 's_^_* _'
+find "$output_dir/" -maxdepth 1 -type f | sed 's_^_* _'
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
