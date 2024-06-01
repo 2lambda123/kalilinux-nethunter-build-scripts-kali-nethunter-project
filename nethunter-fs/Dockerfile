@@ -1,7 +1,3 @@
-############################################################
-#  Dockerfile to build a Kali NetHunter chroot filesystem  #
-############################################################
-
 ## Set the base image to Kali
 ##   REF: https://hub.docker.com/r/kalilinux/kali-rolling
 FROM docker.io/kalilinux/kali-rolling
@@ -34,7 +30,12 @@ COPY . ${KALI_WORKSPACE}
 WORKDIR ${KALI_WORKSPACE}
 
 ## Setup app
-ENTRYPOINT ["/srv/nethunter-fs/build-fs.sh"]   # exec form, can't use variables, but will read in from CMD
-#ENTRYPOINT ${KALI_WORKSPACE}/build-fs.sh      # shell form, can use variables, but CMD is blank
-CMD ["-f"]
-#CMD ["${KALI_WORKSPACE}/build.sh", "-f"]      # Not using this, as wanting it easier for users to alter arguments when running the container
+# exec form, can't use variables, but will read in from CMD
+ENTRYPOINT ["/srv/nethunter-fs/build-fs.sh"]
+# shell form, can use variables, but CMD is blank
+#ENTRYPOINT ${KALI_WORKSPACE}/build-fs.sh
+## Default flag
+CMD ["--help"]
+
+## Not using this, as wanting it easier for users to alter arguments when running the container, rather than putting the complete file path
+#CMD ["${KALI_WORKSPACE}/build.sh", "-f"]
