@@ -24,7 +24,7 @@ Otherwise, you can build the image using the [Dockerfile](./Dockerfile):
 ```console
 $ apt install git docker.io qemu-user-static
 $ git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project.git
-$ cd kali-nethunter-project/kali-nethunter-project/
+$ cd kali-nethunter-project/nethunter-fs/
 $ docker build -t nethunter .
 $ docker run --privileged --interactive --tty --rm --volume "$(pwd)/output:/srv/nethunter-fs/output" nethunter
 $ docker run --privileged --interactive --tty --rm --volume "$(pwd)/output:/srv/nethunter-fs/output" nethunter --full
@@ -56,6 +56,10 @@ $ sudo apt-get install \
       debootstrap \
       qemu-user-static \
       xz-utils
+$ apt install git
+$ cd kali-nethunter-project/nethunter-fs/
+$ ./build-fs.sh
+$ sudo ./build-fs.sh --full
 ```
 
 ## Commands
@@ -79,15 +83,15 @@ $
 To create a **full** Kali NetHunter filesystem:
 
 ```console
-$ ./build-fs.sh -f
+$ sudo ./build-fs.sh --full
 ```
 
 To create a **minimal** Kali NetHunter filesystem for amd64
 
 ```console
-$ ./build-fs.sh -m -a arm64
+$ sudo ./build-fs.sh -m -a arm64
 ```
 
 
 
-Wed 29 May 2024 14:31:47 UTC
+Sat  1 Jun 2024 04:06:05 UTC
