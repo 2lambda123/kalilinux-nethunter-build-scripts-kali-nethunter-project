@@ -158,9 +158,12 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output_dir="output"
+## Working location
 rootfs="kali-$build_arch"
-build_output="$output_dir/kalifs-$build_arch-$build_size"
+## Output
+output_dir="output"
+output_file=$rootfs-$build_size
+build_output="$output_dir/$output_file"
 
 mkdir -pv $output_dir/
 
@@ -358,7 +361,7 @@ sha512sum "${build_output}.tar.xz" | sed "s|$output_dir/||" > "${build_output}.s
 
 ## Finish
 echo "[+] Successful build! The following build artifacts were produced:"
-find "$output_dir/" -maxdepth 1 -type f | sed 's_^_* _'
+find "$output_dir/" -maxdepth 1 -type f -name "$output_file*" | sed 's_^_* _'
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
