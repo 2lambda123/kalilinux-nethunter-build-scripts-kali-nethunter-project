@@ -83,11 +83,22 @@ dep_check() {
   touch .dep_check
 }
 
+check_umount() {
+  if [ -e "${1}" ]; then
+    echo "[i] umount: ${1}"
+    umount -l -v "${1}" \
+      || true
+  else
+    echo "[-] Path doesn't exist to umount: ${1}"
+  fi
+}
+
 cleanup_host() {
-  umount -v -l "$rootfs/dev/pts" &>/dev/null
-  umount -v -l "$rootfs/dev" &>/dev/null
-  umount -v -l "$rootfs/proc" &>/dev/null
-  umount -v -l "$rootfs/sys" &>/dev/null
+  echo "[i] Cleaning up host"
+  check_umount "$rootfs/dev/pts"
+  check_umount "$rootfs/dev"
+  check_umount "$rootfs/proc"
+  check_umount "$rootfs/sys"
 
   ## Remove read only from nano
   #chattr -i $(which nano)
