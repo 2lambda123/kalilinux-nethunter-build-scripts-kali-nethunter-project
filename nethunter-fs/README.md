@@ -69,12 +69,13 @@ $ sudo ./build-fs.sh --full
 ```console
 $ ./build-fs.sh --help
 Usage: ./build-fs.sh [arguments]
-  -f, --full      build a rootfs with all the recommended packages (biggest)
-  -m, --minimal   build a rootfs with only the most basic packages (smallest)
-  -n, --nano      build a rootfs designed for Kali NetNunter watch (middle ground)
-  -a, --arch      select a different architecture (default: armhf)
-                  possible options: armhf, arm64, i386, amd64
-  -h, --help      display this help message
+  -f, --full             build a rootfs with all the recommended packages (biggest)
+  -m, --minimal          build a rootfs with only the most basic packages (smallest)
+  -n, --nano             build a rootfs designed for Kali NetNunter watch (middle ground)
+  -a, --arch [arch]      select a different architecture (default: armhf)
+                         possible options: armhf, arm64, i386, amd64
+      --mirror [mirror]  mirror to use during build process (default: http://http.kali.org/kali)
+  -h, --help             display this help message
 $
 ````
 

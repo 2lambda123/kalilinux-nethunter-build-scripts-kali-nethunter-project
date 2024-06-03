@@ -16,12 +16,13 @@ set -e
 
 display_help() {
   echo "Usage: $0 [arguments]"
-  echo "  -f, --full      build a rootfs with all the recommended packages (biggest)"
-  echo "  -m, --minimal   build a rootfs with only the most basic packages (smallest)"
-  echo "  -n, --nano      build a rootfs designed for Kali NetNunter watch (middle ground)"
-  echo "  -a, --arch      select a different architecture (default: armhf)"
-  echo "                  possible options: armhf, arm64, i386, amd64"
-  echo "  -h, --help      display this help message"
+  echo "  -f, --full             build a rootfs with all the recommended packages (biggest)"
+  echo "  -m, --minimal          build a rootfs with only the most basic packages (smallest)"
+  echo "  -n, --nano             build a rootfs designed for Kali NetNunter watch (middle ground)"
+  echo "  -a, --arch [arch]      select a different architecture (default: armhf)"
+  echo "                         possible options: armhf, arm64, i386, amd64"
+  echo "      --mirror [mirror]  mirror to use during build process (default: $BUILD_MIRROR)"
+  echo "  -h, --help             display this help message"
   exit 0
 }
 
@@ -144,6 +145,10 @@ while [[ $# -gt 0 ]]; do
           exit_help "Unknown architecture: $2"
           ;;
       esac
+      shift
+      ;;
+    --mirror)
+      BUILD_MIRROR=$2
       shift
       ;;
     *)
