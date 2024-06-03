@@ -54,7 +54,7 @@ while ! debootstrap --download-only --verbose --arch $build_arch kali-rolling "$
 done
 
 echo "[+] Starting debootstrap (install)"
-debootstrap --foreign --verbose --arch $build_arch kali-rolling "$rootfs" $BUILD_MIRROR
+debootstrap --foreign --components main,contrib,non-free,non-free-firmware --verbose --arch $build_arch kali-rolling "$rootfs" $BUILD_MIRROR
 
 echo "[+] Installing qemu-$qemu_arch-static interpreter to rootfs"
 if [ "$suse" = true ]; then
