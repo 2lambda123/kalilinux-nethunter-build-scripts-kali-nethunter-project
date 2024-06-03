@@ -102,13 +102,15 @@ if [ "$build_size" = full ]; then
 
 ## Enable PHP in Apache
 # $ apachectl -M | grep -q php
-a2query -m | grep php \
+a2query -m | grep -q php \
   && echo "PHP already enabled" \
   || a2enmod \$( dpkg -l | awk -F ' ' '/ php[0-9]+\.[0-9]+ / {print \$2}' )
 
 ## Enable /var/www/html as default, disable mana unless we need it
-a2dissite 000-mana-toolkit.conf
-a2ensite 000-default.conf
+a2query -s | grep -q mana-toolkit \
+  && a2dissite 000-mana-toolkit \
+  || echo "mana-toolkit has already been disabled"
+a2ensite 000-default
 EOF
   ## End of third-stage script append
 fi
