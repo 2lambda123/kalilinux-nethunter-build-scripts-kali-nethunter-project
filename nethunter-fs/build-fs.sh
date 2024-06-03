@@ -342,19 +342,19 @@ export -f chroot_do
 
 ## Stage 1 - Debootstrap creates basic chroot
 echo "[+] Starting stage 1 (debootstrap)"
-. stages/stage1
+. stages/stage1.sh
 
 ## Stage 2 - Adds repo, bash_profile, hosts file
 echo "[+] Starting stage 2 (config)"
-. stages/stage2
+. stages/stage2.sh
 
 ## Stage 3 - Downloads all packages, modify configuration files
 echo "[+] Starting stage 3 (packages)"
-. stages/stage3
+. stages/stage3.sh
 
 ## Stage 4 - Cleanup stage
 echo "[+] Starting stage 4 (cleanup)"
-. stages/stage4
+. stages/stage4.sh
 
 ## Unmount and fix nano
 cleanup_host

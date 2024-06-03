@@ -9,7 +9,7 @@ set -e
 apt-get clean --yes
 apt-get autoremove --yes --purge
 
-rm -rv /usr/bin/qemu*
+rm -rv /usr/bin/qemu-$qemu_arch*
 
 ## REF: https://gitlab.com/kalilinux/build-scripts/kali-arm/-/blob/master/common.d/clean_system.sh
 rm -rfv /0

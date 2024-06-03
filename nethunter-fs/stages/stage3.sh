@@ -55,10 +55,10 @@ echo "[i] Installing core packages"
 apt-get --yes install $( echo $pkg_core | xargs )
 
 if [ -n "$BUILD_REPO" ]; then
-  echo "[i] Installing packages from $BUILD_REPO with apt-get: $packages"
+  echo "[i] Installing packages from $BUILD_REPO with apt-get"
   apt-get -t $BUILD_REPO --yes install $packages
 else
-  echo "[i] Installing packages with apt-get: $packages"
+  echo "[i] Installing packages with apt-get"
   apt-get --yes install $packages
 fi
 
