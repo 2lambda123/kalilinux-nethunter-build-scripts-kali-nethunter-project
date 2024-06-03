@@ -315,9 +315,15 @@ fi
 if [ -e "$rootfs_dir/etc/init.d/hostapd" ]; then
   echo "[+] hostapd"
   sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs_dir/etc/init.d/hostapd"
-  sed -i 's/wlan0/wlan1/g' "$rootfs_dir/etc/mana-toolkit/hostapd-mana-"*
 else
   echo "[i] Skipping hostapd"
+fi
+
+
+if [ -e $rootfs_dir/etc/mana-toolkit/ ]; then
+  sed -i 's/wlan0/wlan1/g' "$rootfs_dir/etc/mana-toolkit/hostapd-mana-"*
+else
+  echo "[i] Skipping hostapd/mana-toolkit"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
