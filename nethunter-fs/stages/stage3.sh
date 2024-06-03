@@ -10,33 +10,33 @@ export DEBIAN_FRONTEND=noninteractive
 ## Sometimes we might need to install packages that are not in the kali repository
 ## Copy packages from local repository to chroot for installation
 echo "[+] DEBs"
-mkdir -pv $rootfs/tmp/deb/
-if ls $rootfs/../data/deb/$build_arch/*.deb &>/dev/null; then
+mkdir -pv $rootfs_dir/tmp/deb/
+if ls $rootfs_dir/../data/deb/$build_arch/*.deb &>/dev/null; then
   echo "[+] Copying $build_arch packages to chroot from local repository"
-  cp -v $rootfs/../data/deb/$build_arch/*.deb $rootfs/tmp/deb/
+  cp -v $rootfs_dir/../data/deb/$build_arch/*.deb $rootfs_dir/tmp/deb/
 fi
-if ls $rootfs/../data/deb/all/*.deb &>/dev/null; then
+if ls $rootfs_dir/../data/deb/all/*.deb &>/dev/null; then
   echo "[+] Copying generic packages to chroot from local repository"
-  cp -v $rootfs/../data/deb/all/*.deb $rootfs/tmp/deb/
+  cp -v $rootfs_dir/../data/deb/all/*.deb $rootfs_dir/tmp/deb/
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 echo "[+] Mounts"
-mount -v -t proc proc "$rootfs/proc"
-mount -v -o bind /dev "$rootfs/dev"
-mount -v -o bind /dev/pts "$rootfs/dev/pts"
-mount -v -t sysfs sys "$rootfs/sys"
+mount -v -t proc proc "$rootfs_dir/proc"
+mount -v -o bind /dev "$rootfs_dir/dev"
+mount -v -o bind /dev/pts "$rootfs_dir/dev/pts"
+mount -v -t sysfs sys "$rootfs_dir/sys"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 echo "[+] Prep"
-cat << EOF > "$rootfs/debconf.set"
+cat << EOF > "$rootfs_dir/debconf.set"
 console-common console-data/keymap/policy select Select keymap from full list
 console-common console-data/keymap/full select en-latin1-nodeadkeys
 EOF
 
-cat << EOF > "$rootfs/third-stage"
+cat << EOF > "$rootfs_dir/third-stage"
 #!/usr/bin/env bash
 
 set -e
@@ -98,7 +98,7 @@ EOF
 ## End of third-stage script
 
 if [ "$build_size" = full ]; then
-  cat << EOF >> "$rootfs/third-stage"
+  cat << EOF >> "$rootfs_dir/third-stage"
 
 ## Enable PHP in Apache
 a2enmod php7.3
@@ -110,16 +110,16 @@ EOF
   ## End of third-stage script append
 fi
 
-chmod +x "$rootfs/third-stage"
+chmod +x "$rootfs_dir/third-stage"
 chroot_do /third-stage
-rm -v "$rootfs/third-stage"
+rm -v "$rootfs_dir/third-stage"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 if [ "$build_size" = full ]; then
   echo "[+] VNC"
   ## Add default xstartup file for tigervnc-standalone-server
-  cat << EOF >> "$rootfs/etc/skel/.vnc/xstartup"
+  cat << EOF >> "$rootfs_dir/etc/skel/.vnc/xstartup"
 #!/usr/bin/env sh
 
 set -e
@@ -153,29 +153,29 @@ export SHELL=/bin/bash
 ##          XFCE          ##
 startxfce4
 EOF
-  chmod 0700 "$rootfs/etc/skel/.vnc/xstartup"
+  chmod 0700 "$rootfs_dir/etc/skel/.vnc/xstartup"
 
   ## powershell for arm64 is not yet available in Microsofts repos so let's install it manually
   echo "[+] PowerShell"
   if [ $build_arch == "arm64" ]; then
-    mkdir -pv $rootfs/opt/microsoft/powershell
-    wget -P $rootfs/opt/microsoft/powershell https://github.com/PowerShell/PowerShell/releases/download/v6.2.0-preview.4/powershell-6.2.0-preview.4-linux-arm64.tar.gz
-    tar -xzf $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm64.tar.gz -C $rootfs/opt/microsoft/powershell
-    rm -v $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm64.tar.gz
+    mkdir -pv $rootfs_dir/opt/microsoft/powershell
+    wget -P $rootfs_dir/opt/microsoft/powershell https://github.com/PowerShell/PowerShell/releases/download/v6.2.0-preview.4/powershell-6.2.0-preview.4-linux-arm64.tar.gz
+    tar -xzf $rootfs_dir/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm64.tar.gz -C $rootfs_dir/opt/microsoft/powershell
+    rm -v $rootfs_dir/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm64.tar.gz
   fi
   if [ $build_arch == "armhf" ]; then
-    mkdir -pv $rootfs/opt/microsoft/powershell
-    wget -P $rootfs/opt/microsoft/powershell https://github.com/PowerShell/PowerShell/releases/download/v6.2.0-preview.4/powershell-6.2.0-preview.4-linux-arm32.tar.gz
-    tar -xzf $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz -C $rootfs/opt/microsoft/powershell
-    rm -v $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz
+    mkdir -pv $rootfs_dir/opt/microsoft/powershell
+    wget -P $rootfs_dir/opt/microsoft/powershell https://github.com/PowerShell/PowerShell/releases/download/v6.2.0-preview.4/powershell-6.2.0-preview.4-linux-arm32.tar.gz
+    tar -xzf $rootfs_dir/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz -C $rootfs_dir/opt/microsoft/powershell
+    rm -v $rootfs_dir/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz
   fi
   ## Microsoft no longer supports deletion of the file DELETE_ME_TO_DISABLE_CONSOLEHOST_TELEMETRY to disable telemetry
   ## We have to set this environment variable instead
-  cat << EOF > "$rootfs/etc/profile.d/powershell.sh"
+  cat << EOF > "$rootfs_dir/etc/profile.d/powershell.sh"
 export POWERSHELL_TELEMETRY_OPTOUT=1
 EOF
 
-  cat << EOF >> "$rootfs/etc/bash.bashrc"
+  cat << EOF >> "$rootfs_dir/etc/bash.bashrc"
 export POWERSHELL_TELEMETRY_OPTOUT=1
 EOF
 fi
@@ -184,17 +184,17 @@ fi
 
 ## Install dictionaries/wordlists
 echo "[+] Dictionaries"
-mkdir -pv "$rootfs/opt/dic"
-tar xvf ./data/dictionaries/89.tar.gz -C "$rootfs/opt/dic"
-cp -v ./data/dictionaries/wordlist.txt "$rootfs/opt/dic/wordlist.txt"
-cp -v ./data/dictionaries/pinlist.txt  "$rootfs/opt/dic/pinlist.txt"
+mkdir -pv "$rootfs_dir/opt/dic"
+tar xvf ./data/dictionaries/89.tar.gz -C "$rootfs_dir/opt/dic"
+cp -v ./data/dictionaries/wordlist.txt "$rootfs_dir/opt/dic/wordlist.txt"
+cp -v ./data/dictionaries/pinlist.txt  "$rootfs_dir/opt/dic/pinlist.txt"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## In order for metasploit to work daemon,nginx,postgres must all be added to inet beef-xss creates user beef-xss.
 ## Openvpn server requires nobdy:nobody in order to work.
 echo "[+] Groups"
-cat << EOF >> "$rootfs/etc/group"
+cat << EOF >> "$rootfs_dir/etc/group"
 inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql
 nobody:x:3004:nobody
 EOF
@@ -204,13 +204,13 @@ EOF
 ## Apt now adds a new user to "nobody" but the _apt user can't access updates because of inet
 ## Modify passwd to put them in inet group for android
 echo "[+] Users"
-sed -i -e 's/^\(_apt:\)\([^:]\)\(:[0-9]*\)\(:[0-9]*\):/\1\2\3:3004:/' "$rootfs/etc/passwd"
+sed -i -e 's/^\(_apt:\)\([^:]\)\(:[0-9]*\)\(:[0-9]*\):/\1\2\3:3004:/' "$rootfs_dir/etc/passwd"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Add /system/xbin and /system/bin to PATH
 echo "[+] Adding /system/xbin and /system/bin to path"
-cat << EOF >> "$rootfs/root/.profile"
+cat << EOF >> "$rootfs_dir/root/.profile"
 PATH="$PATH:/system/xbin:/system/bin"
 EOF
 
@@ -218,7 +218,7 @@ EOF
 
 ## Source .bashrc and .profile at login
 echo "[+] Adding bashrc/profile sourcing to bash_profile"
-cat << EOF >> "$rootfs/root/.bash_profile"
+cat << EOF >> "$rootfs_dir/root/.bash_profile"
 . /root/.bashrc
 . /root/.profile
 cd ~
@@ -228,7 +228,7 @@ EOF
 
 ## Insert correct .bashrc file from kali-defaults
 echo "[+] bashrc"
-cp -v $rootfs/etc/skel/.bashrc $rootfs/root/.bashrc
+cp -v $rootfs_dir/etc/skel/.bashrc $rootfs_dir/root/.bashrc
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -236,16 +236,16 @@ cp -v $rootfs/etc/skel/.bashrc $rootfs/root/.bashrc
 ## if the user doesn't change their password
 ## or change their configuration for key based ssh
 echo "[+] Modifying SSH to allow root user"
-sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
-sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
-sed -i 's/\#PermitRootLogin yes/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
+sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' "$rootfs_dir/etc/ssh/sshd_config"
+sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' "$rootfs_dir/etc/ssh/sshd_config"
+sed -i 's/\#PermitRootLogin yes/PermitRootLogin yes/g' "$rootfs_dir/etc/ssh/sshd_config"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## DNSMASQ Configuration options for optional access point
-if [ -e "$rootfs/etc/dnsmasq.conf" ]; then
+if [ -e "$rootfs_dir/etc/dnsmasq.conf" ]; then
   echo "[+] dnsmasq"
-  cat << EOF > "$rootfs/etc/dnsmasq.conf"
+  cat << EOF > "$rootfs_dir/etc/dnsmasq.conf"
 log-facility=/var/log/dnsmasq.log
 #address=/#/10.0.0.1
 #address=/google.com/10.0.0.1
@@ -263,11 +263,11 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Removing Xfce4 panel plugins that are not needed in KeX
-if [ -e "$rootfs/etc/xdg/xfce4/panel/default.xml" ]; then
+if [ -e "$rootfs_dir/etc/xdg/xfce4/panel/default.xml" ]; then
   echo "[+] Removing unneeded xfce4 panel plugins"
-  sed -i '/\n/!N;/\n.*\n/!N;/\n.*\n.*kazam/{$d;N;N;d};P;D' "$rootfs/etc/xdg/xfce4/panel/default.xml"
-  sed -i '/pulseaudio/d'                                   "$rootfs/etc/xdg/xfce4/panel/default.xml"
-  sed -i '/power-manager-plugin/d'                         "$rootfs/etc/xdg/xfce4/panel/default.xml"
+  sed -i '/\n/!N;/\n.*\n/!N;/\n.*\n.*kazam/{$d;N;N;d};P;D' "$rootfs_dir/etc/xdg/xfce4/panel/default.xml"
+  sed -i '/pulseaudio/d'                                   "$rootfs_dir/etc/xdg/xfce4/panel/default.xml"
+  sed -i '/power-manager-plugin/d'                         "$rootfs_dir/etc/xdg/xfce4/panel/default.xml"
 else
   echo "[i] Skipping xfce4"
 fi
@@ -275,20 +275,20 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Modify Kismet log saving folder
-if [ -e "$rootfs/etc/kismet/kismet.conf" ]; then
+if [ -e "$rootfs_dir/etc/kismet/kismet.conf" ]; then
   echo "[+] Modifying Kismet log folder"
-  sed -i 's|.*\blogprefix=.*|logprefix=/captures/kismet/|g' "$rootfs/etc/kismet/kismet.conf"
-  sed -i 's|.*\bncsource=wlan0|ncsource=wlan1|g'            "$rootfs/etc/kismet/kismet.conf"
-  sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g'        "$rootfs/etc/kismet/kismet.conf"
+  sed -i 's|.*\blogprefix=.*|logprefix=/captures/kismet/|g' "$rootfs_dir/etc/kismet/kismet.conf"
+  sed -i 's|.*\bncsource=wlan0|ncsource=wlan1|g'            "$rootfs_dir/etc/kismet/kismet.conf"
+  sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g'        "$rootfs_dir/etc/kismet/kismet.conf"
 else
   echo "[i] Skipping Kismet"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-if [ -e "$rootfs/etc/skel/.vnc/xstartup" ]; then
+if [ -e "$rootfs_dir/etc/skel/.vnc/xstartup" ]; then
   echo "[+] VNC"
-  cp -fv "$rootfs/etc/skel/.vnc/xstartup" "$rootfs/root/.vnc/xstartup"
+  cp -fv "$rootfs_dir/etc/skel/.vnc/xstartup" "$rootfs_dir/root/.vnc/xstartup"
 else
   echo "[i] Skipping VNC"
 fi
@@ -297,9 +297,9 @@ fi
 
 ## Fix armitage to run on NetHunter
 ##   REF: https://github.com/offensive-security/kali-nethunter/issues/600
-if [ -e "$rootfs/usr/share/armitage/armitage" ]; then
+if [ -e "$rootfs_dir/usr/share/armitage/armitage" ]; then
   echo "[+] armitage"
-  sed -i s/-XX\:\+AggressiveHeap//g "$rootfs/usr/share/armitage/armitage"
+  sed -i s/-XX\:\+AggressiveHeap//g "$rootfs_dir/usr/share/armitage/armitage"
 else
   echo "[i] Skipping armitage"
 fi
@@ -307,26 +307,26 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Sets the default for hostapd.conf to the mana karma version
-if [ -e "$rootfs/etc/init.d/hostapd" ]; then
+if [ -e "$rootfs_dir/etc/init.d/hostapd" ]; then
   echo "[+] hostapd"
-  sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
-  sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-mana-"*
+  sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs_dir/etc/init.d/hostapd"
+  sed -i 's/wlan0/wlan1/g' "$rootfs_dir/etc/mana-toolkit/hostapd-mana-"*
 else
   echo "[i] Skipping hostapd"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-if [ -e "$rootfs/usr/share/mana-toolkit/run-mana/" ]; then
+if [ -e "$rootfs_dir/usr/share/mana-toolkit/run-mana/" ]; then
   echo "[+] mana-toolkit"
-  chmod 0755 $rootfs/usr/share/mana-toolkit/run-mana/*.sh
+  chmod 0755 $rootfs_dir/usr/share/mana-toolkit/run-mana/*.sh
 
   ## Happens in hostapd
-  #sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-mana-"*
+  #sed -i 's/wlan0/wlan1/g' "$rootfs_dir/etc/mana-toolkit/hostapd-mana-"*
 
   ## Minor fix for mana-toolkit which made changes in update
   ## We need to mirror fixes
-  sed -i 's|dhcpd -cf /etc/mana-toolkit/dhcpd\.conf.*|dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo|' "$rootfs/usr/share/mana-toolkit/run-mana/"*
+  sed -i 's|dhcpd -cf /etc/mana-toolkit/dhcpd\.conf.*|dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo|' "$rootfs_dir/usr/share/mana-toolkit/run-mana/"*
 else
   echo "[i] Skipping mana-toolkit"
 fi

@@ -96,10 +96,10 @@ check_umount() {
 
 cleanup_host() {
   echo "[i] Cleaning up host"
-  check_umount "$rootfs/dev/pts"
-  check_umount "$rootfs/dev"
-  check_umount "$rootfs/proc"
-  check_umount "$rootfs/sys"
+  check_umount "$rootfs_dir/dev/pts"
+  check_umount "$rootfs_dir/dev"
+  check_umount "$rootfs_dir/proc"
+  check_umount "$rootfs_dir/sys"
 
   ## Remove read only from nano
   #chattr -i $(which nano)
@@ -109,7 +109,7 @@ chroot_do() {
   echo "<--- Entering chroot for: $@ --->"
   DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
   LC_ALL=C LANGUAGE=C LANG=C \
-  chroot "$rootfs" "$@"
+  chroot "$rootfs_dir" "$@"
   echo "<--- Exiting chroot from: $@ --->"
 }
 
@@ -175,10 +175,10 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Working location
-rootfs="kali-$build_arch"
+rootfs_dir="chroot/kali-$build_arch"
 ## Output
 output_dir="output"
-output_file=$rootfs-$build_size
+output_file=kali-nethunter-rootfs-$build_arch-$build_size
 build_output="$output_dir/$output_file"
 
 mkdir -pv $output_dir/
@@ -210,7 +210,7 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-if [ -d "$rootfs" ]; then
+if [ -d "$rootfs_dir" ]; then
   echo "[i] Detected prebuilt chroot"
   echo
   read -rp "Would you like to create a new chroot? (Y/n): " createrootfs
@@ -221,7 +221,7 @@ if [ -d "$rootfs" ]; then
     ;;
   *)
     echo "[i] Removing previous chroot"
-    rm -rfv "$rootfs"
+    rm -rfv "$rootfs_dir"
     ;;
   esac
 else
@@ -342,7 +342,7 @@ trap cleanup_host EXIT
 ## Need to find where this error occurs, but we make nano read only during build and reset after installation is completed
 #chattr +i $(which nano)
 
-export build_arch build_size qemu_arch rootfs packages
+export build_arch build_size qemu_arch rootfs_dir packages
 export -f chroot_do
 
 ## Stage 1 - Debootstrap creates basic chroot
@@ -368,7 +368,7 @@ cleanup_host
 
 ## Compress final file
 echo "[+] Tarring and compressing kalifs. This can take a while..."
-XZ_OPTS=-9 tar cJf "${build_output}.tar.xz" "$rootfs/"
+XZ_OPTS=-9 tar cJf "${build_output}.tar.xz" "$rootfs_dir/"
 
 echo "[+] Generating sha512sum of kalifs"
 sha512sum "${build_output}.tar.xz" | sed "s|$output_dir/||" > "${build_output}.sha512sum"

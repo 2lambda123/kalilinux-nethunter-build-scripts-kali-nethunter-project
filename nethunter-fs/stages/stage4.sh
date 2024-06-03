@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "[+] Creating cleanup script"
-cat << EOF > "$rootfs/cleanup"
+cat << EOF > "$rootfs_dir/cleanup"
 #!/usr/bin/env sh
 
 set -e
@@ -34,16 +34,16 @@ for logs in \$( find /var/log -type f ); do echo \$logs; echo > \$logs; done
 #history -cw
 EOF
 
-chmod +x "$rootfs/cleanup"
+chmod +x "$rootfs_dir/cleanup"
 chroot_do /cleanup
-rm -v "$rootfs/cleanup"
+rm -v "$rootfs_dir/cleanup"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## Add our sources (finished with $BUILD_MIRROR)
 ##   REF: https://www.kali.org/docs/general-use/updating-kali/
 echo "[+] Defining stock /etc/apt/sources.list file"
-cat << EOF > "$rootfs/etc/apt/sources.list"
+cat << EOF > "$rootfs_dir/etc/apt/sources.list"
 # See: https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/
 deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware
 
@@ -55,7 +55,7 @@ EOF
 ## Let's remove it after we are done with
 if [ -n "$BUILD_REPO" ]; then
   echo "[+] Resetting /etc/apt/sources.list file"
-  rm -v "$rootfs/etc/apt/sources.list.d/$BUILD_REPO.list"
+  rm -v "$rootfs_dir/etc/apt/sources.list.d/$BUILD_REPO.list"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

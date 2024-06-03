@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mkdir -pv "$rootfs"
+mkdir -pv "$rootfs_dir/"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -44,7 +44,7 @@ fi
 echo "[+] Starting debootstrap (download)"
 tries=0
 max_tries=5
-while ! debootstrap --download-only --verbose --arch $build_arch kali-rolling "$rootfs" $BUILD_MIRROR; do
+while ! debootstrap --download-only --verbose --arch $build_arch kali-rolling "$rootfs_dir" $BUILD_MIRROR; do
   ((tries++))
   if [ $tries -ge $max_tries ]; then
     exit_help "maximum retries ($max_tries) reached, could not download packages!"
@@ -54,14 +54,14 @@ while ! debootstrap --download-only --verbose --arch $build_arch kali-rolling "$
 done
 
 echo "[+] Starting debootstrap (install)"
-debootstrap --foreign --components main,contrib,non-free,non-free-firmware --verbose --arch $build_arch kali-rolling "$rootfs" $BUILD_MIRROR
+debootstrap --foreign --components main,contrib,non-free,non-free-firmware --verbose --arch $build_arch kali-rolling "$rootfs_dir" $BUILD_MIRROR
 
 echo "[+] Installing qemu-$qemu_arch-static interpreter to rootfs"
 if [ "$suse" = true ]; then
-  cp -v "/usr/bin/qemu-$qemu_arch-binfmt" "$rootfs/usr/bin/"
-  cp -v "/usr/bin/qemu-$qemu_arch" "$rootfs/usr/bin/"
+  cp -v "/usr/bin/qemu-$qemu_arch-binfmt" "$rootfs_dir/usr/bin/"
+  cp -v "/usr/bin/qemu-$qemu_arch" "$rootfs_dir/usr/bin/"
 else
-  cp -v "/usr/bin/qemu-$qemu_arch-static" "$rootfs/usr/bin/"
+  cp -v "/usr/bin/qemu-$qemu_arch-static" "$rootfs_dir/usr/bin/"
 fi
 
 echo "[+] Starting debootstrap in chroot (second stage)"

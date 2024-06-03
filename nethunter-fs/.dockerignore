@@ -1,3 +1,4 @@
-./kali-*
+./chroot/
+./output/
 ./.dep_check
 ./README*
