@@ -25,7 +25,7 @@ fi
 echo "[+] Mounts"
 mount -v -t proc proc "$rootfs_dir/proc"
 mount -v -o bind /dev "$rootfs_dir/dev"
-mount -v -o bind /dev/pts "$rootfs_dir/dev/pts"
+mount -v -t devpts none "$rootfs_dir/dev/pts"   # mount -v -o bind /dev/pts "$rootfs_dir/dev/pts"
 mount -v -t sysfs sys "$rootfs_dir/sys"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
