@@ -30,7 +30,7 @@ rm -rfv /var/cache/debconf/*-old
 rm -rfv /var/cache/apt/archives/*
 rm -rfv /etc/apt/apt.conf.d/apt_opts
 rm -rfv /etc/apt/apt.conf.d/99_norecommends
-for logs in \$( find /var/log -type f ); do echo \$logs; echo > \$logs; done
+for logs in \$( find /var/log -type f ! -empty ); do echo \$logs; echo > \$logs; done
 #history -cw
 EOF
 
