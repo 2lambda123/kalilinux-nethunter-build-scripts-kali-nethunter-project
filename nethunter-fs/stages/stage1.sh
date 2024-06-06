@@ -4,12 +4,12 @@ mkdir -pv "$rootfs_dir/"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-if [ ! -f /usr/share/debootstrap/scripts/kali-rolling ]; then
+if [ ! -f /usr/share/debootstrap/scripts/kali ]; then
   ## For those not building on Debian 9 or older
   echo "[i] Missing kali from debootstrap, downloading it"
 
   curl "https://gitlab.com/kalilinux/packages/debootstrap/raw/kali/master/scripts/kali" > /usr/share/debootstrap/scripts/kali
-  ln -sv /usr/share/debootstrap/scripts/kali /usr/share/debootstrap/scripts/kali-rolling
+  ln -sv /usr/share/debootstrap/scripts/kali /usr/share/debootstrap/scripts/$BUILD_BRANCH
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,7 +44,7 @@ fi
 echo "[+] Starting debootstrap (download)"
 tries=0
 max_tries=5
-while ! debootstrap --download-only --verbose --arch $build_arch kali-rolling "$rootfs_dir" $BUILD_MIRROR; do
+while ! debootstrap --download-only --verbose --arch $build_arch $BUILD_BRANCH "$rootfs_dir" $BUILD_MIRROR; do
   ((tries++))
   if [ $tries -ge $max_tries ]; then
     exit_help "maximum retries ($max_tries) reached, could not download packages!"
@@ -54,7 +54,7 @@ while ! debootstrap --download-only --verbose --arch $build_arch kali-rolling "$
 done
 
 echo "[+] Starting debootstrap (install)"
-debootstrap --foreign --components main,contrib,non-free,non-free-firmware --verbose --arch $build_arch kali-rolling "$rootfs_dir" $BUILD_MIRROR
+debootstrap --foreign --components main,contrib,non-free,non-free-firmware --verbose --arch $build_arch $BUILD_BRANCH "$rootfs_dir" $BUILD_MIRROR
 
 echo "[+] Installing qemu-$qemu_arch-static interpreter to rootfs"
 if [ "$suse" = true ]; then

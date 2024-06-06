@@ -8,6 +8,9 @@
 ## If want to use a different mirror to build
 BUILD_MIRROR=${BUILD_MIRROR:-http://http.kali.org/kali}
 
+## If you want to build a different branch
+BUILD_BRANCH=${KALI_BRANCH:-kali-rolling}
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 set -e
@@ -22,6 +25,7 @@ display_help() {
   echo "  -a, --arch [arch]      select a different architecture (default: armhf)"
   echo "                         possible options: armhf, arm64, i386, amd64"
   echo "      --mirror [mirror]  mirror to use during build process (default: $BUILD_MIRROR)"
+  echo "      --branch [branch]  branch to use during build process (default: $BUILD_BRANCH)"
   echo "  -h, --help             display this help message"
   exit 0
 }
@@ -151,6 +155,10 @@ while [[ $# -gt 0 ]]; do
       BUILD_MIRROR=$2
       shift
       ;;
+    --branch)
+      BUILD_BRANCH=$2
+      shift
+      ;;
     *)
       exit_help "Unknown argument: $arg"
       ;;
@@ -192,6 +200,7 @@ exec &> >(tee -a "${build_output}.log")
 echo "[+] Selected build size  : $build_size"
 echo "[+] Selected architecture: $build_arch"
 echo "[+] Selected build mirror: $BUILD_MIRROR"
+echo "[+] Selected build branch: $BUILD_BRANCH"
 
 if [ -n "$BUILD_REPO" ]; then
   echo "[+] Additional apt repo  : $BUILD_REPO"
@@ -342,7 +351,7 @@ trap cleanup_host EXIT
 ## Need to find where this error occurs, but we make nano read only during build and reset after installation is completed
 #chattr +i $(which nano)
 
-export build_arch build_size qemu_arch rootfs_dir packages
+export build_arch build_size qemu_arch rootfs_dir packages BUILD_MIRROR BUILD_BRANCH
 export -f chroot_do
 
 ## Stage 1 - Debootstrap creates basic chroot
