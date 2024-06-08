@@ -4,9 +4,7 @@
 /nethunter-installer/devices
 /nethunter-installer/build-*.sh
 /nethunter-installer/*.zip
+/nethunter-fs/chroot/
+/nethunter-fs/output/
 /nethunter-fs/.dep_check
-/nethunter-fs/output.log
-/nethunter-fs/output
-/nethunter-fs/kali-*
-kalifs-*.tar.xz
 .DS_Store
