@@ -20,10 +20,12 @@ And yes, Kali NetHunter natively **supports wireless 802.11 frame injection** wi
 
 ## Repository Structure
 
-- [./nethunter-fs/](nethunter-fs/) - Kali NetHunter FileSystem (FS) - chroot Builder + [scripts](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-utils) <!-- aka /rootfs/ -> https://kali.download/nethunter-images/current/rootfs/ -->
-- [./nethunter-installer/](nethunter-installer/) - Kali NetHunter Installer <!-- aka /images/ -> https://kali.download/nethunter-images/current/ -->
-  - [./nethunter-installer/devices/](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-devices) - all the [pre-compiled kernels](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel), kernel modules, and installation scripts
+- [./nethunter-fs/](nethunter-fs/) - Kali NetHunter FileSystem (FS) <!-- aka [/rootfs/](https://kali.download/nethunter-images/current/rootfs/) -->
+  - This makes various Kali chroots with packages and [custom scripts](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-utils)
+- [./nethunter-installer/](nethunter-installer/) - Kali NetHunter Installer <!-- aka [/images/](https://kali.download/nethunter-images/current/) -->
+  - This pulls in a Kali NetHunter FS along with [device](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-devices) files to create the "final" `*.zip` output
 - [./nethunter-rootless/](nethunter-rootless/) - Kali NetHunter (Rootless Edition)
+  - Using Termux and a Kali NetHunter FS, its possible to able to start Kali with a either command line or graphical (aka "KeX") interface
 
 ## Documentation and Attack Descriptions
 
@@ -60,4 +62,5 @@ We're relying on you, the community, to port your devices for the full Kali NetH
 **A** - A list of supported devices and chipsets is on the wiki: <https://www.kali.org/docs/nethunter/wireless-cards/>
 
 
-Sun May 29 22:51:35 UTC 2022
+
+Wed  5 Jun 2024 22:12:58 UTC

@@ -1,0 +1,29 @@
+## GitLab container registry: https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/container_registry
+
+default:
+  ## REF: https://hub.docker.com/_/docker
+  ##   Not pin'd version
+  image: docker.io/docker:latest
+  ## "Docker IN Docker" as building on GitLab.com SaaS, which are using Docker runners
+  ##   Not pin'd version
+  services:
+    - docker:dind
+
+
+stages:
+  - build
+
+
+build-fs:
+  stage: build
+  before_script:
+    - docker info
+  script:
+    - echo "${CI_JOB_TOKEN}" | docker login --password-stdin --username "${CI_REGISTRY_USER}" "${CI_REGISTRY}"
+    - ./nethunter-fs/docker-push.sh
+  after_script:
+    - docker images
+  rules:
+   - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+   - if: $CI_PIPELINE_SOURCE == "schedules"
+   - when: manual
