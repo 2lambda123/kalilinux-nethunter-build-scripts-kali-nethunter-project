@@ -18,6 +18,8 @@ if [ "$( uname -m )" == "$qemu_arch" ]; then
   echo "[i] Bypassing qemu/binfmts: Selected arch is the as host: $qemu_arch"
 elif [ "$( uname -m )" == "x86_64" ] && [ "$qemu_arch" == "i386" ]; then
   echo "[i] Bypassing qemu/binfmts: amd64/i386 == $( uname -m ) == $qemu_arch"
+elif [ "$qemu_arch" == "i386" ] && ( [ "$( uname -m )" == "i486" ] || [ "$( uname -m )" == "i586" ] || [ "$( uname -m )" == "i686" ] ); then
+  echo "[i] Bypassing qemu/binfmts: i*86"
 else
   echo "[i] Host ($( uname -m )) is a different arch to selected arch ($qemu_arch)"
   ## Docker needs binfmt to run arm
