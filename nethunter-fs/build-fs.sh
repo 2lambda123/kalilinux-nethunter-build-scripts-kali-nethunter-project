@@ -110,7 +110,7 @@ cleanup_host() {
 }
 
 chroot_do() {
-  echo "<--- Entering chroot for: $@ --->"
+  echo "<--- Entering chroot for: $ $@ --->"
   DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
   LC_ALL=C LANGUAGE=C LANG=C \
   chroot "$rootfs_dir" "$@"
