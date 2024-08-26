@@ -260,7 +260,7 @@ fi
 ## CORE PACKAGES - every chroot will have these
 ##   - apt-transport-https for updates
 ##   - usbutils and pciutils is needed for wifite (unsure why)
-pkg_core="abootimg
+pkg_core='abootimg
           apt-transport-https
           binutils
           ca-certificates
@@ -279,13 +279,13 @@ pkg_core="abootimg
           ntpdate
           openssh-server
           pciutils
-          python2.7-minimal
+          python2.7-minimal [!armel !armhf]
           sudo
           usbutils
           vboot-kernel-utils
           vboot-utils
           vim
-          zsh"
+          zsh'
 
 ## NANO PACKAGES - only necessary packages for watch
 pkg_nano="aircrack-ng
