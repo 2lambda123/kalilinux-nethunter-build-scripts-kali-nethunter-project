@@ -52,7 +52,7 @@ debconf-set-selections /debconf.set
 rm -fv /debconf.set
 
 echo "[i] Installing core packages"
-apt-get --yes install $( echo $pkg_core | xargs )
+apt-get --yes install $( echo "$pkg_core" | grep -v '!'${build_arch} | sed 's_\[.*\]__g' | xargs )
 
 if [ -n "$BUILD_REPO" ]; then
   echo "[i] Installing packages from $BUILD_REPO with apt-get"
