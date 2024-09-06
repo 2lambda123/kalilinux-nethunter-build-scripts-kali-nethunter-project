@@ -258,65 +258,19 @@ fi
 ## Packages that will be installed inside the chroot/filesystem
 
 ## CORE PACKAGES - every chroot will have these
-##   - apt-transport-https for updates
-##   - usbutils and pciutils is needed for wifite (unsure why)
-pkg_core='abootimg
-          apt-transport-https
-          binutils
-          ca-certificates
-          cgpt
-          console-common
-          fake-hwclock
-          git
-          git-core
-          initramfs-tools
-          kali-archive-keyring
-          kali-defaults
-          less
-          locales
-          nano
-          nethunter-utils
-          ntpdate
-          openssh-server
-          pciutils
-          python2.7-minimal [!armel !armhf]
-          sudo
-          usbutils
-          vboot-kernel-utils
-          vboot-utils
-          vim
-          zsh'
+##   REF: https://gitlab.com/kalilinux/packages/kali-meta/-/blob/kali/master/debian/control
+pkg_core="kali-nethunter-core"
 
 ## NANO PACKAGES - only necessary packages for watch
-pkg_nano="aircrack-ng
-          apache2
-          bluelog
-          blueranger
-          bluetooth
-          bluez
-          bluez-obexd
-          bluez-tools
-          iw
-          kali-menu
-          libbluetooth-dev
-          libbluetooth3
-          net-tools
-          nmap
-          pixiewps
-          python3
-          redfang
-          sox
-          spooftooph
-          u-boot-tools
-          wpasupplicant"
+##   REF: https://gitlab.com/kalilinux/packages/kali-meta/-/blob/kali/master/debian/control
+pkg_nano="kali-nethunter-nano"
 
 ## MINIMAL PACKAGES - only the most basic packages
 pkg_minimal="locales-all"
 
 ## DEFAULT PACKAGES FULL INSTALL - all the recommended packages
 ##   REF: https://gitlab.com/kalilinux/packages/kali-meta/-/blob/kali/master/debian/control
-pkg_full="kali-linux-nethunter
-          proxmark3"
+pkg_full="kali-nethunter-full"
 
 packages="$pkg_minimal"
 [ "$build_size" = full ] &&
