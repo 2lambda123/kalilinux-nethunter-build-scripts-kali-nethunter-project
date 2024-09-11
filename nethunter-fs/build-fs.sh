@@ -186,7 +186,7 @@ fi
 rootfs_dir="chroot/kali-$build_arch"
 ## Output
 output_dir="output"
-output_file=kali-nethunter-rootfs-$build_arch-$build_size
+output_file=kali-nethunter-rootfs-$build_size-$build_arch
 build_output="$output_dir/$output_file"
 
 mkdir -pv $output_dir/
