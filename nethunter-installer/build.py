@@ -108,7 +108,7 @@ def copytree(src, dst):
 
 def download(url, file_name, verify_sha):
     try:
-        u = requests.get(url, stream=True, headers=dl_headers)
+        u = requests.get(url, stream=True, headers=dl_headers, timeout=60)
         u.raise_for_status()
     except requests.exceptions.RequestException as e:
         abort(str(e))
@@ -180,7 +180,7 @@ def supersu(forcedown, beta):
 
     def getdlpage(url):
         try:
-            u = requests.head(url, headers=dl_headers)
+            u = requests.head(url, headers=dl_headers, timeout=60)
             return u.url
         except requests.exceptions.ConnectionError as e:
             print("Connection error: " + str(e))
